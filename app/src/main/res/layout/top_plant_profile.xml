@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp">
+
+        <ImageView
+            android:id="@+id/flower_pic"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/flower_pic_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/flower_pic"
+            android:layout_centerInParent="true"
+            android:text="@string/flower_name" />
+
+        <TextView
+            android:id="@+id/flower_pic_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/flower_pic_name_text"
+            android:layout_centerInParent="true"
+            android:text="@string/time_period" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
