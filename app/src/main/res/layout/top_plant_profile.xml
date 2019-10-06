@@ -1,36 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@drawable/plant_1"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/flower_pic"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/ic_launcher" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
-        <TextView
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/ic_launcher" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/flower_pic_name_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/flower_pic"
-            android:layout_centerInParent="true"
-            android:text="@string/flower_name" />
+            android:layout_below="@id/flower_pic"
+            android:gravity="center">
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/flower_name"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/flower_pic_time_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/flower_pic_name_text"
-            android:layout_centerInParent="true"
-            android:text="@string/time_period" />
+            android:layout_below="@id/flower_pic_name_text"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_period"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </LinearLayout>
 
     </RelativeLayout>
 

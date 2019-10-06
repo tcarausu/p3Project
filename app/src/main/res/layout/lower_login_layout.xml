@@ -27,20 +27,20 @@
             android:layout_marginBottom="25dp"
             android:visibility="visible" />
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebookLoginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/googleSignInButton"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp" />
+<!--        <com.facebook.login.widget.LoginButton-->
+<!--            android:id="@+id/facebookLoginButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/googleSignInButton"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:layout_marginBottom="25dp" />-->
 
         <TextView
             android:id="@+id/sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/facebookLoginButton"
+            android:layout_below="@+id/googleSignInButton"
             android:layout_centerInParent="true"
             android:layout_marginTop="25dp"
             android:clickable="true"
