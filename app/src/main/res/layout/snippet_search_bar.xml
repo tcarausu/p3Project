@@ -1,0 +1,54 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/border_color_top">
+
+        <Toolbar
+            android:id="@+id/profileToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageView
+                    android:id="@+id/backArrow"
+                    android:background="@drawable/input_fields_with_shadow"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/orange_arrow_left" />
+
+                <EditText
+                    android:id="@+id/search_bar_id"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@+id/backArrow"
+                    android:background="@null"
+                    android:hint="@string/search_Hint"
+                    android:textColor="@color/orangeMainTheme"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:id="@+id/search_button_id"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp"
+                    android:src="@drawable/ic_search_button"
+                    android:background="@drawable/input_fields_with_shadow"
+                    />
+            </RelativeLayout>
+
+        </Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+</merge>

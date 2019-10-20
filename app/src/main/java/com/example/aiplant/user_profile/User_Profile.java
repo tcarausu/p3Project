@@ -10,9 +10,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -21,23 +19,14 @@ import com.example.aiplant.R;
 import com.example.aiplant.model.Post;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.GridImageAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class User_Profile extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "User_Profile";
-    private static final int ACTIVITY_NUM = 1;
+    private static final int ACTIVITY_NUM = 2;
     private static final int NUM_GRID_COLUMNS = 3;
 
     // widgets
@@ -74,7 +63,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         user_profile_pic_time = findViewById(R.id.user_profile_pic_time);
 
         gridView = findViewById(R.id.grid_view_user_profile);
-
 
         fragmentManager = getSupportFragmentManager();
 

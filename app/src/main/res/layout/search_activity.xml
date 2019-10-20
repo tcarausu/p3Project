@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:id="@+id/home_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/snippet_search_bar" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relLayout3"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/top"
+                android:layout_height="wrap_content"
+                >
+
+                <GridView
+                    android:id="@+id/grid_view_user_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:horizontalSpacing="1dp"
+                    android:numColumns="3"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="1dp">
+
+                </GridView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <!--bottom navigation-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/layout_bottom_navigation" />
+        </RelativeLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
