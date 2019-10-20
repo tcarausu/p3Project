@@ -6,6 +6,8 @@
     <!-- Include following permission if you load images from Internet -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Include following permission if you want to cache images on SD card -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Include following permission if you want to get images from SD card -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -26,7 +28,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".home.HomeActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -34,7 +36,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".home.HomeActivity"
+            android:name=".user_profile.User_Profile"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".login.LoginActivity"
             android:screenOrientation="portrait">
 
             <intent-filter>

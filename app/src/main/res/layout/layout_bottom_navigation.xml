@@ -6,14 +6,14 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
 
-        <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+      <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@drawable/border_color_bottom"
+          app:menu="@menu/bottom_navigation_menu"
+          android:id="@+id/bottomNavigationBar">
 
-            android:id="@+id/bottomNavigationBar">
-<!--            android:background="@drawable/border_color_bottom"-->
-<!--            app:menu="@menu/bottom_navigation_menu"-->
-        </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
+      </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
 
     </RelativeLayout>
 

@@ -10,11 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
+import com.example.aiplant.home.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     // widgets
@@ -46,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         fragmentManager = getSupportFragmentManager();
 
     }
+
     public void buttonListeners() {
 
         findViewById(R.id.button_id_log_in).setOnClickListener(this);
@@ -61,12 +61,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-//            switch (v.getId()) {
-//
-//                case R.id.button_id_log_in:
-////                    signInWithEmail();
-//
-//                    break;
+        switch (v.getId()) {
+
+            case R.id.button_id_log_in:
+//                    signInWithEmail();
+                Intent intent = new Intent(this, HomeActivity.class);
+                startActivity(intent);
+                break;
 //                case R.id.textView_id_forgotPass_logIn:
 //
 //                    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
@@ -95,6 +96,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                case R.id.googleSignInButton:
 ////                    signIn();
 //                    break;
-//            }
         }
+    }
 }

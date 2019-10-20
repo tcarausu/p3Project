@@ -4,20 +4,44 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="grey">#808080</color>
-    <color name="black">#000000</color>
-
-
-    <color name="blue">#1C75B4</color>
     <color name="green">#0CCC0C</color>
-    <color name="red">#FF0000</color>
 
-    <color name="yellow">#FFFF00</color>
-    <color name="purple">#990D99</color>
-    <color name="brown">#7E3906</color>
-
-    <color name="pink">#FF1493</color>
     <color name="orange">#FF6600</color>
+    <color name="colorAccentOnSignOut">#FFA000</color>
+    <color name="darkOrange">#683E01</color>
+    <color name="orange_input">#CF6442</color>
+    <color name="red">#EB4116</color>
+    <color name="warm_orange">#F76B1C</color>
+
+    <color name="colorEditTextUnderline">#FFFFFF</color>
+    <color name="hints">#99FFFFFF</color>
+
+    <!--general colors-->
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_500">#9E9E9E</color>
+
+
+    <!--user profile colors-->
+    <color name="address">#2f7092</color>
+    <color name="followers">#0d5d98</color>
+    <color name="headings">#3797cf</color>
+    <color name="solidCircle">#AAffffff</color>
+    <color name="circleBorder">#50ffffff</color>
+    <color name="gradEnd">#67efc8</color>
+    <color name="gradStart">#63c9ff</color>
+    <color name="followersBg">#65dce5</color>
+    <color name="followingBg">#49beff</color>
+    <color name="grey">#e5e5e5</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="black_transparent">#C3000000</color>
+    <color name="white_transparent">#9CFFFFFF</color>
+
+    <color name="orangeMainTheme">#FF9047</color>
+    <color name="website_color">#3d5e98</color>
+
+    <!--end of user colors-->
 
 </resources>
