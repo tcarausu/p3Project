@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -17,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.aiplant.R;
+import com.example.aiplant.model.Post;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
+import com.example.aiplant.utility_classes.GridImageAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,10 +38,15 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "User_Profile";
     private static final int ACTIVITY_NUM = 1;
+    private static final int NUM_GRID_COLUMNS = 3;
 
     // widgets
     private Button loginButton;
     private TextView user_profile_pic_name, user_profile_pic_time;
+
+    private GridView gridView;
+
+    OnGridImageSelectedListener onGridImageSelectedListener;
 
     private ImageView flower_pic, mood_pic;
     private RelativeLayout home_Layout;
@@ -64,6 +72,9 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         home_Layout = findViewById(R.id.home_activity);
         user_profile_pic_name = findViewById(R.id.user_profile_pic_name);
         user_profile_pic_time = findViewById(R.id.user_profile_pic_time);
+
+        gridView = findViewById(R.id.grid_view_user_profile);
+
 
         fragmentManager = getSupportFragmentManager();
 
@@ -120,20 +131,20 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //                    break;
 //            }
     }
-//
-//
-//    /**
-//     * In this method we setup the Grid View base on an Object Map of the Post entity for our database
-//     * <p>
-//     * It creates a list of likes, which is later on used in the View Post Fragment
-//     * <p>
-//     * Based on the number of posts it will display the post, but it will be limited to 3 per Row.
-//     */
-//    private void setupGridView() {
-//        Log.d(TAG, "setupGridView: Setting up GridView");
+
+
+    /**
+     * In this method we setup the Grid View base on an Object Map of the Post entity for our database
+     * <p>
+     * It creates a list of likes, which is later on used in the View Post Fragment
+     * <p>
+     * Based on the number of posts it will display the post, but it will be limited to 3 per Row.
+     */
+    private void setupGridView() {
+        Log.d(TAG, "setupGridView: Setting up GridView");
 //
 //        try {
-//            final ArrayList<Post> posts = new ArrayList<>();
+            final ArrayList<Post> posts = new ArrayList<>();
 //            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
 //            Query query = reference
@@ -164,24 +175,24 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //                        post.setLikeList(likeList);
 //                        posts.add(post);
 //                    }
-//
-//                    //setup  our grid image
-//                    int gridWidth = getResources().getDisplayMetrics().widthPixels;
-//                    int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-//
-//                    gridView.setColumnWidth(imageWidth);
-//
-//                    ArrayList<String> imgURLs = new ArrayList<>();
-//
+
+                    //setup  our grid image
+                    int gridWidth = getResources().getDisplayMetrics().widthPixels;
+                    int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+
+                    gridView.setColumnWidth(imageWidth);
+
+                    ArrayList<String> imgURLs = new ArrayList<>();
+
 //                    for (int i = 0; i < posts.size(); i++) {
 //                        imgURLs.add(posts.get(i).getmFoodImgUrl());
 //                    }
-//
-//                    GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview,
-//                            "", imgURLs);
-//
-//                    gridView.setAdapter(adapter);
-//                    gridView.setOnItemClickListener((parent, view, position, id) -> onGridImageSelectedListener.onGridImageSelected(posts.get(position), ACTIVITY_NUM));
+
+                    GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,
+                            "", imgURLs);
+
+                    gridView.setAdapter(adapter);
+                    gridView.setOnItemClickListener((parent, view, position, id) -> onGridImageSelectedListener.onGridImageSelected(posts.get(position), ACTIVITY_NUM));
 //
 //                }
 //
@@ -197,7 +208,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //
 //            firebaseMethods.goToWhereverWithFlags(getActivity(), getActivity(), AddPostActivity.class);
 //        }
-//    }
+    }
 
 
     /**
@@ -211,6 +222,10 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
 
+    }
+
+    public interface OnGridImageSelectedListener {
+        void onGridImageSelected(Post post, int activityNr);
     }
 
 }
