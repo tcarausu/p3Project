@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AIPlant</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_log_in">Login</string>
+    <string name="hint_forgot_password">Forgot Password?</string>
+    <string name="or">Or</string>
+    <string name="hint_registerHere">Click here for Sign Up</string>
+
+    <string name="flower_name">Flower Name</string>
+    <string name="time_period">Time Period</string>
+    <string name="temperature">Temperature</string>
+    <string name="search_Hint">Search</string>
+
+    <string name="humidity">Humidity</string>
+    <string name="sunlight">Sunlight</string>
+</resources>

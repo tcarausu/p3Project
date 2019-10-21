@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/orView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="20dp"
+            android:text="@string/or"
+            android:textAlignment="center"
+            android:textColor="#F79862" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleSignInButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/orView"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:visibility="visible" />
+
+<!--        <com.facebook.login.widget.LoginButton-->
+<!--            android:id="@+id/facebookLoginButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/googleSignInButton"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:layout_marginBottom="25dp" />-->
+
+        <TextView
+            android:id="@+id/sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/googleSignInButton"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClick"
+            android:text="@string/hint_registerHere"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_orange_dark"
+            android:textStyle="normal"
+            app:autoSizeMaxTextSize="0dp" />
+
+        <Button
+            android:id="@+id/dash1"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_below="@id/sign_up"
+            android:layout_alignStart="@+id/orView" />
+
+        <Button
+            android:id="@+id/dash4"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_below="@id/sign_up"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/dash2"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_below="@id/sign_up"
+            android:layout_alignEnd="@id/sign_up" />
+
+        <Button
+            android:id="@+id/dash3"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_below="@id/sign_up"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
+
+</merge>
