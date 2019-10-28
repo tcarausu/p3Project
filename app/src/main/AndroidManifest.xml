@@ -25,7 +25,7 @@
         android:roundIcon="@drawable/growth_plant"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,ExtraText,GoogleAppIndexingWarning">
 
         <activity
             android:name=".home.HomeActivity"
@@ -39,15 +39,21 @@
             android:name=".user_profile.User_Profile"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".login.LoginActivity"
+        <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".login.LoginActivity"
+            android:screenOrientation="portrait">
+
+
         </activity>
     </application>
 

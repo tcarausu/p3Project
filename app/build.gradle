@@ -44,6 +44,9 @@ dependencies {
     //Universal image Loader
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
+    //gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+
 
     //Fire base dependency
     implementation 'com.google.firebase:firebase-auth:19.1.0'

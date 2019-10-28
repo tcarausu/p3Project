@@ -44,4 +44,36 @@
 
     <!--end of user colors-->
 
+
+
+    <!-- welcome slides colours -->
+
+    <!-- Screens background color-->
+    <color name="bg_screen">#20d2bb</color>
+
+
+    <!-- dots inactive colors -->
+
+    <color name="dot_dark_screen">#14a895</color>
+
+
+    <!-- dots active colors -->
+
+    <color name="dot_light_screen">#8cf9eb</color>
+
+
+    <array name="array_dot_active">
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/dot_dark_screen</item>
+        <item>@color/dot_dark_screen</item>
+        <item>@color/dot_dark_screen</item>
+        <item>@color/dot_dark_screen</item>
+    </array>
+
 </resources>
