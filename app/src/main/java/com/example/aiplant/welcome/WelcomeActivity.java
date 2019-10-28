@@ -31,6 +31,7 @@ public class WelcomeActivity extends AppCompatActivity{
     private Button btnSkip, btnNext;
     private PrefManager prefManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class WelcomeActivity extends AppCompatActivity{
         btnNext = findViewById(R.id.btn_next);
 
 
+
         // layouts of all welcome sliders
         // add few more layouts if you want
         layouts = new int[]{
@@ -75,17 +77,17 @@ public class WelcomeActivity extends AppCompatActivity{
 
         btnSkip.setOnClickListener(v -> launchHomeScreen());
 
-        btnNext.setOnClickListener(v -> {
-            // checking for last page
-            // if last page home screen will be launched
-            int current = getItem(+1);
-            if (current < layouts.length) {
-                // move to next screen
-                viewPager.setCurrentItem(current);
-            } else {
-                launchHomeScreen();
-            }
-        });
+            btnNext.setOnClickListener(v -> {
+                // checking for last page
+                // if last page home screen will be launched
+                int current = getItem(+1);
+                if (current < layouts.length) {
+                    // move to next screen
+                    viewPager.setCurrentItem(current);
+                } else {
+                    launchHomeScreen();
+                }
+            });
     }
 
     private void addBottomDots(int currentPage) {
