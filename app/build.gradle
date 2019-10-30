@@ -41,8 +41,15 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
 
+    //glide dep
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
     //Universal image Loader
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    //gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
 
 
     //Fire base dependency

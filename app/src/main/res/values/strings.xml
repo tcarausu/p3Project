@@ -14,4 +14,39 @@
 
     <string name="humidity">Humidity</string>
     <string name="sunlight">Sunlight</string>
+
+    <!-- strings for welcome slides -->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="button_connect">Connect to device</string>
+    <string name="device_connected">Connection successful</string>
+
+    <string name="slide_1_title">Turn on the device</string>
+    <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
+
+    <string name="slide_2_title">Create a profile for your plant</string>
+    <string name="slide_2_desc">You can either browse our plant list to find your plant and get the default niche for it or you can create a brand new plant with the conditions you decide on. You can always adjust the them from the settings if necessary.</string>
+
+    <string name="slide_3_title">Keep an eye on your plant</string>
+    <string name="slide_3_desc">The application will let you know if the environment measured by the device is optimal or not for your plant.</string>
+
+    <string name="slide_4_title">Check on your plant profiles</string>
+    <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
+
+
+    <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
+    <string name="chose_a_user_name">Chose a user name</string>
+    <string name="user876543">User876543</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="home">Home</string>
+    <string name="library">Library</string>
+    <string name="profile">Profile</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="cancel">Cancel</string>
+    <string name="account_settings">Account settings</string>
+    <string name="sign_out">Sign out</string>
 </resources>

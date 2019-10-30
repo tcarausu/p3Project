@@ -52,7 +52,6 @@ public class GridImageAdapter extends ArrayAdapter<String> {
 
         /**
          * ViewHolder build pattern (Similar to RecyclerView)
-         *
          */
         if (convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
@@ -74,9 +73,9 @@ public class GridImageAdapter extends ArrayAdapter<String> {
             public void onLoadingStarted(String imageUri, View view) {
 
                 if (holder.mProgressBar != null) {
-                    Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.growth_plant);
+                    Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
                     //TODO make drawable !!!
-                    holder.mProgressBar.setBackgroundResource(R.drawable.growth_plant);
+                    holder.mProgressBar.setBackgroundResource(R.drawable.logo_eye_plant);
                     view.refreshDrawableState();
                     holder.mProgressBar.setVisibility(View.VISIBLE);
                 }
