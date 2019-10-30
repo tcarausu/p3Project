@@ -1,15 +1,19 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
       <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:background="@drawable/border_color_bottom"
+          android:layout_height="wrap_content"
+          android:background="@color/green_main_"
+          app:itemTextColor="@color/white"
+          android:textAlignment="viewStart"
+          app:itemHorizontalTranslationEnabled="true"
           app:menu="@menu/bottom_navigation_menu"
           android:id="@+id/bottomNavigationBar">
 

@@ -38,6 +38,11 @@
     <color name="black">#000000</color>
     <color name="black_transparent">#C3000000</color>
     <color name="white_transparent">#9CFFFFFF</color>
+    <color name="dark_green_transparent">#66BDCDAD</color>
+    <color name="green_main_">#3C6F46</color>
+    <color name="green_dark">#334420</color>
+    <color name="red_fade">#66F3ABAB</color>
+    <color name="green_fade">#80CCFF90</color>
 
     <color name="orangeMainTheme">#FF9047</color>
     <color name="website_color">#3d5e98</color>

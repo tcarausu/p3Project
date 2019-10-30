@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".user_profile.User_Profile"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+    <include layout="@layout/top_bar"/>
+
+    </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/useThisFragmentID"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/home_activity"
@@ -29,6 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/top"
+                android:layout_marginTop="3dp"
                 android:gravity="center">
 
                 <include layout="@layout/bottom_user_profile" />
@@ -42,8 +54,9 @@
             android:layout_height="wrap_content">
 
             <include layout="@layout/layout_bottom_navigation" />
+
         </RelativeLayout>
 
     </FrameLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
