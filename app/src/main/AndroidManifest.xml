@@ -34,7 +34,7 @@
             android:name=".user_profile.User_Profile"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".create_profile.PlantProfile"
+        <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,18 +50,6 @@
 
 
         </activity>
-
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-<!--        <activity-->
-<!--            android:name=".create_profile.PlantProfile"-->
-<!--            android:screenOrientation="portrait">-->
-
-<!--        </activity>-->
-
     </application>
 
 </manifest>
