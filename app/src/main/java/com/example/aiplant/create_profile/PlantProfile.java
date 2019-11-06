@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,30 +21,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
 
 import java.io.IOException;
 import java.util.Calendar;
 
-public class PlantProfile extends AppCompatActivity {
+public class PlantProfile extends AppCompatActivity implements View.OnClickListener {
 
-    private String TAG ="PlantProfile Activity";
+    private static final String TAG = "PlantProfile";
     static final int REQUEST_CODE = 123;
     private ImageView profilePicture;
-    private EditText namePlant;
-    private EditText bd_day;
-    private EditText bd_month;
-    private EditText bd_year;
     private LinearLayout birthdayLayout;
-    private EditText minHumidity;
-    private EditText maxHumidity;
-    private EditText minSunlight;
-    private EditText maxSunlight;
-    private EditText minTemperature;
-    private EditText maxTemperature;
+    private EditText minHumidity, maxHumidity, minSunlight ,maxSunlight,
+                     minTemperature ,maxTemperature, bd_year, bd_month, bd_day, namePlant;
     private Bitmap picture;
-    private Button createProfile;
+    private ImageButton createProfile;
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private final int REQUEST_GALLERY=2;
     private final int REQUEST_CAMERA=1;
@@ -53,7 +47,25 @@ public class PlantProfile extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_plant_profile);
+       initializeView();
 
+        profilePicture.setOnClickListener(v -> {
+            Intent chooseImageIntent = ImagePicker.getPickImageIntent( getApplicationContext() );
+            startActivityForResult( chooseImageIntent, REQUEST_CODE );
+            checkPermissions();
+        });
+
+        createProfile.setOnClickListener(v -> {
+            if(namePlant.getText().toString().equals("")) {
+                namePlant.setError(getString(R.string.error_name));
+                namePlant.requestFocus();
+            }
+        });
+
+
+    }
+
+    private void initializeView() {
         profilePicture = findViewById(R.id.profilePicPlant_imgView);
         namePlant = findViewById(R.id.namePlant_editText);
         bd_day = findViewById(R.id.bd_day);
@@ -67,25 +79,6 @@ public class PlantProfile extends AppCompatActivity {
         minTemperature = findViewById(R.id.minTemperature_editText);
         maxTemperature = findViewById(R.id.maxTemperature_editText);
         createProfile = findViewById(R.id.createProfile_btn);
-
-
-        profilePicture.setOnClickListener(v -> {
-
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent( getApplicationContext() );
-            startActivityForResult( chooseImageIntent, REQUEST_CODE );
-            checkPermissions();
-        });
-
-        createProfile.setOnClickListener(v -> {
-            if(namePlant.getText().toString().equals("")) {
-                namePlant.setError(getString(R.string.error_name));
-                namePlant.requestFocus();
-            }
-
-
-        });
-
-
     }
 
     private void checkPermissions() {
@@ -100,23 +93,16 @@ public class PlantProfile extends AppCompatActivity {
 
         Log.d( TAG, "request code: " + requestCode );
         Log.d( TAG, "result code: " + resultCode );
-        if ( resultCode == RESULT_OK ) {
-            if ( requestCode == REQUEST_CODE ) {
-                Bitmap bitmap = null;
-                try {
-                    bitmap = ImagePicker.getImageFromResult( getApplicationContext(), resultCode, data );
-                } catch ( IOException e ) {
-                    //do sth
-                }
-                profilePicture.setImageBitmap( bitmap );
-                picture = bitmap;
-                profilePicture.setScaleType( ImageView.ScaleType.CENTER_CROP );
-            } else {
-                super.onActivityResult( requestCode, resultCode, data );
-            }
+        if ( resultCode == RESULT_OK && requestCode == REQUEST_CODE ) {
+            Glide.with(this).load(data.getData()).fitCenter().into(profilePicture);
 
         } else
-            Log.d( TAG, "Error on camera/Gallery" );
+            Log.d( TAG, "Nothing selected!" );
+
+    }
+
+    @Override
+    public void onClick(View view) {
 
     }
 }

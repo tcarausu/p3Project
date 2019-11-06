@@ -1,11 +1,13 @@
 package com.example.aiplant.user_profile;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -37,6 +40,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
+import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.Plant;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
@@ -57,9 +61,10 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int REQUEST_CAMERA = 22;
     private static final int REQUEST_GALLERY = 33;
+    private static final int REQUEST_CODE = 11;
 
     // widgets
-    private Button editUsernameButton, saveUsernameButton;
+    private ImageButton editUsernameButton, saveUsernameButton;
     private TextView userNameTextView;
     private EditText usernameEditText; //usernameEditText
     private GridView gridView;
@@ -68,15 +73,20 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
 
+    //firebase
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
     //context and others
     private FragmentManager fragmentManager;
-    Drawable drawable1, drawable2, drawable3, drawable4;
     private Context mContext;
     OnGridImageSelectedListener onGridImageSelectedListener;
-    private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private InputMethodManager mInputManager ;
+
+
+    //vars
+    private String[] permissions = {Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     //variables
     private String userName;
@@ -87,6 +97,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.user_profile);
         mContext = getApplicationContext();
         fragmentManager = getSupportFragmentManager();
+        mInputManager =  (InputMethodManager) getSystemService((INPUT_METHOD_SERVICE));
         initLayout();
         checkPermissions();
         buttonListeners();
@@ -140,11 +151,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             return false;
         });
 
-        //How to get a drawable
-        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
-        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
-        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
-        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
+//
 
     }
 
@@ -201,6 +208,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             editUsernameButton.setVisibility(View.VISIBLE);
             userNameTextView.setText(userName);
 
+
         } else {
             usernameEditText.setError("Nothing here!");
         }
@@ -224,7 +232,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Todo: continue here with results from the camera
-        if (resultCode == RESULT_OK && (requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY)) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             //Todo: we can add other implementation here, like loading the image to database
             Uri uri = Uri.parse(data.getData().toString());
             Glide.with(this).load(uri).fitCenter().into(profilePic);
@@ -236,7 +244,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         switch (v.getId()) {
-
             case R.id.editUserNameButton:
                 hideEditText();
                 break;
@@ -246,42 +253,16 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.profilePicture:
-                profileDialog();
-
+                optionDialog();
                 break;
         }
-//            switch (v.getId()) {
-//
-//                case R.id.button_id_log_in:
-////                    signInWithEmail();
-//
-//                    break;
-//                case R.id.textView_id_forgotPass_logIn:
-//
-//                    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-//
-//                    if (fragmentForgotPass == null) {
-//                        fragmentForgotPass = new ForgotPassFragment();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        fragmentTransaction.addToBackStack(null);
-//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
-//                    }
-//
-//                    break;
-//
-//                case R.id.sign_up:
-//                    Fragment fragmentRegister = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-//                    if (fragmentRegister == null) {
-//                        fragmentRegister = new SignUpFragment();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        fragmentTransaction.addToBackStack(null);
-//
-//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentRegister).commit();
-//                    }
-//
-//                    break;
-//
-//
+
+    }
+
+    private void optionDialog() {
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent( getApplicationContext() );
+        startActivityForResult( chooseImageIntent, REQUEST_CODE );
+        checkPermissions();
     }
 
     private void signOut() {
@@ -295,11 +276,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
 //        try {
         final ArrayList<Plant> posts = new ArrayList<>();
-        final ArrayList<Drawable> drawables = new ArrayList<>();
-        drawables.add(0, drawable1);
-        drawables.add(0, drawable2);
-        drawables.add(0, drawable3);
-        drawables.add(0, drawable4);
+
 
 //            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
@@ -406,42 +383,42 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         void onGridImageSelected(Plant plant, int activityNr);
     }
 
-    private void profileDialog() {
-        View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
-        ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
-        ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
-        ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
-
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setView(dialogLayout);
-        dialogBuilder.setTitle("Chose an action");
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
-
-        wlp.windowAnimations = R.anim.slide_down_anim;
-        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        alertDialog.getWindow().setAttributes(wlp);
-        alertDialog.setCanceledOnTouchOutside(true);
-        // Setting transparent the background (layout) of alert dialog
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        alertDialog.show();
-
-        cameraButton.setOnClickListener(v -> {
-            takePicture();
-            alertDialog.dismiss();
-        });
-
-        galleryButton.setOnClickListener(v -> {
-            selectPicture();
-            alertDialog.dismiss();
-        });
-
-        cancelButton.setOnClickListener(v -> {
-            alertDialog.dismiss();
-        });
-    }
+//    private void profileDialog() {
+//        View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
+//        ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
+//        ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
+//        ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
+//
+//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//        dialogBuilder.setView(dialogLayout);
+//        dialogBuilder.setTitle("Chose an action");
+//
+//        final AlertDialog alertDialog = dialogBuilder.create();
+//        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
+//
+//        wlp.windowAnimations = R.anim.slide_down_anim;
+//        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        alertDialog.getWindow().setAttributes(wlp);
+//        alertDialog.setCanceledOnTouchOutside(true);
+//        // Setting transparent the background (layout) of alert dialog
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        alertDialog.show();
+//
+//        cameraButton.setOnClickListener(v -> {
+//            takePicture();
+//            alertDialog.dismiss();
+//        });
+//
+//        galleryButton.setOnClickListener(v -> {
+//            selectPicture();
+//            alertDialog.dismiss();
+//        });
+//
+//        cancelButton.setOnClickListener(v -> {
+//            alertDialog.dismiss();
+//        });
+//    }
 
 //    private void topBarDialog() {
 //        View dialogLayout = getLayoutInflater().inflate(R.layout.top_bar_dialog_layout, null);
@@ -536,4 +513,20 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //
 //        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
 //        setBackgroundResource(R.drawable.logo_eye_plant);
+
+
+
+    //How to get a drawable
+//        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
+//        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
+//        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
+//        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
 }
+//    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+//
+//                    if (fragmentForgotPass == null) {
+//                        fragmentForgotPass = new ForgotPassFragment();
+//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.addToBackStack(null);
+//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
+//                    }

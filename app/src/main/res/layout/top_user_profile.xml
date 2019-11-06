@@ -4,35 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".user_profile.User_Profile">
 
+
     <LinearLayout
         android:id="@+id/user_profile_pic_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:layout_marginBottom="5dp"
+            android:layout_margin="5dp"
             android:layout_width="300dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_weight=".3"
-            android:background="@drawable/border_not_sharp"
-            android:elevation="4dp">
+            android:elevation="5dp">
 
             <LinearLayout
                 android:id="@+id/profileLinear"
+                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_height="wrap_content">
 
                 <com.mikhaellopez.circularimageview.CircularImageView
+                    android:layout_margin="3dp"
                     android:id="@+id/profilePicture"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_margin="3dp"
                     android:layout_marginTop="5dp"
                     android:onClick="onClick"
                     android:src="@drawable/avatar_final"
@@ -41,13 +40,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginTop="3dp"
                 android:id="@+id/hintTextLinear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_below="@id/profileLinear"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:gravity="center">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/hint_text"
@@ -61,17 +60,17 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:layout_below="@id/hintTextLinear"
                 android:id="@+id/editNameLinear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/hintTextLinear">
+                android:layout_height="wrap_content">
 
 
                 <TextView
+                    android:layout_centerInParent="true"
                     android:id="@+id/userNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:gravity="center"
                     android:text="@string/user876543"
                     android:textAlignment="center"
@@ -79,49 +78,58 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/username_editText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/green_fade"
-                    android:hint="@string/chose_a_user_name"
-                    android:textAlignment="center"
-                    android:visibility="invisible" />
+            <EditText
+                android:layout_centerInParent="true"
+                android:id="@+id/username_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@color/green_fade"
+                android:hint="@string/chose_a_user_name"
+                android:elevation="5dp"
+                android:textAlignment="center"
+                android:visibility="invisible" />
 
-                <Button
-                    android:id="@+id/editUserNameButton"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/button_green"
-                    android:onClick="onClick"
-                    android:text="@string/edit"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
+            <ImageButton
+                android:id="@+id/editUserNameButton"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:elevation="5dp"
+                android:src="@drawable/pen"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:onClick="onClick"
+                android:visibility="visible"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
 
-                <Button
-                    android:id="@+id/saveUserNameButton"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/button_green"
-                    android:onClick="onClick"
-                    android:text="@string/save"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:visibility="invisible" />
+            <ImageButton
+                android:id="@+id/saveUserNameButton"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/check"
+                android:onClick="onClick"
+                android:text="@string/save"
+                android:elevation="5dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="invisible" />
+
             </RelativeLayout>
+
+
+
 
 
         </RelativeLayout>

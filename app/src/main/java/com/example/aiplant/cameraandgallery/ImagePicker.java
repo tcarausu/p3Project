@@ -98,8 +98,7 @@ public class ImagePicker {
      * @return returns the bitmap format of the picture
      * @throws IOException
      */
-    public static Bitmap getImageFromResult(Context context, int resultCode,
-                                            Intent imageReturnedIntent) throws IOException {
+    public static Bitmap getImageFromResult(Context context, int resultCode, Intent imageReturnedIntent) throws IOException {
         Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
         Bitmap bm = null;
         File imageFile = getTempFile(context);
@@ -126,7 +125,6 @@ public class ImagePicker {
 
                 bm = rotate(bm, rotation + 90);
             }
-
 
         }
         return bm;
@@ -235,7 +233,8 @@ public class ImagePicker {
                 result = cursor.getInt(orientationColumnIndex);
             }
         } catch (Exception e) {
-            //Do nothing
+            Log.e(TAG, "getRotationFromGallery exception: ",e );
+            //Do nothing ??    hhehe why not! you can log the exception at least
         }
         return result;
     }
