@@ -67,8 +67,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
 
-    private FirebaseAuth mAuth ;
-    private FirebaseUser currentUser ;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     //context and others
     private FragmentManager fragmentManager;
@@ -85,50 +85,57 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         mContext = getApplicationContext();
-
         fragmentManager = getSupportFragmentManager();
         initLayout();
         checkPermissions();
         buttonListeners();
         setupBottomNavigationView();
         setupGridView();
-//        setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
         toggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
-                case R.id.account_settingItem:
+                case R.id.resetPassItem:
                     menuItem.setChecked(true);
-                    Toast.makeText(mContext, "acc_sett pressed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Reset password clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     //todo
                     break;
-                case R.id.signOuttem:
+                case R.id.reset_deviceItem:
+                    menuItem.setChecked(true);
+                    Toast.makeText(mContext, "Reset device clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    //todo
+                    break;
+                case R.id.signOutItem:
                     //todo
                     menuItem.setChecked(true);
-                    Toast.makeText(mContext, "signOut pressed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Sign out clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    break;
 
-                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                    break;
-                case R.id.cancelItem:
+                case R.id.delete_accountItem:
                     //todo
                     menuItem.setChecked(true);
-                    Toast.makeText(mContext, "cancel pressed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Delete account clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     break;
+
+
             }
             return false;
         });
 
         //How to get a drawable
-         drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
-         drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
-         drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
-         drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
+        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
+        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
+        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
+        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
 
     }
 
@@ -280,12 +287,10 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //        try {
         final ArrayList<Plant> posts = new ArrayList<>();
         final ArrayList<Drawable> drawables = new ArrayList<>();
-        drawables.add(0,drawable1);
-        drawables.add(0,drawable2);
-        drawables.add(0,drawable3);
-        drawables.add(0,drawable4);
-
-
+        drawables.add(0, drawable1);
+        drawables.add(0, drawable2);
+        drawables.add(0, drawable3);
+        drawables.add(0, drawable4);
 
 //            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
@@ -333,11 +338,17 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         String testURL3 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
         String testURL4 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj_aHmQHzRu9pUQcNDO5X3T8h9X_fyyf8NcEmScFi12UcDrf6OvA&s";
         String testURL5 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL6 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL7 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL8 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
         imgURLs.add(testURL1);
         imgURLs.add(testURL2);
         imgURLs.add(testURL3);
         imgURLs.add(testURL4);
         imgURLs.add(testURL5);
+        imgURLs.add(testURL6);
+        imgURLs.add(testURL7);
+        imgURLs.add(testURL8);
         GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,
                 "", imgURLs);
 
@@ -400,7 +411,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
 
         wlp.windowAnimations = R.anim.slide_down_anim;
-        wlp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         alertDialog.getWindow().setAttributes(wlp);
         alertDialog.setCanceledOnTouchOutside(true);
