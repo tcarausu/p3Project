@@ -12,8 +12,18 @@
     <string name="temperature">Temperature</string>
     <string name="search_Hint">Search</string>
 
+    <string name="change_picture">click here to change picture</string>
+    <string name="save_changes">Save changes</string>
+    <string name="lux">lux</string>
+    <string name="percent">%</string>
+    <string name="celsius">°C</string>
+
     <string name="humidity">Humidity</string>
     <string name="sunlight">Sunlight</string>
+
+
+<!--    database-->
+    <string name="my_app_id">aiplant-fhsjb</string>
 
     <!-- strings for welcome slides -->
     <string name="next">NEXT</string>
@@ -48,4 +58,34 @@
     <string name="cancel">Cancel</string>
     <string name="account_settings">Account settings</string>
     <string name="sign_out">Sign out</string>
+    <!--   HINTS    -->
+    <string name="full_name_hint">Full Name</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="email_hint">Email</string>
+    <string name="name_last_name_hint">Name and Last Name</string>
+    <string name="registration_success">Registration successful, please check your email inbox for confirmation</string>
+    <!--DESCRIPTION-->
+
+    <string name="back">Back</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signUp">Sign Up</string>
+    <string name="signIn">Sign In</string>
+    <string name="send">Send</string>
+
+    <string name="register_for_free">Register for Free</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="simply_enter">Simply enter your email address below and we will send you instructions on how to reset your password.</string>
+
+    <!--Forgot password fragment strings -->
+
+    <string name="hint_forgot_password_email">Enter your email here</string>
+    <string name="forgot_password_text">Forgot Password?</string>
+    <string name="password_receive_text">Your password will be sent to your email</string>
+    <string name="button_send_password">Send Mail</string>
+    <string name="confirm_sing_out">Are you sure you want to SignOut?</string>
+    <string name="signing_out">Signing Out…</string>
 </resources>
+
