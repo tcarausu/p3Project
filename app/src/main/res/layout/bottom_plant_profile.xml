@@ -68,7 +68,6 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/mood_pic"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@+id/information_sliders"

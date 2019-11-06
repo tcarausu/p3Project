@@ -1,9 +1,18 @@
 package com.example.aiplant.model;
 
+import android.graphics.drawable.Drawable;
+
 public class Plant {
     private String name ;
     private int age;
     private int minTemperature, maxTemperature, minHumidity, maxHumidity, minSunLight, maxSunlight;
+    private Drawable image ;
+
+    public Plant(String name, int age, Drawable image) {
+        this.name = name;
+        this.age = age;
+        this.image = image;
+    }
 
     public Plant(String name, int age, int minTemperature, int maxTemperature, int minHumidity, int maxHumidity, int minSunLight, int maxSunlight) {
         this.name = name;
@@ -20,4 +29,5 @@ public class Plant {
         this.name = name;
         this.age = age;
     }
+
 }

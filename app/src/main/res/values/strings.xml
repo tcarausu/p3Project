@@ -21,7 +21,6 @@
     <string name="start">GOT IT</string>
 
     <string name="button_connect">Connect to device</string>
-    <string name="device_connected">Connection successful</string>
 
     <string name="slide_1_title">Turn on the device</string>
     <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
@@ -49,4 +48,7 @@
     <string name="cancel">Cancel</string>
     <string name="account_settings">Account settings</string>
     <string name="sign_out">Sign out</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="example_gmail_com">example@gmail.com</string>
 </resources>
