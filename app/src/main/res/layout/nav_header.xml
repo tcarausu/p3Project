@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
     android:orientation="vertical"
-    android:background="@drawable/waterfall"
+    android:background="@drawable/dark_back"
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
@@ -12,26 +11,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--    <com.mikhaellopez.circularimageview.CircularImageView-->
-<!--        android:id="@+id/profilePicture"-->
-<!--        app:civ_border_color="@color/green_dark"-->
-<!--        android:src="@drawable/avatar_final"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp">-->
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/profilePicture_nav_drawer"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:background="@color/white">
 
-<!--    </com.mikhaellopez.circularimageview.CircularImageView>-->
+        </com.mikhaellopez.circularimageview.CircularImageView>
 
-<!--     <TextView-->
-<!--         android:id="@+id/userEmail_textView"-->
-<!--         android:layout_below="@id/profilePicture"-->
-<!--         android:text="@string/example_gmail_com"-->
-<!--         android:layout_marginTop="8dp"-->
-<!--         android:layout_width="wrap_content"-->
-<!--         android:layout_height="wrap_content">-->
 
-<!--     </TextView>-->
+        <TextView
+            android:id="@+id/textView_usernameDisplay_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/user876543"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/textView_emailDisplay_header"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/textView_usernameDisplay_header"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/example_email_com" />
 
     </RelativeLayout>
 

@@ -2,28 +2,52 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-
-        android:checkableBehavior="single"
-        >
+        android:checkableBehavior="single">
 
         <item
-            android:id="@+id/account_settingItem"
-            android:icon="@drawable/armchair"
-            android:title="@string/account_settings">
+            android:id="@+id/resetPassItem"
+            android:icon="@drawable/password"
+            android:title="@string/reset_password">
+        </item>
 
+        <item
+            android:id="@+id/reset_deviceItem"
+            android:icon="@drawable/device"
+            android:title="@string/reset_device">
+        </item>
+
+        <item android:title=""
+            android:id="@+id/emptyItem1">
         </item>
         <item
-            android:id="@+id/signOuttem"
-            android:icon="@drawable/arrow_left"
-            android:title="@string/sign_out">
-
+            android:title="@string/sign_out"
+            android:id="@+id/signOutItem"
+            >
         </item>
-        <item
-            android:id="@+id/cancelItem"
-            android:icon="@drawable/cancel_icon"
-            android:title="@string/cancel">
 
-        </item>
+
     </group>
+
+    <item
+        android:title="@string/account_settings">
+
+        <menu>
+
+
+            <item
+                android:id="@+id/emptyItem2"
+                android:title="">
+
+            </item>
+            <item
+                android:id="@+id/delete_accountItem"
+                android:title="@string/delete_account"
+                />
+
+
+        </menu>
+
+    </item>
+
 
 </menu>

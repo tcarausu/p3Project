@@ -1,73 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    tools:context=".user_profile.User_Profile"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".user_profile.User_Profile">
 
 
     <LinearLayout
-        android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/user_profile_pic_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/dark_green_transparent"
-        >
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
 
         <RelativeLayout
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_width="300dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:elevation="4dp"
+            android:layout_weight=".3"
             android:background="@drawable/border_not_sharp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_weight=".3">
+            android:elevation="4dp">
 
-            <com.mikhaellopez.circularimageview.CircularImageView
-                android:id="@+id/profilePicture"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:onClick="onClick"
-                app:civ_border_color="@color/green_dark"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/avatar_final" />
+            <LinearLayout
+                android:id="@+id/profileLinear"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/hint_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/click_on_image_to_edit_profile_picture"
-                android:textColor="@color/black"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/profilePicture"
-                android:textSize="12sp"/>
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:layout_margin="3dp"
+                    android:id="@+id/profilePicture"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="5dp"
+                    android:onClick="onClick"
+                    android:src="@drawable/avatar_final"
+                    app:civ_border_color="@color/green_dark" />
 
-            <TextView
-                android:id="@+id/userNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/hint_text"
-                android:layout_centerVertical="true"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="3dp"
+                android:id="@+id/hintTextLinear"
+                android:gravity="center"
+                android:layout_below="@id/profileLinear"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="@string/user876543"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/hint_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/click_on_image_to_edit_profile_picture"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_below="@id/hintTextLinear"
+                android:id="@+id/editNameLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/userNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/user876543"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
             <EditText
+                android:layout_centerInParent="true"
                 android:id="@+id/username_editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/hint_text"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:background="@color/green_fade"
                 android:hint="@string/chose_a_user_name"
                 android:textAlignment="center"
@@ -77,14 +96,14 @@
                 android:id="@+id/editUserNameButton"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="10dp"
-                android:textAlignment="center"
-                android:layout_marginBottom="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
                 android:background="@drawable/button_green"
                 android:onClick="onClick"
                 android:text="@string/edit"
+                android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -92,17 +111,19 @@
                 android:id="@+id/saveUserNameButton"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
                 android:background="@drawable/button_green"
                 android:onClick="onClick"
                 android:text="@string/save"
-                android:textAllCaps="false"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:visibility="invisible" />
+            </RelativeLayout>
+
 
 
 
@@ -113,14 +134,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:background="@color/white"
-            android:layout_weight=".7">
+            android:layout_weight=".7"
+            android:background="@color/white">
 
         </RelativeLayout>
 
 
     </LinearLayout>
-
 
 
 </merge>

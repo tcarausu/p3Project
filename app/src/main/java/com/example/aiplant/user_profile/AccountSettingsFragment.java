@@ -24,11 +24,10 @@ public class AccountSettingsFragment extends Fragment {
     }
 
 
-//    public static AccountSettingsFragment newInstance() {
-//        AccountSettingsFragment fragment = new AccountSettingsFragment();
-//
-//        return fragment;
-//    }
+    public static AccountSettingsFragment newInstance() {
+        AccountSettingsFragment fragment = new AccountSettingsFragment();
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +36,7 @@ public class AccountSettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account_settings, container, false);
     }

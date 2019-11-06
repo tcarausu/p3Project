@@ -51,4 +51,8 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="example_gmail_com">example@gmail.com</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_device">Reset device</string>
+    <string name="example_email_com">example@email.com</string>
+    <string name="delete_account">Delete account</string>
 </resources>
