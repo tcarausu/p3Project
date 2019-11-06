@@ -1,4 +1,5 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -6,7 +7,6 @@
         android:background="@drawable/border_color_top">
 
         <Toolbar
-            android:id="@+id/profileToolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -21,7 +21,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/orange_arrow_left" />
+                    app:srcCompat="@drawable/orange_arrow_left" />
 
                 <EditText
                     android:id="@+id/search_bar_id"
@@ -42,7 +42,7 @@
                     android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="0dp"
-                    android:src="@drawable/ic_search_button"
+                    app:srcCompat="@drawable/ic_search_button"
                     android:background="@drawable/input_fields_with_shadow"
                     />
             </RelativeLayout>

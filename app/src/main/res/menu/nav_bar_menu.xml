@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/resetPassItem"
+            android:icon="@drawable/password"
+            android:title="@string/reset_password">
+        </item>
+
+        <item
+            android:id="@+id/reset_deviceItem"
+            android:icon="@drawable/device"
+            android:title="@string/reset_device">
+        </item>
+
+        <item android:title=""
+            android:id="@+id/emptyItem1">
+        </item>
+        <item
+            android:title="@string/sign_out"
+            android:id="@+id/signOutItem"
+            >
+        </item>
+
+
+    </group>
+
+    <item
+        android:title="@string/account_settings">
+
+        <menu>
+
+
+            <item
+                android:id="@+id/emptyItem2"
+                android:title="">
+
+            </item>
+            <item
+                android:id="@+id/delete_accountItem"
+                android:title="@string/delete_account"
+                />
+
+
+        </menu>
+
+    </item>
+
+
+</menu>

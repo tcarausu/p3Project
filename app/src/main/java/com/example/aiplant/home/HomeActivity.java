@@ -39,6 +39,8 @@ import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -225,7 +227,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void afterTextChanged(Editable s) {
                 flowerNameEditText.setEnabled(false);
               //  flowerNameEditText.setText(LAST_TEXT_NAME);
-                pref.edit().putString(LAST_TEXT_NAME, s.toString()).apply();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                    pref.edit().putString(LAST_TEXT_NAME, s.toString()).apply();
+                }
                 editPlantNameButton.setVisibility(View.VISIBLE);
                 savePlantNameButton.setVisibility(View.INVISIBLE);
 
@@ -452,7 +456,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        MenuItem menuItem = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
+            menuItem = menu.getItem(ACTIVITY_NUM);
+        }
         menuItem.setChecked(true);
 
     }

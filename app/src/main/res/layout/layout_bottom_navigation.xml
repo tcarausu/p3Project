@@ -9,7 +9,7 @@
 
       <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="50dp"
           android:background="@color/green_main_"
           app:itemTextColor="@color/white"
           android:textAlignment="viewStart"

@@ -53,7 +53,6 @@
             app:autoSizeMaxTextSize="0dp" />
 
         <Button
-            android:id="@+id/dash1"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
@@ -61,7 +60,6 @@
             android:layout_alignStart="@+id/orView" />
 
         <Button
-            android:id="@+id/dash4"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
@@ -69,7 +67,6 @@
             android:layout_alignParentStart="true" />
 
         <Button
-            android:id="@+id/dash2"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
@@ -77,7 +74,6 @@
             android:layout_alignEnd="@id/sign_up" />
 
         <Button
-            android:id="@+id/dash3"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"

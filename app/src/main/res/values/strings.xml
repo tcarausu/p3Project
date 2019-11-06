@@ -22,59 +22,6 @@
     <string name="sunlight">Sunlight</string>
 
 
-<!--    database-->
-    <string name="my_app_id">aiplant-fhsjb</string>
-
-    <!-- strings for welcome slides -->
-    <string name="next">NEXT</string>
-    <string name="skip">SKIP</string>
-    <string name="start">GOT IT</string>
-
-    <string name="button_connect">Connect to device</string>
-    <string name="device_connected">Connection successful</string>
-
-    <string name="slide_1_title">Turn on the device</string>
-    <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
-
-    <string name="slide_2_title">Create a profile for your plant</string>
-    <string name="slide_2_desc">You can either browse our plant list to find your plant and get the default niche for it or you can create a brand new plant with the conditions you decide on. You can always adjust the them from the settings if necessary.</string>
-
-    <string name="slide_3_title">Keep an eye on your plant</string>
-    <string name="slide_3_desc">The application will let you know if the environment measured by the device is optimal or not for your plant.</string>
-
-    <string name="slide_4_title">Check on your plant profiles</string>
-    <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
-
-    <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
-    <string name="chose_a_user_name">Chose a user name</string>
-    <string name="user876543">User876543</string>
-    <string name="edit">Edit</string>
-    <string name="save">Save</string>
-    <string name="home">Home</string>
-    <string name="library">Library</string>
-    <string name="profile">Profile</string>
-    <string name="camera">Camera</string>
-    <string name="gallery">Gallery</string>
-    <string name="cancel">Cancel</string>
-    <string name="account_settings">Account settings</string>
-    <string name="sign_out">Sign out</string>
-    <!--   HINTS    -->
-    <string name="full_name_hint">Full Name</string>
-    <string name="username_hint">Username</string>
-    <string name="password_hint">Password</string>
-    <string name="confirm_password_hint">Confirm Password</string>
-    <string name="email_hint">Email</string>
-    <string name="name_last_name_hint">Name and Last Name</string>
-    <string name="registration_success">Registration successful, please check your email inbox for confirmation</string>
-    <!--DESCRIPTION-->
-
-    <string name="back">Back</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="signUp">Sign Up</string>
-    <string name="signIn">Sign In</string>
-    <string name="send">Send</string>
-
     <!-- strings for new profile creation -->
 
     <string name="name_plant">Name of the plant</string>
@@ -91,8 +38,6 @@
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="simply_enter">Simply enter your email address below and we will send you instructions on how to reset your password.</string>
 
-    <!--Forgot password fragment strings -->
-
     <string name="hint_forgot_password_email">Enter your email here</string>
     <string name="forgot_password_text">Forgot Password?</string>
     <string name="password_receive_text">Your password will be sent to your email</string>
@@ -104,11 +49,56 @@
     <string name="bd_month">MM</string>
     <string name="bd_year">YYYY</string>
 
+
     <string name="error_name">Please give your plant a name!</string>
     <string name="error_age">Please set your plant\'s birthday!</string>
     <string name="error_pic">Please upload a picture of your plant!</string>
     <string name="error_humidity">Add a value here</string>
-    <!-- strings related to camera -->
     <string name="add_photo">Add photo</string>
-</resources>
+    <!--    database-->
+    <string name="my_app_id">aiplant-fhsjb</string>
 
+    <!-- strings for welcome slides -->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="button_connect">Connect to device</string>
+
+    <string name="slide_1_title">Turn on the device</string>
+    <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
+
+    <string name="slide_2_title">Create a profile for your plant</string>
+    <string name="slide_2_desc">You can either browse our plant list to find your plant and get the default niche for it or you can create a brand new plant with the conditions you decide on. You can always adjust the them from the settings if necessary.</string>
+
+    <string name="slide_3_title">Keep an eye on your plant</string>
+    <string name="slide_3_desc">The application will let you know if the environment measured by the device is optimal or not for your plant.</string>
+
+    <string name="slide_4_title">Check on your plant profiles</string>
+    <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59102d12297ce31f290613b5d03378447d7bdb0e
+    <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
+    <string name="chose_a_user_name">Chose a user name</string>
+    <string name="user876543">User876543</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="home">Home</string>
+    <string name="library">Library</string>
+    <string name="profile">Profile</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="cancel">Cancel</string>
+    <string name="account_settings">Account settings</string>
+    <string name="sign_out">Sign out</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="example_gmail_com">example@gmail.com</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_device">Reset device</string>
+    <string name="example_email_com">example@email.com</string>
+    <string name="delete_account">Delete account</string>
+</resources>

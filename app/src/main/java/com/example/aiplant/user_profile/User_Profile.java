@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,15 +22,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
@@ -38,12 +41,15 @@ import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.Plant;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.GridImageAdapter;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 
-public class User_Profile extends AppCompatActivity implements View.OnClickListener {
+public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "User_Profile";
     private static final int ACTIVITY_NUM = 2;
@@ -53,53 +59,105 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     // widgets
     private Button editUsernameButton, saveUsernameButton;
-    private ImageButton optionButton;
     private TextView userNameTextView;
     private EditText usernameEditText; //usernameEditText
     private GridView gridView;
     private CircularImageView profilePic;
-    private RelativeLayout home_Layout;
+    private androidx.appcompat.widget.Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     //context and others
     private FragmentManager fragmentManager;
-    Drawable drawable ;
+    Drawable drawable1, drawable2, drawable3, drawable4;
     private Context mContext;
     OnGridImageSelectedListener onGridImageSelectedListener;
-
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     //variables
     private String userName;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         mContext = getApplicationContext();
-
         fragmentManager = getSupportFragmentManager();
         initLayout();
         checkPermissions();
         buttonListeners();
         setupBottomNavigationView();
         setupGridView();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.open, R.string.close);
+        toggle.syncState();
+
+        mNavigationView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.resetPassItem:
+                    menuItem.setChecked(true);
+                    Toast.makeText(mContext, "Reset password clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    //todo
+                    break;
+                case R.id.reset_deviceItem:
+                    menuItem.setChecked(true);
+                    Toast.makeText(mContext, "Reset device clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    //todo
+                    break;
+                case R.id.signOutItem:
+                    //todo
+                    menuItem.setChecked(true);
+                    Toast.makeText(mContext, "Sign out clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+
+                case R.id.delete_accountItem:
+                    //todo
+                    menuItem.setChecked(true);
+                    Toast.makeText(mContext, "Delete account clicked", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+
+
+            }
+            return false;
+        });
 
         //How to get a drawable
-         drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
-         gridView.setBackground(drawable);
+        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
+        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
+        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
+        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
 
     }
 
     public void initLayout() {
-        home_Layout = findViewById(R.id.home_activity);
         usernameEditText = findViewById(R.id.username_editText);
         userNameTextView = findViewById(R.id.userNameTextView);
         editUsernameButton = findViewById(R.id.editUserNameButton);
         saveUsernameButton = findViewById(R.id.saveUserNameButton);
         profilePic = findViewById(R.id.profilePicture);
-        optionButton = findViewById(R.id.optionButton);
         gridView = findViewById(R.id.grid_view_user_profile);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolBar);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else
+            super.onBackPressed();
     }
 
     private void checkPermissions() {
@@ -112,7 +170,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         editUsernameButton.setOnClickListener(this);
         saveUsernameButton.setOnClickListener(this);
         profilePic.setOnClickListener(this);
-        optionButton.setOnClickListener(this);
     }
 
     private void hideEditText() {
@@ -128,7 +185,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         userName = usernameEditText.getText().toString();
 
         if (!TextUtils.isEmpty(userName)) {
-            Log.d(TAG, "Typed username: "+userName);
+            Log.d(TAG, "Typed username: " + userName);
             usernameEditText.setVisibility(View.INVISIBLE);
             saveUsernameButton.setVisibility(View.INVISIBLE);
             userNameTextView.setVisibility(View.VISIBLE);
@@ -144,8 +201,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
             startActivityForResult(cameraIntent, REQUEST_CAMERA);
-        } else
-            Toast.makeText(mContext, "Battery is low...", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(mContext, "Nothing selected..", Toast.LENGTH_SHORT).show();
     }
 
     private void selectPicture() {
@@ -164,60 +220,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             Uri uri = Uri.parse(data.getData().toString());
             Glide.with(this).load(uri).fitCenter().into(profilePic);
             profilePic.refreshDrawableState();
-        } else Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-    }
-
-    private void openChoiceDialog() {
-
-        CharSequence[] options = {"Camera", "Gallery", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select image source:");
-        builder.setCancelable(true);
-        builder.setIcon(R.mipmap.eye_logo);
-        builder.setItems(options, (dialog, which) -> {
-
-            if (options[which].equals("Camera")) {
-                takePicture();
-            } else if (options[which].equals("Gallery")) {
-                selectPicture();
-
-            } else if (options[which].equals("Cancel")) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.create();
-        builder.show();
-
-    }
-    private void customizeddialog(String s1, String s2, String s3) {
-
-        CharSequence[] options = {s1, s2, s3};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Profile menu:");
-        builder.setIcon(R.mipmap.eye_logo);
-        builder.setItems(options, (dialog, which) -> {
-
-            if (options[which].equals("Account settings")) {
-                //Todo: continue with fragment
-                Toast.makeText(mContext,"account settings pressed",Toast.LENGTH_SHORT).show();
-
-            } else if (options[which].equals("Sign out")) {
-                signOut();
-
-            } else if (options[which].equals("Cancel")) {
-                dialog.dismiss();
-            }
-        });
-        builder.create();
-        builder.show();
-
-    }
-
-    private void signOut() {
-        Intent intent = new Intent(this, LoginActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        } else Toast.makeText(mContext, "Nothing is selected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -236,10 +239,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             case R.id.profilePicture:
                 profileDialog();
 
-                break;
-            case R.id.optionButton:
-                //TODO continue with this implementation
-                topBarDialog();
                 break;
         }
 //            switch (v.getId()) {
@@ -276,11 +275,23 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //
     }
 
+    private void signOut() {
+        Intent intent = new Intent(this, LoginActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void setupGridView() {
         Log.d(TAG, "setupGridView: Setting up GridView");
 
 //        try {
         final ArrayList<Plant> posts = new ArrayList<>();
+        final ArrayList<Drawable> drawables = new ArrayList<>();
+        drawables.add(0, drawable1);
+        drawables.add(0, drawable2);
+        drawables.add(0, drawable3);
+        drawables.add(0, drawable4);
+
 //            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
 //            Query query = reference
@@ -322,11 +333,28 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //                    for (int i = 0; i < posts.size(); i++) {
 //                        imgURLs.add(posts.get(i).getmFoodImgUrl());
 //                    }
-
+        String testURL1 = "https://images.homedepot-static.com/productImages/a0592d4a-af16-41a7-969d-d96ee38bc57a/svn/dark-brown-sunnydaze-decor-plant-pots-dg-844-64_1000.jpg";
+        String testURL2 = "https://homebnc.com/homeimg/2017/02/02-front-door-flower-pots-ideas-homebnc.jpg";
+        String testURL3 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL4 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj_aHmQHzRu9pUQcNDO5X3T8h9X_fyyf8NcEmScFi12UcDrf6OvA&s";
+        String testURL5 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL6 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL7 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        String testURL8 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
+        imgURLs.add(testURL1);
+        imgURLs.add(testURL2);
+        imgURLs.add(testURL3);
+        imgURLs.add(testURL4);
+        imgURLs.add(testURL5);
+        imgURLs.add(testURL6);
+        imgURLs.add(testURL7);
+        imgURLs.add(testURL8);
         GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,
                 "", imgURLs);
 
         gridView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
         gridView.setOnItemClickListener((parent, view, position, id) ->
                 onGridImageSelectedListener.onGridImageSelected(posts.get(position), ACTIVITY_NUM));
 
@@ -355,8 +383,13 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setTitle("Profile");
+//        menuItem.setTitle(R.string.profile);
         menuItem.setChecked(true);
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 
@@ -364,31 +397,27 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         void onGridImageSelected(Plant plant, int activityNr);
     }
 
-
-
-
     private void profileDialog() {
         View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
-
         ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
         ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
         ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogLayout);
+        dialogBuilder.setTitle("Chose an action");
 
         final AlertDialog alertDialog = dialogBuilder.create();
         WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
 
-//        wlp.windowAnimations = R.style.AlertDialogAnimation;
-        wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+        wlp.windowAnimations = R.anim.slide_down_anim;
+        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         alertDialog.getWindow().setAttributes(wlp);
         alertDialog.setCanceledOnTouchOutside(true);
         // Setting transparent the background (layout) of alert dialog
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
-
 
         cameraButton.setOnClickListener(v -> {
             takePicture();
@@ -405,49 +434,97 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-
-
-
-
-
-    private void topBarDialog() {
-        View dialogLayout = getLayoutInflater().inflate(R.layout.top_bar_dialog_layout, null);
-
-        TextView accountSettingsTextView = dialogLayout.findViewById(R.id.accountSettingsTextView);
-        TextView signOutTextView = dialogLayout.findViewById(R.id.signOutTextView);
-        TextView cancelTextView = dialogLayout.findViewById(R.id.cancelTextView);
-
-
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setView(dialogLayout);
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
-
-        //wlp.windowAnimations = R.style.AlertDialogAnimation;
-        wlp.gravity =  Gravity.RIGHT;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        alertDialog.getWindow().setAttributes(wlp);
-        alertDialog.setCanceledOnTouchOutside(true);
-        // Setting transparent the background (layout) of alert dialog
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        alertDialog.show();
-
-
-        accountSettingsTextView.setOnClickListener(v -> {
-            Toast.makeText(mContext,"Account settings clicked",Toast.LENGTH_SHORT).show();
-            alertDialog.dismiss();
-        });
-
-        signOutTextView.setOnClickListener(v -> {
-            signOut();
-            alertDialog.dismiss();
-        });
-
-        cancelTextView.setOnClickListener(v -> {
-            Toast.makeText(mContext,"Cancel button clicked",Toast.LENGTH_SHORT).show();
-            alertDialog.dismiss();
-        });
-    }
-
+//    private void topBarDialog() {
+//        View dialogLayout = getLayoutInflater().inflate(R.layout.top_bar_dialog_layout, null);
+//
+//        TextView accountSettingsTextView = dialogLayout.findViewById(R.id.accountSettingsTextView);
+//        TextView signOutTextView = dialogLayout.findViewById(R.id.signOutTextView);
+//        TextView cancelTextView = dialogLayout.findViewById(R.id.cancelTextView);
+//
+//
+//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//        dialogBuilder.setView(dialogLayout);
+//
+//        final AlertDialog alertDialog = dialogBuilder.create();
+//        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
+//
+//        //wlp.windowAnimations = R.style.AlertDialogAnimation;
+//        wlp.gravity =  Gravity.RIGHT|Gravity.TOP;
+//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        alertDialog.getWindow().setAttributes(wlp);
+//        alertDialog.setCanceledOnTouchOutside(true);
+//        // Setting transparent the background (layout) of alert dialog
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        alertDialog.show();
+//
+//
+//        accountSettingsTextView.setOnClickListener(v -> {
+//
+////            Fragment AccountSettingFragment = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+//////
+////                    if (AccountSettingFragment == null)
+////                        AccountSettingFragment = new AccountSettingsFragment();
+////                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+////                        fragmentTransaction.addToBackStack(null);
+////                        fragmentTransaction.add(R.id.useThisFragmentID, AccountSettingFragment).commit();
+//            alertDialog.dismiss();
+//        });
+//
+//        signOutTextView.setOnClickListener(v -> {
+//            signOut();
+//            alertDialog.dismiss();
+//        });
+//
+//        cancelTextView.setOnClickListener(v -> {
+//            Toast.makeText(mContext,"Cancel button clicked",Toast.LENGTH_SHORT).show();
+//            alertDialog.dismiss();
+//        });
+//    }
+    //    private void openChoiceDialog() {
+//
+//        CharSequence[] options = {"Camera", "Gallery", "Cancel"};
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Select image source:");
+//        builder.setCancelable(true);
+//        builder.setIcon(R.mipmap.eye_logo);
+//        builder.setItems(options, (dialog, which) -> {
+//
+//            if (options[which].equals("Camera")) {
+//                takePicture();
+//            } else if (options[which].equals("Gallery")) {
+//                selectPicture();
+//
+//            } else if (options[which].equals("Cancel")) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        builder.create();
+//        builder.show();
+//
+//    }
+//    private void customizeddialog(String s1, String s2, String s3) {
+//
+//        CharSequence[] options = {s1, s2, s3};
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Profile menu:");
+//        builder.setIcon(R.mipmap.eye_logo);
+//        builder.setItems(options, (dialog, which) -> {
+//
+//            if (options[which].equals("Account settings")) {
+//                //Todo: continue with fragment
+//                Toast.makeText(mContext,"account settings pressed",Toast.LENGTH_SHORT).show();
+//
+//            } else if (options[which].equals("Sign out")) {
+//                signOut();
+//
+//            } else if (options[which].equals("Cancel")) {
+//                dialog.dismiss();
+//            }
+//        });
+//        builder.create();
+//        builder.show();
+//
+//        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
+//        setBackgroundResource(R.drawable.logo_eye_plant);
 }
