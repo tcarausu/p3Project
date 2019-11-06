@@ -75,6 +75,18 @@
     <string name="signIn">Sign In</string>
     <string name="send">Send</string>
 
+    <!-- strings for new profile creation -->
+
+    <string name="name_plant">Name of the plant</string>
+    <string name="hint_name_plant">Name your plant</string>
+    <string name="birthday_plant">Birthday of the plant</string>
+    <string name="minimum_humidity">Min %</string>
+    <string name="maximum_humidity">Max %</string>
+    <string name="minimum_sunlight">Min lux</string>
+    <string name="maximum_sunlight">Max lux</string>
+    <string name="minimum_temperature">Min °C</string>
+    <string name="maximum_temperature">Max °C</string>
+    <string name="create_profile">Create Profile</string>
     <string name="register_for_free">Register for Free</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="simply_enter">Simply enter your email address below and we will send you instructions on how to reset your password.</string>
@@ -87,5 +99,16 @@
     <string name="button_send_password">Send Mail</string>
     <string name="confirm_sing_out">Are you sure you want to SignOut?</string>
     <string name="signing_out">Signing Out…</string>
+    <string name="select_date">Select Date</string>
+    <string name="bd_day">DD</string>
+    <string name="bd_month">MM</string>
+    <string name="bd_year">YYYY</string>
+
+    <string name="error_name">Please give your plant a name!</string>
+    <string name="error_age">Please set your plant\'s birthday!</string>
+    <string name="error_pic">Please upload a picture of your plant!</string>
+    <string name="error_humidity">Add a value here</string>
+    <!-- strings related to camera -->
+    <string name="add_photo">Add photo</string>
 </resources>
 
