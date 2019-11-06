@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="@color/dark_green_transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
@@ -49,12 +50,12 @@
             android:text="@string/birthday_plant"
             android:layout_marginTop="10dp"/>
 
-        <!--<DatePicker
-            android:id="@+id/datePicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:datePickerMode="spinner"
-            android:calendarViewShown="false"/> -->
+<!--        &lt;!&ndash;<DatePicker-->
+<!--            android:id="@+id/datePicker1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:datePickerMode="spinner"-->
+<!--            android:calendarViewShown="false"/> &ndash;&gt;-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -148,7 +149,7 @@
                 android:hint="@string/maximum_sunlight" />
 
         </LinearLayout>
-        android:layout_marginBottom="70dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -184,13 +185,23 @@
 
     </LinearLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/createProfile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:src="@drawable/check"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:text="@string/create_profile"
         />
+        <TextView
+            android:text="@string/save"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </TextView>
+
 
     </LinearLayout>
     </RelativeLayout>

@@ -3,11 +3,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/green_dark</item>
-        <item name="colorPrimaryDark">@color/green_main_</item>
-        <item name="colorAccent">@color/green_fade</item>
+        <item name="colorPrimary">@color/green_main_</item>
+        <item name="colorPrimaryDark">@color/dark_green_transparent</item>
+        <item name="colorAccent">@color/green_dark</item>
+        <item name="windowActionBar">false</item>
     </style>
 
+<!--    theme for userProfile-->
     <style name="appTheme" >
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>

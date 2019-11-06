@@ -10,18 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_margin="5dp"
             android:layout_width="300dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:layout_weight=".3"
-            android:background="@drawable/border_not_sharp"
-            android:elevation="4dp">
+            android:elevation="5dp">
 
             <LinearLayout
                 android:id="@+id/profileLinear"
@@ -89,10 +87,11 @@
                 android:layout_marginTop="20dp"
                 android:background="@color/green_fade"
                 android:hint="@string/chose_a_user_name"
+                android:elevation="5dp"
                 android:textAlignment="center"
                 android:visibility="invisible" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/editUserNameButton"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
@@ -100,14 +99,16 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
-                android:background="@drawable/button_green"
+                android:elevation="5dp"
+                android:src="@drawable/pen"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:onClick="onClick"
-                android:text="@string/edit"
+                android:visibility="visible"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/saveUserNameButton"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
@@ -115,13 +116,16 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
-                android:background="@drawable/button_green"
+                android:src="@drawable/check"
                 android:onClick="onClick"
                 android:text="@string/save"
+                android:elevation="5dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:visibility="invisible" />
+
             </RelativeLayout>
 
 

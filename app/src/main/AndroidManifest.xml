@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
@@ -28,21 +29,31 @@
 
         <activity
             android:name=".search.SearchActivity"
+            android:windowSoftInputMode="adjustResize|adjustPan"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".user_profile.User_Profile"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
 
-        <activity android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+        </activity>
+
+        <activity android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
 
         </activity>
 
@@ -54,7 +65,15 @@
         </activity>
 
         <activity android:name=".create_profile.PlantProfile"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
     </application>
 
 </manifest>

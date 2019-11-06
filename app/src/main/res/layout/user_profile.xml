@@ -19,11 +19,11 @@
         android:layout_height="match_parent">
 
     <LinearLayout
-
         android:weightSum="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
 
         <RelativeLayout
             android:layout_weight=".6"
@@ -40,11 +40,13 @@
             </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
+            android:gravity="center"
 
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <include layout="@layout/top_user_profile" />
+
         </LinearLayout>
 
         </RelativeLayout>
@@ -68,9 +70,10 @@
         android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+
         app:menu="@menu/nav_bar_menu"
-        app:itemTextColor="@color/green_dark"
-        android:background="@drawable/background_button_rectangle"
+        app:itemTextColor="@color/black"
+        android:background="@drawable/button_green"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         />
