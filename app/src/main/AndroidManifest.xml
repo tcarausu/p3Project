@@ -17,7 +17,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/eye_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/growth_plant"
+        android:roundIcon="@mipmap/eye_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,ExtraText,GoogleAppIndexingWarning">
@@ -32,6 +32,7 @@
 
         <activity
             android:name=".user_profile.User_Profile"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
 
         <activity android:name=".welcome.WelcomeActivity"

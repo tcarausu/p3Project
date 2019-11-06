@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
 
-    <item
-        android:id="@+id/ic_home"
-        android:icon="@drawable/home_circled"
-        android:title="@string/home"
+    <group
+        android:checkableBehavior="single"
         >
 
-    </item>
+        <item
+            android:id="@+id/ic_home"
+            android:icon="@drawable/home_circled"
+            android:title="@string/home">
+        </item>
 
-    <item
-        android:id="@+id/ic_search"
-        android:icon="@drawable/library_circled"
-        android:title="@string/library">
+        <item
+            android:id="@+id/ic_search"
+            android:icon="@drawable/library_circled"
+            android:title="@string/library">
 
-    </item>
+        </item>
 
-    <item
-        android:id="@+id/ic_user_profile"
-        android:icon="@drawable/profile_circled"
-        android:iconTintMode="@integer/google_play_services_version"
-        android:title="@string/profile">
+        <item
+            android:id="@+id/ic_user_profile"
+            android:icon="@drawable/profile_circled"
+            android:iconTintMode="@integer/google_play_services_version"
+            android:title="@string/profile">
 
-    </item>
-
+        </item>
+    </group>
 
 </menu>

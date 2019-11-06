@@ -14,7 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.aiplant.R;
+import com.example.myapplication.utility_classes.SquareImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
@@ -50,6 +52,7 @@ public class GridImageAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent) {
         final ViewHolder holder;
 
+
         /**
          * ViewHolder build pattern (Similar to RecyclerView)
          */
@@ -59,6 +62,7 @@ public class GridImageAdapter extends ArrayAdapter<String> {
             holder.mProgressBar = convertView.findViewById(R.id.grid_image_progress_bar);
             holder.image = convertView.findViewById(R.id.gridImageView);
 
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -66,18 +70,20 @@ public class GridImageAdapter extends ArrayAdapter<String> {
 
         String imgURL = getItem(position);
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
+        //MyModifications
+        ImageLoaderConfiguration configuration =  ImageLoaderConfiguration.createDefault(mContext);
+        ImageLoader imageLoader =  ImageLoader.getInstance();
+        imageLoader.init(configuration);
 
         imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-
                 if (holder.mProgressBar != null) {
-                    Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
                     //TODO make drawable !!!
-                    holder.mProgressBar.setBackgroundResource(R.drawable.logo_eye_plant);
+                    holder.mProgressBar.setBackgroundResource(R.mipmap.eye_logo);
                     view.refreshDrawableState();
                     holder.mProgressBar.setVisibility(View.VISIBLE);
+
                 }
             }
 
@@ -93,8 +99,8 @@ public class GridImageAdapter extends ArrayAdapter<String> {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 if (holder.mProgressBar != null) {
                     holder.mProgressBar.setVisibility(View.GONE);
-
                 }
+
             }
 
             @Override
