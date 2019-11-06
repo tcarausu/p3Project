@@ -64,7 +64,6 @@
     <string name="start">GOT IT</string>
 
     <string name="button_connect">Connect to device</string>
-    <string name="device_connected">Connection successful</string>
 
     <string name="slide_1_title">Turn on the device</string>
     <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
@@ -78,6 +77,10 @@
     <string name="slide_4_title">Check on your plant profiles</string>
     <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59102d12297ce31f290613b5d03378447d7bdb0e
     <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
     <string name="chose_a_user_name">Chose a user name</string>
     <string name="user876543">User876543</string>
