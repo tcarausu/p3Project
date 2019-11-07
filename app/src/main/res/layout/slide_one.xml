@@ -35,6 +35,7 @@
             android:textSize="@dimen/slide_desc" />
 
         <Button
+            android:id="@+id/button_connect_to_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

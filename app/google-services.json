@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "556950483367",
+    "firebase_url": "https://p3project-666ef.firebaseio.com",
+    "project_id": "p3project-666ef",
+    "storage_bucket": "p3project-666ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556950483367:android:d7b49ee08429c1495bc682",
+        "android_client_info": {
+          "package_name": "com.example.aiplant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556950483367-hpkjgusklhjnkqbho9q065uhs0g0b6v0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aiplant",
+            "certificate_hash": "d219415c16b0b838e2e16dcc3ce7c2519e71b59f"
+          }
+        },
+        {
+          "client_id": "556950483367-iigs79v2buhgi0qb2lkpsbinlihtoh7n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aiplant",
+            "certificate_hash": "ded647d37022f1644dfe3cb362089f88cae655ef"
+          }
+        },
+        {
+          "client_id": "556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtOtGIWx_JzadpQqHAMwY8fiUROqLR9JQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

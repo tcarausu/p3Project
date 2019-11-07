@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/grey">
+
+    <LinearLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/top_bar_eyePlant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/eyeplant_toprec">
+
+        </ImageView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar_layout"
+        android:layout_above="@+id/bottomNavigationBarLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+>
+
+        <LinearLayout
+            android:id="@+id/add_plant_from_database_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_corners"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+
+            <TextView
+                android:id="@+id/add_plant_from_database_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/add_plant_from_database_header"
+                android:textAlignment="center"
+                >
+
+
+            </TextView>
+
+            <ImageView
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="113dp"
+                android:layout_height="113dp"
+                android:layout_gravity="center"
+                android:background="@drawable/libraryoption"
+                android:id="@+id/library_button">
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/click_for_adding_from_database"
+                android:textAlignment="center"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/add_plant_from_database_layout"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_corners"
+            android:orientation="vertical"
+            android:padding="8dp"
+            >
+
+            <TextView
+                android:id="@+id/add_plant_from_scratch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:text="@string/add_plant_from_database_header"
+                android:textAlignment="center"
+
+                >
+
+
+            </TextView>
+
+            <ImageView
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="113dp"
+                android:layout_height="113dp"
+                android:layout_gravity="center"
+                android:background="@drawable/add_on_yourown"
+                android:id="@+id/create_new_plant_button"
+                >
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/click_to_add_plant_yourself"
+                android:textAlignment="center">
+
+            </TextView>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <!--bottom navigation-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottomNavigationBarLayout"
+        >
+        <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/green_main_"
+            app:itemTextColor="@color/white"
+            android:textAlignment="viewStart"
+            app:itemHorizontalTranslationEnabled="true"
+            app:menu="@menu/bottom_navigation_menu"
+            android:id="@+id/bottomNavigationBar">
+
+        </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
+<!--        <include layout="@layout/layout_bottom_navigation" />-->
+    </RelativeLayout>
+
+</RelativeLayout>
