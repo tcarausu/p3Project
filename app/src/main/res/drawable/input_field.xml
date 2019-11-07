@@ -4,12 +4,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <solid android:color="@color/grey"/>
-    <stroke
-        android:width="5dp"
-        android:dashGap="10dp"
-        android:dashWidth="200dp"
-        android:color="@color/darkOrange" />
+    <solid android:color="@color/green_fade"/>
+    <corners android:radius="5dp"/>
+
 
 
 

@@ -5,7 +5,8 @@
     <string name="btn_log_in">Login</string>
     <string name="hint_forgot_password">Forgot Password?</string>
     <string name="or">Or</string>
-    <string name="hint_registerHere">Click here for Sign Up</string>
+    <string name="hint_click_here">Click here for </string>
+    <string name="hint_sign_up"> Sign Up</string>
 
     <string name="flower_name">Flower Name</string>
     <string name="time_period">Time Period</string>
@@ -34,16 +35,7 @@
     <string name="minimum_temperature">Min °C</string>
     <string name="maximum_temperature">Max °C</string>
     <string name="create_profile">Create Profile</string>
-    <string name="register_for_free">Register for Free</string>
-    <string name="terms_and_conditions">Terms and Conditions</string>
-    <string name="simply_enter">Simply enter your email address below and we will send you instructions on how to reset your password.</string>
 
-    <string name="hint_forgot_password_email">Enter your email here</string>
-    <string name="forgot_password_text">Forgot Password?</string>
-    <string name="password_receive_text">Your password will be sent to your email</string>
-    <string name="button_send_password">Send Mail</string>
-    <string name="confirm_sing_out">Are you sure you want to SignOut?</string>
-    <string name="signing_out">Signing Out…</string>
     <string name="select_date">Select Date</string>
     <string name="bd_day">DD</string>
     <string name="bd_month">MM</string>
@@ -55,13 +47,14 @@
     <string name="error_pic">Please upload a picture of your plant!</string>
     <string name="error_humidity">Add a value here</string>
     <string name="add_photo">Add photo</string>
-
+    <!--    database-->
     <!-- strings for welcome slides -->
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
     <string name="button_connect">Connect to device</string>
+    <string name="device_connected">Connection successful</string>
 
     <string name="slide_1_title">Turn on the device</string>
     <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
@@ -95,7 +88,76 @@
     <string name="reset_device">Reset device</string>
     <string name="example_email_com">example@email.com</string>
     <string name="delete_account">Delete account</string>
+    <!--   HINTS    -->
+    <string name="full_name_hint">Full Name</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="email_hint">Email</string>
+    <string name="name_last_name_hint">Name and Last Name</string>
+    <string name="registration_success">Registration successful, please check your email inbox for confirmation</string>
+    <!--DESCRIPTION-->
 
+    <!--    Login/SignUp-->
+    <string name="back">Back</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signUp">Sign Up</string>
+    <string name="signIn">Sign In</string>
+    <string name="send">Send</string>
+
+    <!--    SignUp-->
+    <string name="register_for_free">Register for Free</string>
+    <string name="i_agree_to">I agree to </string>
+    <string name="terms_and_conditions">Terms and Conditions.</string>
+    <!--    <string name="terms_and_conditions"><u>Terms and Conditions.</u></string>-->
+    <string name="I_agree_to_terms_and_conditions">I agree </string>
+    <string name="simply_enter">Simply enter your email address below and we will send you instructions on how to reset your password.</string>
+
+    <!--Forgot password fragment strings -->
+
+    <string name="hint_forgot_password_email">Enter your email here</string>
+    <string name="forgot_password_text">Forgot Password?</string>
+    <string name="password_receive_text">Your password will be sent to your email</string>
+    <string name="button_send_password">Send Mail</string>
+    <string name="confirm_sing_out">Are you sure you want to SignOut?</string>
+    <string name="signing_out">Signing Out…</string>
+
+    <!--Terms and Conditions-->
+    <string name="terms_of_conditions_governing_law">Governing Law</string>
+    <string name="terms_of_conditions_governing_law_text"> If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect.
+        These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service.</string>
+    <string name="terms_of_conditions_changes">Changes</string>
+    <string name="terms_of_conditions_changes_text">We reserve the right, at our sole discretion, to modify or replace these Terms at any time.
+        If a revision is material we will try to provide at least 15 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
+        By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.
+        If you do not agree to the new terms, please stop using the Service.</string>
+    <string name="terms_of_conditions_accounts">Accounts</string>
+
+    <string name="terms_of_conditions_accounts_text">When you create an account with us, you must
+    provide us information that is accurate, complete, and current at all times.
+    Failure to do so constitutes a breach of the Terms, which may result in immediate termination of
+    your account on our Service.
+
+    You are responsible for safeguarding the password that you use to access the Service and for any
+    activities or actions under your password,
+    whether your password is with our Service or a third-party service.
+
+    You agree not to disclose your password to any third party. You must notify us immediately upon
+    becoming aware of any breach of security or unauthorized use of your account.
+    </string>
+
+    <string name="termination">Termination</string>
+
+    <string name="termination_text">We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+
+All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.
+
+We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
+
+Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service.
+
+All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</string>
 
     <!--    Library-->
     <string name="library_info_text">Start adding your plants living conditions, by doing this you will see if the plant actual living conditions needs some changes.</string>
