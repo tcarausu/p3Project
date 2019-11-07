@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,8 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
-    private static final String AI_PLANT_PREFS = "AI_PLANT_PREFS";
-    private static final String TERMS_AND_CONDITIONS = "TERMS_AND_CONDITIONS";
 
     private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
@@ -51,7 +50,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
 
-
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());
         findWidgets(v);
@@ -70,13 +68,30 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         pass_field = v.findViewById(R.id.pass_field);
         confirm_pass = v.findViewById(R.id.confirm_pass);
 
-
         send_registration_instructions = v.findViewById(R.id.send_registration_instructions);
         terms_and_conditions = v.findViewById(R.id.terms_and_conditions);
 
         send_registration_instructions.setOnClickListener(this);
         terms_and_conditions.setPaintFlags(terms_and_conditions.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         terms_and_conditions.setOnClickListener(this);
+
+        Bundle bundle_with_arguments = getArguments();
+
+        if (bundle_with_arguments != null) {
+            boolean clicked = bundle_with_arguments.getBoolean("clicked");
+
+            String email = bundle_with_arguments.getString("email");
+            String name_lastName = bundle_with_arguments.getString("name_lastName");
+            String password = bundle_with_arguments.getString("password");
+            String confirm_password = bundle_with_arguments.getString("confirm_password");
+
+            signUp_email.setText(email);
+            name_last_name.setText(name_lastName);
+            pass_field.setText(password);
+            confirm_pass.setText(confirm_password);
+
+            checkbox.setChecked(clicked);
+        }
 
     }
 
@@ -193,6 +208,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                 if (!checkbox.isChecked()) {
                     TermsAndConditions terms = new TermsAndConditions();
 
+                    bundleFunctionality(terms);
+
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.useThisFragmentID_sign_up, terms);
                     fragmentTransaction.addToBackStack(null);
@@ -201,6 +218,22 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                     break;
                 }
         }
+    }
+
+    private void bundleFunctionality(Fragment terms) {
+        Bundle bundle = new Bundle();
+        String email = signUp_email.getText().toString();
+        String name_lastName = name_last_name.getText().toString();
+        String password = pass_field.getText().toString();
+        String confirm_password = confirm_pass.getText().toString();
+
+        bundle.putString("email",email);
+        bundle.putString("name_lastName",name_lastName);
+        bundle.putString("password",password);
+        bundle.putString("confirm_password",confirm_password);
+
+        terms.setArguments(bundle);
+
     }
 
 }

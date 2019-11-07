@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.aiplant.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.Objects;
+
 public class TermsAndConditions extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
@@ -70,16 +72,18 @@ public class TermsAndConditions extends androidx.fragment.app.Fragment implement
     public void onClick(View v) {
 //        if (v.getId() == R.id.back_button) {
         if (v.getId() == R.id.I_agree_to_terms_and_conditions) {
-            SignUpFragment signUpFragment = new SignUpFragment();
 
-//            Intent intent = new Intent(getActivity(),
-//                    LoginActivity.class);
-//            intent.putExtra("message", "clicked_terms");
-//            getActivity().startActivity(intent);
+            Bundle bundle_with_arguments = getArguments();
+
+            Objects.requireNonNull(bundle_with_arguments).putBoolean("clicked", true);
 
             FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+            SignUpFragment signUpFragment = new SignUpFragment();
+            signUpFragment.setArguments(bundle_with_arguments);
+
             fragmentTransaction.replace(R.id.useThisFragmentID_sign_up, signUpFragment);
-            fragmentTransaction.remove(signUpFragment);
+            fragmentTransaction.remove(this);
             fragmentTransaction.commit();
 
         }
