@@ -1,197 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        >
-    <LinearLayout
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
-    android:gravity="center_horizontal">
-
-
-    <ImageView
-        android:id="@+id/profilePicPlant_imgView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/add_pic"
-
-        />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/name_plant"/>
-
-        <EditText
-            android:id="@+id/namePlant_editText"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:hint="@string/hint_name_plant" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/birthday_plant"
-            android:layout_marginTop="10dp"/>
-
-        <!--<DatePicker
-            android:id="@+id/datePicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:datePickerMode="spinner"
-            android:calendarViewShown="false"/> -->
+        android:layout_marginBottom="20dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/bd_day"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="30dp"
-                android:hint="@string/bd_day"
-                android:inputType="number" />
-            <EditText
-            android:id="@+id/bd_month"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="30dp"
-            android:hint="@string/bd_month"
-                android:inputType="number"
-                />
-            <EditText
-            android:id="@+id/bd_year"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="30dp"
-            android:hint="@string/bd_year"
-                android:inputType="number"
-                />
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/humidity"
-            android:layout_marginTop="10dp"/>
-        <LinearLayout
-            android:id="@+id/birthday_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/drop"
-            android:layout_marginEnd="50dp"
-            />
-
-            <EditText
-                android:id="@+id/minHumidity_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="30dp"
-                android:hint="@string/minimum_humidity" />
-
-            <EditText
-                android:id="@+id/maxHumidity_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:hint="@string/maximum_humidity" />
-
-    </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sunlight"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/sun"
-                android:layout_marginEnd="50dp"
-                />
+                android:id="@+id/profilePicPlant_imgView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/add_pic" />
 
-            <EditText
-                android:id="@+id/minSunlight_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="30dp"
-                android:hint="@string/minimum_sunlight" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/maxSunlight_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:hint="@string/maximum_sunlight" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name_plant" />
+
+                <EditText
+                    android:id="@+id/namePlant_editText"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/hint_name_plant" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/birthday_plant" />
+
+                <!--<DatePicker
+                    android:id="@+id/datePicker1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:datePickerMode="spinner"
+                    android:calendarViewShown="false"/> -->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/bd_day"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/bd_day"
+                        android:inputType="number" />
+
+                    <EditText
+                        android:id="@+id/bd_month"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/bd_month"
+                        android:inputType="number" />
+
+                    <EditText
+                        android:id="@+id/bd_year"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/bd_year"
+                        android:inputType="number" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/humidity" />
+
+                <LinearLayout
+                    android:id="@+id/birthday_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="50dp"
+                        android:src="@drawable/drop" />
+
+                    <EditText
+                        android:id="@+id/minHumidity_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/minimum_humidity" />
+
+                    <EditText
+                        android:id="@+id/maxHumidity_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:hint="@string/maximum_humidity" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sunlight" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="50dp"
+                        android:src="@drawable/sun" />
+
+                    <EditText
+                        android:id="@+id/minSunlight_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/minimum_sunlight" />
+
+                    <EditText
+                        android:id="@+id/maxSunlight_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:hint="@string/maximum_sunlight" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temperature" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="50dp"
+                        android:src="@drawable/thermometer_pic" />
+
+                    <EditText
+                        android:id="@+id/minTemperature_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="30dp"
+                        android:hint="@string/minimum_temperature" />
+
+                    <EditText
+                        android:id="@+id/maxTemperature_editText"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:hint="@string/maximum_temperature" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/createProfile_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/create_profile" />
 
         </LinearLayout>
-        android:layout_marginBottom="70dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/temperature"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/thermometer_pic"
-                android:layout_marginEnd="50dp"
-                />
 
-            <EditText
-                android:id="@+id/minTemperature_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="30dp"
-                android:hint="@string/minimum_temperature" />
-
-            <EditText
-                android:id="@+id/maxTemperature_editText"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:hint="@string/maximum_temperature" />
-
-        </LinearLayout>
-
-
-
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/createProfile_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/create_profile"
-        />
-
-    </LinearLayout>
     </RelativeLayout>
+
 </ScrollView>

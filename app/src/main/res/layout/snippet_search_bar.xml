@@ -10,16 +10,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/rounded_corners"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp">
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/rounded_corners">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-
 
                 <ImageButton
                     android:id="@+id/search_button_id"

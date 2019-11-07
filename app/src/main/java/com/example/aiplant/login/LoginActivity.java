@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // widgets
     private MaterialButton loginButton;
-    private TextView click_here_text,sign_up_text, orView, forgotPass_logIn;
+    private TextView click_here_text, sign_up_text, orView, forgotPass_logIn;
     private RelativeLayout loginLayout;
     private EditText mEmailField, mPasswordField;
     private FragmentManager fragmentManager;

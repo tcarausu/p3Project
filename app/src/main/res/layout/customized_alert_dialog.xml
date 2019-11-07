@@ -6,7 +6,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:layout_margin="3dp"
         android:background="@color/white"

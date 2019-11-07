@@ -22,8 +22,8 @@
                     android:layout_width="140dp"
                     android:layout_height="80dp"
                     android:background="@drawable/ai_plant" />
-            </LinearLayout>
 
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -58,10 +58,10 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/email_id_logIn"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:ems="10"
                 android:hint="@string/hint_password"
-                android:layout_marginTop="10dp"
                 android:inputType="textPassword"
                 android:minWidth="300dp"
                 android:shadowColor="@android:color/holo_red_dark"
@@ -71,7 +71,6 @@
                 android:textColorHighlight="@android:color/darker_gray"
                 android:textColorHint="@color/black"
                 android:textSize="16sp" />
-            <!--                android:drawableStart="@drawable/white_lock_closed"-->
         </RelativeLayout>
 
         <RelativeLayout
@@ -80,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="50dp">
-            
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_id_log_in"
                 style="@style/AppTheme.RoundedCornerMaterialButton"
@@ -102,12 +101,10 @@
                 android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:layout_alignEnd="@+id/button_id_log_in"
-
                 android:layout_alignParentEnd="true"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-
                 android:onClick="onClick"
                 android:padding="5dp"
                 android:text="@string/hint_forgot_password"
@@ -116,6 +113,7 @@
                 android:textStyle="bold|italic" />
 
         </RelativeLayout>
+
     </LinearLayout>
 
 </merge>

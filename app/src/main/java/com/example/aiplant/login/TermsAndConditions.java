@@ -1,12 +1,10 @@
 package com.example.aiplant.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -14,10 +12,7 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
-import com.example.aiplant.home.HomeActivity;
 import com.google.android.material.button.MaterialButton;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class TermsAndConditions extends androidx.fragment.app.Fragment implements View.OnClickListener {
 

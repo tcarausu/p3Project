@@ -21,20 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!--            <com.google.android.material.button.MaterialButton-->
-            <!--                android:id="@+id/back_button"-->
-            <!--                style="@android:style/Widget.Holo.Button.Borderless"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_gravity="start"-->
-            <!--                android:layout_marginStart="10dp"-->
-            <!--                android:layout_marginTop="10dp"-->
-            <!--                android:animateLayoutChanges="true"-->
-            <!--                android:drawableStart="@drawable/orange_arrow_left"-->
-            <!--                android:text="@string/back"-->
-            <!--                android:textColor="@color/white"-->
-            <!--                android:textStyle="bold" />-->
-
             <ImageView
                 android:id="@+id/aiplant_icon"
                 android:layout_width="140dp"
@@ -43,7 +29,6 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/ai_plant" />
-            <!--            android:layout_below="@id/back_button"-->
 
             <TextView
                 android:id="@+id/register_for_free"
@@ -62,7 +47,6 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
-
 
             <EditText
                 android:id="@+id/signUpFragment_email_field"
@@ -233,7 +217,9 @@
                 android:text="@string/send"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
+
         </RelativeLayout>
+
     </FrameLayout>
 
 </RelativeLayout>

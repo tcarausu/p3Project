@@ -58,24 +58,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/googleSignInButton"
-            android:layout_marginBottom="50dp"
-            android:weightSum="10"
             android:layout_centerInParent="true"
-            android:orientation="horizontal">
+            android:layout_marginBottom="50dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
 
             <TextView
                 android:id="@+id/click_here_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="5.5"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="onClick"
-                android:layout_weight="5.5"
                 android:text="@string/hint_click_here"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:layout_marginEnd="10dp"
                 android:textStyle="normal"
                 app:autoSizeMaxTextSize="0dp" />
 
@@ -83,9 +83,9 @@
                 android:id="@+id/sign_up_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="4.5"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_weight="4.5"
                 android:onClick="onClick"
                 android:text="@string/hint_sign_up"
                 android:textAlignment="textStart"
@@ -93,6 +93,7 @@
                 android:textSize="16sp"
                 android:textStyle="normal"
                 app:autoSizeMaxTextSize="0dp" />
+
         </LinearLayout>
 
     </RelativeLayout>

@@ -21,7 +21,6 @@
 
         </com.mikhaellopez.circularimageview.CircularImageView>
 
-
         <TextView
             android:id="@+id/textView_usernameDisplay_header"
             android:layout_width="wrap_content"

@@ -1,14 +1,10 @@
 package com.example.aiplant.login;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,8 +22,6 @@ import com.example.aiplant.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
@@ -143,30 +134,26 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             loadingBar.setCanceledOnTouchOutside(false);
             //if all are fine, then try to create a user
 
-//            String strtext = getArguments().getString("message");
-//            if (strtext != null) {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                // if success
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                    // if success
+                if (task.isSuccessful()) {
+                    loadingBar.dismiss();
+                    Toast.makeText(getContext(), R.string.registration_success, Toast.LENGTH_SHORT).show();
+                    sendVerifyEmail();
 
-                    if (task.isSuccessful()) {
-                        loadingBar.dismiss();
-                        Toast.makeText(getContext(), R.string.registration_success, Toast.LENGTH_SHORT).show();
-                        sendVerifyEmail();
+                    mAuth.signOut();
+                    new Handler().postDelayed(() ->
+                            LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
 
-                        mAuth.signOut();
-                        new Handler().postDelayed(() ->
-                                LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
-
-                    } else {
-                        loadingBar.dismiss();
-                        Toast.makeText(getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        mAuth.signOut(); // always sign out the user if something goes wrong
-                    }
+                } else {
+                    loadingBar.dismiss();
+                    Toast.makeText(getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    mAuth.signOut(); // always sign out the user if something goes wrong
+                }
 
 
-                });
-//            }
+            });
 
         }
 
@@ -204,21 +191,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
 
             case R.id.terms_and_conditions:
                 if (!checkbox.isChecked()) {
-//                SharedPreferences preferences = mContext.getSharedPreferences(AI_PLANT_PREFS, MODE_PRIVATE);
-//
-//                if (preferences.getBoolean(TERMS_AND_CONDITIONS, false)) {
-//
-//                    TermsAndConditions_DialogFragment tsAndCs = new TermsAndConditions_DialogFragment();
-//                    Dialog dialog = tsAndCs.onCreateDialog(savedInstanceState);
-//                    dialog.show();
-//                    ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-//                } else {
-//                    TermsAndConditions_DialogFragment tsAndCs = new TermsAndConditions_DialogFragment();
-//                    Dialog dialog = tsAndCs.onCreateDialog(savedInstanceState);
-//                    dialog.show();
-//                    ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-//                }
-
                     TermsAndConditions terms = new TermsAndConditions();
 
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -229,28 +201,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                     break;
                 }
         }
-    }
-
-    public class TermsAndConditions_DialogFragment extends DialogFragment {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage(Html.fromHtml("By using this app, you agree to our " +
-                    "<a href=\"https://www.termsfeed.com/terms-conditions/4866634080a7ca3bece900e45a030f61\"> Terms and Conditions </a> and Privacy Policy")).
-                    setPositiveButton("I agree to the terms and conditions", (dialog, which) -> {
-                        // The user agreed
-                        SharedPreferences preferences = mContext.getSharedPreferences(AI_PLANT_PREFS, MODE_PRIVATE);
-                        SharedPreferences.Editor edit = preferences.edit();
-                        edit.putBoolean(TERMS_AND_CONDITIONS, true);
-                        edit.apply();
-
-                    });
-
-            return builder.create();
-        }
-
     }
 
 }
