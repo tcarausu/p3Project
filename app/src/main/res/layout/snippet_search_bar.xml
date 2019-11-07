@@ -1,27 +1,34 @@
-<merge xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/border_color_top">
+        android:background="@color/mainGreen">
 
         <Toolbar
+            android:id="@+id/profileToolBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rounded_corners"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
 
-                <ImageView
-                    android:id="@+id/backArrow"
+
+                <ImageButton
+                    android:id="@+id/search_button_id"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="0dp"
                     android:background="@drawable/input_fields_with_shadow"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/orange_arrow_left" />
+                    android:src="@drawable/button_search_green" />
 
                 <EditText
                     android:id="@+id/search_bar_id"
@@ -29,22 +36,11 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="15dp"
-                    android:layout_toEndOf="@+id/backArrow"
+                    android:layout_toEndOf="@+id/search_button_id"
                     android:background="@null"
                     android:hint="@string/search_Hint"
-                    android:textColor="@color/orangeMainTheme"
                     android:textSize="20sp" />
 
-                <ImageButton
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:id="@+id/search_button_id"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="0dp"
-                    app:srcCompat="@drawable/ic_search_button"
-                    android:background="@drawable/input_fields_with_shadow"
-                    />
             </RelativeLayout>
 
         </Toolbar>

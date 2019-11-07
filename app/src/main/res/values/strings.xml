@@ -55,8 +55,6 @@
     <string name="error_pic">Please upload a picture of your plant!</string>
     <string name="error_humidity">Add a value here</string>
     <string name="add_photo">Add photo</string>
-    <!--    database-->
-    <string name="my_app_id">aiplant-fhsjb</string>
 
     <!-- strings for welcome slides -->
     <string name="next">NEXT</string>
@@ -77,10 +75,6 @@
     <string name="slide_4_title">Check on your plant profiles</string>
     <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 59102d12297ce31f290613b5d03378447d7bdb0e
     <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
     <string name="chose_a_user_name">Chose a user name</string>
     <string name="user876543">User876543</string>
@@ -101,4 +95,19 @@
     <string name="reset_device">Reset device</string>
     <string name="example_email_com">example@email.com</string>
     <string name="delete_account">Delete account</string>
+
+
+    <!--    Library-->
+    <string name="library_info_text">Start adding your plants living conditions, by doing this you will see if the plant actual living conditions needs some changes.</string>
+    <string name="add_plant_from_database_header">Have no idea?</string>
+    <string name="click_for_adding_from_database">Click button to find your plant living conditions</string>
+    <string name="click_to_add_plant_yourself">Click button to start adding your plant</string>
+    <string name="add_button">Add</string>
+    <string name="click_for_living_conditions"><u>Click here to see living conditions</u>.</string>
+
+    <!--    Stitch-->
+    <string name="my_app_id">eye-plant-tilrj</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
