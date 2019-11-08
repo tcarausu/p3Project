@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer"
     android:orientation="vertical"
-    android:background="@drawable/dark_back"
+    android:background="@color/green_dark"
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
@@ -20,7 +20,6 @@
             android:background="@color/white">
 
         </com.mikhaellopez.circularimageview.CircularImageView>
-
 
         <TextView
             android:id="@+id/textView_usernameDisplay_header"

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/pot"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:weightSum="100">
+
+    <RelativeLayout
+        android:id="@+id/aiplant_icon_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="15">
+
+        <ImageView
+            android:id="@+id/aiplant_icon"
+            android:layout_width="140dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/ai_plant" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/terms_of_conditions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+
+        <TextView
+            android:id="@+id/terms_of_conditions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:shadowColor="@color/black"
+            android:shadowDx="5"
+            android:shadowRadius="10"
+            android:text="@string/terms_and_conditions"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="70">
+
+        <ScrollView
+            android:id="@+id/terms_and_conditions_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--    Governing Law-->
+                <TextView
+                    android:id="@+id/terms_of_conditions_governing_law"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_governing_law"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/terms_of_conditions_governing_law_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_governing_law_text"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <!--    Accounts-->
+                <TextView
+                    android:id="@+id/terms_of_conditions_accounts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_accounts"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/terms_of_conditions_accounts_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_accounts_text"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <!--    Account-->
+                <TextView
+                    android:id="@+id/accounts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_accounts"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/accounts_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_accounts_text"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <!--    Termination-->
+                <TextView
+                    android:id="@+id/termination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/termination"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/termination_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/termination_text"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <!--    Changes-->
+                <TextView
+                    android:id="@+id/terms_of_conditions_changes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_changes"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/terms_of_conditions_changes_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="50dp"
+                    android:animateLayoutChanges="true"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:shadowColor="@color/black"
+                    android:text="@string/terms_of_conditions_changes_text"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="10">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/I_agree_to_terms_and_conditions"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/input_fields_with_shadow"
+            android:elevation="5dp"
+            android:shadowColor="@color/black"
+            android:text="@string/I_agree_to_terms_and_conditions"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

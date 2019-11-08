@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_signup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/small_plants"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/useThisFragmentID_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/home_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/aiplant_icon"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/ai_plant" />
+
+            <TextView
+                android:id="@+id/register_for_free"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/aiplant_icon"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:animateLayoutChanges="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:shadowColor="@color/black"
+                android:shadowDx="5"
+                android:shadowRadius="10"
+                android:text="@string/register_for_free"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/signUpFragment_email_field"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/register_for_free"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:animateLayoutChanges="true"
+                android:background="@color/white"
+                android:cursorVisible="true"
+                android:ems="10"
+                android:hint="@string/email_hint"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:shadowDx="10"
+                android:textAlignment="center"
+                android:textColorHighlight="@android:color/darker_gray"
+                android:textColorHint="@color/black_transparent"
+                android:textCursorDrawable="@color/black"
+                android:textSize="16sp"
+                tools:ignore="autofill" />
+
+            <EditText
+                android:id="@+id/name_last_name"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/signUpFragment_email_field"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:animateLayoutChanges="true"
+                android:background="@color/white"
+
+                android:cursorVisible="true"
+                android:ems="10"
+                android:hint="@string/name_last_name_hint"
+                android:inputType="textEmailAddress"
+                android:padding="10dp"
+                android:shadowDx="10"
+                android:textAlignment="center"
+                android:textColorHighlight="@android:color/darker_gray"
+                android:textColorHint="@color/black_transparent"
+                android:textCursorDrawable="@color/black"
+                android:textSize="16sp"
+                tools:ignore="autofill" />
+
+            <EditText
+                android:id="@+id/pass_field"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name_last_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:animateLayoutChanges="true"
+
+                android:background="@color/white"
+                android:clickable="true"
+                android:cursorVisible="true"
+
+                android:ems="10"
+                android:focusable="true"
+                android:hint="@string/password_hint"
+                android:inputType="textPassword"
+                android:padding="10dp"
+                android:shadowColor="@color/darkOrange"
+                android:shadowDx="10"
+                android:textAlignment="center"
+                android:textColorHighlight="@android:color/darker_gray"
+                android:textColorHint="@color/black_transparent"
+                android:textCursorDrawable="@color/black"
+                android:textSize="16sp"
+                tools:counterColor="@color"
+                tools:counterEnabled="true"
+                tools:counterMinLenght="6"
+                tools:ignore="TextFields,autofill" />
+
+            <EditText
+                android:id="@+id/confirm_pass"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pass_field"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:animateLayoutChanges="true"
+
+                android:background="@color/white"
+                android:cursorVisible="true"
+                android:ems="10"
+                android:hint="@string/confirm_password_hint"
+                android:inputType="textPassword"
+                android:padding="10dp"
+                android:shadowColor="@color/darkOrange"
+                android:shadowDx="10"
+                android:textAlignment="center"
+                android:textColorHighlight="@android:color/darker_gray"
+                android:textColorHint="@color/black_transparent"
+                android:textCursorDrawable="@color/black"
+                android:textSize="16sp"
+                tools:ignore="TextFields,autofill" />
+
+            <LinearLayout
+                android:id="@+id/terms_and_conditions_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/confirm_pass"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:weightSum="10">
+
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/i_agree_to"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="3"
+                    android:animateLayoutChanges="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/i_agree_to"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:ignore="TextFields,autofill" />
+
+                <TextView
+                    android:id="@+id/terms_and_conditions"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="6"
+                    android:animateLayoutChanges="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/terms_and_conditions"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/white"
+                    android:textSize="16sp"
+                    tools:ignore="TextFields,autofill" />
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/send_registration_instructions"
+                style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/terms_and_conditions_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/input_fields_with_shadow"
+                android:elevation="5dp"
+                android:padding="10dp"
+                android:shadowColor="@color/black"
+                android:shadowDx="5"
+                android:shadowRadius="10"
+                android:text="@string/send"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
