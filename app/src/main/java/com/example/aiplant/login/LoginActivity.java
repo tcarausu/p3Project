@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,6 +27,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,7 +36,20 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.core.auth.StitchUser;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.auth.providers.anonymous.AnonymousCredential;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -51,6 +67,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    // Stitch and Mongodb Cluster
+    private StitchAppClient stitchAppClient;
+    private RemoteMongoClient remoteMongoClient;
+    private RemoteMongoCollection<Document> remoteMongoCollection;
+    private Document myFirstDocument;
+    private Date currentDate;
 
     // widgets
     private MaterialButton loginButton;
@@ -104,9 +127,82 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         // Initialize Facebook Login button
 //        mCallbackManager = CallbackManager.Factory.create();
-
+        initStichAppClient();
     }
 
+    private void initStichAppClient() {
+
+//        // Try async task , check documentation if it's not using it already
+//        Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
+//        stitchAppClient = Stitch.getDefaultAppClient();
+//        stitchAppClient.getAuth().loginWithCredential(new AnonymousCredential());
+//        remoteMongoClient = stitchAppClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+//        remoteMongoCollection = remoteMongoClient.getDatabase("test")
+//                .getCollection("my_collection");
+////        myFirstDocument = new Document();
+////        myFirstDocument.append("time",currentDate.getTime());
+//     //   myFirstDocument["user_id"] = it.id;
+//       // myFirstDocument.append("time",new Date().getTime());
+////        myFirstDocument.append("_id", "user_id");
+////        remoteMongoCollection.insertOne(myFirstDocument).addOnSuccessListener(o -> Log.d("STITCH", "One document inserted"))
+////        .addOnFailureListener(o -> Log.d("STITCH", "NADA"));
+
+        final StitchAppClient client =
+                Stitch.initializeDefaultAppClient("eye-plant-tilrj");
+
+        final RemoteMongoClient mongoClient =
+                client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+
+        final RemoteMongoCollection<Document> coll =
+                mongoClient.getDatabase("test").getCollection("my_collection");
+
+        client.getAuth().loginWithCredential(new AnonymousCredential()).continueWithTask(
+                new Continuation<StitchUser, Task<RemoteUpdateResult>>() {
+
+                    @Override
+                    public Task<RemoteUpdateResult> then(@NonNull Task<StitchUser> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.e("STITCH", "Login failed!");
+                            throw task.getException();
+                        }
+
+                        final Document updateDoc = new Document(
+                                "user_id",
+                                task.getResult().getId()
+                        );
+
+                        updateDoc.put("name", "Lore");
+                        updateDoc.put("age", 20);
+                        return coll.updateOne(
+                                null, updateDoc, new RemoteUpdateOptions().upsert(true)
+                        );
+                    }
+                }
+        ).continueWithTask(new Continuation<RemoteUpdateResult, Task<List<Document>>>() {
+            @Override
+            public Task<List<Document>> then(@NonNull Task<RemoteUpdateResult> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    Log.e("STITCH", "Update failed!");
+                    throw task.getException();
+                }
+                List<Document> docs = new ArrayList<>();
+                return coll
+                        .find(new Document("owner_id", client.getAuth().getUser().getId()))
+                        .limit(100)
+                        .into(docs);
+            }
+        }).addOnCompleteListener(new OnCompleteListener<List<Document>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<Document>> task) {
+                if (task.isSuccessful()) {
+                    Log.d("STITCH", "Found docs: " + task.getResult().toString());
+                    return;
+                }
+                Log.e("STITCH", "Error: " + task.getException().toString());
+                task.getException().printStackTrace();
+            }
+        });
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
