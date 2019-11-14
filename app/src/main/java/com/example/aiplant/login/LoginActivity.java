@@ -33,7 +33,16 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 
+import org.bson.Document;
+
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,6 +70,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean isVerified;
     private Context mContext;
 
+    // Stitch and Mongodb Cluster
+    private StitchAppClient stitchAppClient;
+    private RemoteMongoClient remoteMongoClient;
+    private RemoteMongoCollection<Document> remoteMongoCollection;
+    private Document myFirstDocument;
+    private DateFormat format;
+    private Date currentDate = new Date();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        mContext = LoginActivity.this;
 
         initLayout();
         buttonListeners();
@@ -104,9 +124,80 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         // Initialize Facebook Login button
 //        mCallbackManager = CallbackManager.Factory.create();
+//        initStitchApp(email);
+
+
+        final StitchAppClient client =
+                Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
+
+        final RemoteMongoClient mongoClient =
+                client.getServiceClient(RemoteMongoClient.factory, getResources().getString(R.string.service_name));
+
+
+        final RemoteMongoCollection<Document> coll =
+                mongoClient.getDatabase(getResources().getString(R.string.eye_plant))
+                        .getCollection(getResources().getString(R.string.eye_plant_plants));
+//
 
     }
 
+//    private void initStitchApp(
+//            EditText email
+//    ) {
+//
+////        Stitch.initialize(mContext);
+//
+//        final StitchAppClient client =
+//                Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
+//
+//        final RemoteMongoClient mongoClient =
+//                client.getServiceClient(RemoteMongoClient.factory, getResources().getString(R.string.service_name));
+//
+//
+//        final RemoteMongoCollection<Document> coll =
+//                mongoClient.getDatabase(getResources().getString(R.string.eye_plant))
+//                        .getCollection(getResources().getString(R.string.eye_plant_plants));
+//
+//        client.getAuth().loginWithCredential(new AnonymousCredential()).continueWithTask(
+//                task -> {
+//                    if (!task.isSuccessful()) {
+//                        Log.e("STITCH", "Login failed!");
+//                        throw task.getException();
+//                    }
+//
+//                    final Document updateDoc = new Document(
+//                            "owner_id",
+//                            task.getResult().getId()
+//                    );
+//
+//                    updateDoc.put("number", 69);
+//                    updateDoc.put("nr", 55);
+//                    updateDoc.put("extraNum", 69);
+//                    updateDoc.put("email", String.valueOf(email.getText()));
+//
+//                    return coll.updateMany(
+//                            null, updateDoc, new RemoteUpdateOptions().upsert(true)
+//                    );
+//                }
+//        ).continueWithTask(task -> {
+//            if (!task.isSuccessful()) {
+//                Log.e("STITCH", "Update failed!");
+//                throw task.getException();
+//            }
+//            List<Document> docs = new ArrayList<>();
+//            return coll
+//                    .find(new Document("owner_id", client.getAuth().getUser().getId()))
+//                    .limit(100)
+//                    .into(docs);
+//        }).addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                Log.d("STITCH", "Found docs: " + task.getResult().toString());
+//                return;
+//            }
+//            Log.e("STITCH", "Error: " + task.getException().toString());
+//            task.getException().printStackTrace();
+//        });
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,18 +246,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.setIcon(R.drawable.ai_plant);
             progressDialog.show();
 
-            // after checking, we try to login
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                // if sign in is successful
-                if (task.isSuccessful()) {
-                    progressDialog.dismiss();
-                    verifyAccount(email); // check if user is verified by email
-                }
-            }).addOnFailureListener(e -> {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                mAuth.signOut();
-            });
+//            // after checking, we try to login
+//            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+//                // if sign in is successful
+//                if (task.isSuccessful()) {
+//                    progressDialog.dismiss();
+//                    verifyAccount(mEmailField); // check if user is verified by email
+//
+//                }
+//            }).addOnFailureListener(e -> {
+//                progressDialog.dismiss();
+//                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+//                mAuth.signOut();
+//            });
         }
     }
 
@@ -176,7 +268,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @param email : email of the registered user, allows login if & only if validated
      * @author Mo.Msaad
      **/
-    private void verifyAccount(String email) {
+    private void verifyAccount(EditText email) {
 
         try {
             FirebaseUser user = mAuth.getCurrentUser();
@@ -184,6 +276,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (isVerified) {
 //                verifyFirstEmailLogin(email, "Chose a user name", avatarURL);
 //                addUserToDataBase();
+//                initStitchApp(email);
                 goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class); // if yes goto mainActivity
             } else {
                 // else we first sign out the user, until he checks his email then he can connect
@@ -229,14 +322,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
 
             case R.id.button_id_log_in:
-                signInWithEmail();
+//                signInWithEmail();
+//                getMongoDbConnection();
+                loginEmailMongoDb(mEmailField, mPasswordField);
+
                 break;
 
             case R.id.googleSignInButton:
@@ -272,6 +367,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
     }
+
+//    private void getMongoDbConnection() {
+//        MongoClientURI uri = new MongoClientURI(
+//                "mongodb+srv://Simortusos:<password>@gettingstarted-zmxym.gcp.mongodb.net/test?retryWrites=true&w=majority");
+//
+//        MongoClient mongoClient = new MongoClient(uri);
+//        MongoDatabase database = mongoClient.getDatabase("test");
+//    }
 
     //
 //    /**
@@ -330,7 +433,58 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // [END_EXCLUDE]
                 });
     }
+
     // [END signOut]
+    private void loginEmailMongoDb(
+            EditText email, EditText password
+    ) {
+        String emailToUse = String.valueOf(email.getText());
+        String passToUse = String.valueOf(password.getText());
+        // first check if our textFields aren't empty
+        if (TextUtils.isEmpty(emailToUse) && TextUtils.isEmpty(passToUse)) {
+            mEmailField.setError("Required.");
+            mPasswordField.setError("Required.");
+
+            Toast.makeText(getApplicationContext(), "Please type in email and password", Toast.LENGTH_SHORT).show();
+
+        } else if (TextUtils.isEmpty(emailToUse)) {
+            mEmailField.setError("Required.");
+            Toast.makeText(getApplicationContext(), "Please type in email or phone", Toast.LENGTH_SHORT).show();
+
+        } else if (TextUtils.isEmpty(passToUse)) {
+            mPasswordField.setError("Required.");
+            Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
+
+        } else {
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Signing in");
+            progressDialog.setMessage("Signing in, please wait...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setIcon(R.drawable.ai_plant);
+            progressDialog.show();
+        }
+
+        UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
+
+        Stitch.
+                getDefaultAppClient()
+                .getAuth().loginWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Log.e("stitch", "Error logging in with email/password auth:", task.getException());
+
+                                String error = task.getException().getMessage();// get error from fireBase
+                                Toast.makeText(mContext, "Error: " + error, Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Log.d("stitch", "Successfully logged in as user " + task.getResult().getId());
+
+                                new Handler().postDelayed(() ->
+                                        LoginActivity.goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
+                            }
+                        }
+                );
+    }
 
     public static void goToWhereverWithFlags(Context activityContext, Context c, Class<? extends AppCompatActivity> cl) {
 

@@ -170,7 +170,15 @@ All provisions of the Terms which by their nature should survive termination sha
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
 
+<!--    database-->
+    <string name="eye_plant">eye_plant</string>
+    <string name="eye_plant_plants">plants</string>
+    <string name="service_name">mongodb-atlas</string>
+
+    <string name="sent_reset_email">Successfully sent password reset email</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_of_plant">Name of Plant</string>
+
 </resources>

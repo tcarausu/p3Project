@@ -30,7 +30,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
     //MongoDB Stitch
-    implementation 'org.mongodb:stitch-android-sdk:4.0.5'
+    implementation 'org.mongodb:stitch-android-sdk:4.6.0'
 
     //Material design
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
