@@ -27,7 +27,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
 
     private MongoDbSetup mongoDbSetup;
     private Context mContext;
-    private StitchAppClient appClient;
+//    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView forgot_password, simply_enter;
@@ -44,7 +44,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);
         mContext = getActivity();
 
-        mongoDbSetup = MongoDbSetup.getInstance(mContext, appClient);
+        mongoDbSetup = MongoDbSetup.getInstance(mContext);
 
 
         mAuth = FirebaseAuth.getInstance();

@@ -40,7 +40,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
     private static final String TAG = "ForgotPassFragment";
 
     private MongoDbSetup mongoDbSetup;
-    private StitchAppClient appClient;
+//    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
@@ -64,7 +64,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
 
-        mongoDbSetup = MongoDbSetup.getInstance(mContext, appClient);
+        mongoDbSetup = MongoDbSetup.getInstance(mContext);
 
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());

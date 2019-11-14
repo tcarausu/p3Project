@@ -34,7 +34,7 @@ public class MongoDbSetup {
     private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
 //    private LoginManager mLoginManager = LoginManager.getInstance();
 
-    private StitchAppClient appClient ;
+    private static StitchAppClient appClient ;
 //    private static final StitchAppClient appClient =
 //            Stitch.initializeDefaultAppClient("eye-plant-tilrj");
 //
@@ -62,27 +62,9 @@ public class MongoDbSetup {
 //        return mLoginManager;
 //    }
 
-    public static FirebaseAuth getAuth() {
-        return mAuth;
-    }
-
-//    public static StitchAppClient getAppClient() {
-//        return appClient;
-//    }
-//
-//    public static RemoteMongoClient getRemoteMongoDbClient() {
-//        return remoteMongoDbClient;
-//    }
-//
-//    public static RemoteMongoCollection<Document> getPlants_Collection() {
-//        return plants_collection;
-//    }
-//
-//    public static RemoteMongoCollection<Document> getUsers_collection() {
-//        return users_collection;
-//    }
-
-    private MongoDbSetup(Context context,StitchAppClient appClient) {
+    private MongoDbSetup(Context context
+//            ,StitchAppClient appClient
+    ) {
         // Mo.Msaad modification modification
         synchronized (MongoDbSetup.class) {
             mContext = context;
@@ -97,9 +79,13 @@ public class MongoDbSetup {
         return mGoogleSignInClient;
     }
 
-    public static MongoDbSetup getInstance(Context context, StitchAppClient appClient) {
+    public static MongoDbSetup getInstance(Context context
+//            , StitchAppClient appClient
+    ) {
 
-        return new MongoDbSetup(context,appClient);
+        return new MongoDbSetup(context
+//                ,appClient
+        );
     }
 
 
@@ -233,7 +219,6 @@ public class MongoDbSetup {
         return sdf.format(new Date());
     }
 
-
 //    public void checkUserStateIfNull(Context context, FirebaseAuth auth) {
 //
 //        Log.d(TAG, "checkUserStateIfNull: is called");
@@ -242,6 +227,10 @@ public class MongoDbSetup {
 //            auth.signOut();
 //        }
 //    }
+
+    public static FirebaseAuth getAuth() {
+        return mAuth;
+    }
 
     public void checkAuth(Context context, FirebaseAuth auth) {
 
@@ -253,6 +242,27 @@ public class MongoDbSetup {
         }
 
 
+    }
+
+    public static StitchAppClient getAppClient() {
+        return appClient;
+    }
+
+    private static RemoteMongoClient getRemoteMongoDbClient() {
+
+        return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+    }
+
+    public static RemoteMongoCollection<Document> getPlants_Collection() {
+        return
+                getRemoteMongoDbClient().getDatabase("eye_plant")
+                        .getCollection("plants");
+    }
+
+    public static RemoteMongoCollection<Document> getUsers_collection() {
+        return
+                getRemoteMongoDbClient().getDatabase("eye_plant")
+                        .getCollection("users");
     }
 
     public void goToWhereverWithFlags(Context activityContext, Context c, Class<? extends AppCompatActivity> cl) {
