@@ -21,6 +21,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.utility_classes.MongoDbSetup;
+import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,18 +33,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 
 import org.bson.Document;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -53,13 +52,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Google signIn
     private static final int RC_SIGN_IN = 9001;
 
-    private GoogleSignInClient mGoogleSignInClient;
-//    private CallbackManager mCallbackManager;
-
     //firebase
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private MongoDbSetup mongoDbSetup;
+    private DatabaseReference user_ref;
+    private DatabaseReference myRef;
+    private GoogleSignInClient mGoogleSignInClient;
+    private CallbackManager mCallbackManager;
 
     // widgets
     private MaterialButton loginButton;
@@ -67,30 +66,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private RelativeLayout loginLayout;
     private EditText mEmailField, mPasswordField;
     private FragmentManager fragmentManager;
-    private boolean isVerified;
     private Context mContext;
-
-    // Stitch and Mongodb Cluster
-    private StitchAppClient stitchAppClient;
-    private RemoteMongoClient remoteMongoClient;
-    private RemoteMongoCollection<Document> remoteMongoCollection;
-    private Document myFirstDocument;
-    private DateFormat format;
-    private Date currentDate = new Date();
-
+    private StitchAppClient appClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
         mContext = LoginActivity.this;
+        connectMongoDb();
+        mongoDbSetup.checkAuth(getApplicationContext(), mAuth);
 
         initLayout();
         buttonListeners();
+    }
+
+    private void connectMongoDb() {
+        mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext(), appClient);
+        fragmentManager = getSupportFragmentManager();
+        mAuth = MongoDbSetup.getAuth();
+
+        mGoogleSignInClient = MongoDbSetup.getClient();
+        String bs = "s";
     }
 
     public void initLayout() {
@@ -115,89 +113,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.googleSignInButton).setOnClickListener(this);
         findViewById(R.id.forgotPass_logIn).setOnClickListener(this);
 
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //token taken from firebase authentication data
-                .requestEmail()
-                .build();
+//        // Configure Google Sign In
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //token taken from firebase authentication data
+//                .requestServerAuthCode("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //auth code from firebase authentication data
+//                .requestEmail()
+//                .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//        mGoogleSignInClient = MongoDbSetup.getClient();
         // Initialize Facebook Login button
 //        mCallbackManager = CallbackManager.Factory.create();
-//        initStitchApp(email);
-
-
-        final StitchAppClient client =
-                Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
-
-        final RemoteMongoClient mongoClient =
-                client.getServiceClient(RemoteMongoClient.factory, getResources().getString(R.string.service_name));
-
-
-        final RemoteMongoCollection<Document> coll =
-                mongoClient.getDatabase(getResources().getString(R.string.eye_plant))
-                        .getCollection(getResources().getString(R.string.eye_plant_plants));
-//
-
     }
-
-//    private void initStitchApp(
-//            EditText email
-//    ) {
-//
-////        Stitch.initialize(mContext);
-//
-//        final StitchAppClient client =
-//                Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
-//
-//        final RemoteMongoClient mongoClient =
-//                client.getServiceClient(RemoteMongoClient.factory, getResources().getString(R.string.service_name));
-//
-//
-//        final RemoteMongoCollection<Document> coll =
-//                mongoClient.getDatabase(getResources().getString(R.string.eye_plant))
-//                        .getCollection(getResources().getString(R.string.eye_plant_plants));
-//
-//        client.getAuth().loginWithCredential(new AnonymousCredential()).continueWithTask(
-//                task -> {
-//                    if (!task.isSuccessful()) {
-//                        Log.e("STITCH", "Login failed!");
-//                        throw task.getException();
-//                    }
-//
-//                    final Document updateDoc = new Document(
-//                            "owner_id",
-//                            task.getResult().getId()
-//                    );
-//
-//                    updateDoc.put("number", 69);
-//                    updateDoc.put("nr", 55);
-//                    updateDoc.put("extraNum", 69);
-//                    updateDoc.put("email", String.valueOf(email.getText()));
-//
-//                    return coll.updateMany(
-//                            null, updateDoc, new RemoteUpdateOptions().upsert(true)
-//                    );
-//                }
-//        ).continueWithTask(task -> {
-//            if (!task.isSuccessful()) {
-//                Log.e("STITCH", "Update failed!");
-//                throw task.getException();
-//            }
-//            List<Document> docs = new ArrayList<>();
-//            return coll
-//                    .find(new Document("owner_id", client.getAuth().getUser().getId()))
-//                    .limit(100)
-//                    .into(docs);
-//        }).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                Log.d("STITCH", "Found docs: " + task.getResult().toString());
-//                return;
-//            }
-//            Log.e("STITCH", "Error: " + task.getException().toString());
-//            task.getException().printStackTrace();
-//        });
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -210,7 +137,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
-                firebaseAuthWithGoogle(account);
+//                firebaseAuthWithGoogle(account);
+                handleGoogleSignInResult(task);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Google_Tag, "Google sign in failed", e);
@@ -218,73 +146,47 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    // sign in with email method
-    private void signInWithEmail() {
-
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
-        // first check if our textFields aren't empty
-        if (TextUtils.isEmpty(password) && TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
-            mPasswordField.setError("Required.");
-
-            Toast.makeText(getApplicationContext(), "Please type in email and password", Toast.LENGTH_SHORT).show();
-
-        } else if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
-            Toast.makeText(getApplicationContext(), "Please type in email or phone", Toast.LENGTH_SHORT).show();
-
-        } else if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
-            Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
-
-        } else {
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Signing in");
-            progressDialog.setMessage("Signing in, please wait...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setIcon(R.drawable.ai_plant);
-            progressDialog.show();
-
-//            // after checking, we try to login
-//            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-//                // if sign in is successful
-//                if (task.isSuccessful()) {
-//                    progressDialog.dismiss();
-//                    verifyAccount(mEmailField); // check if user is verified by email
-//
-//                }
-//            }).addOnFailureListener(e -> {
-//                progressDialog.dismiss();
-//                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-//                mAuth.signOut();
-//            });
-        }
-    }
-
-    // verification  if user has validated or not
-
-    /**
-     * @param email : email of the registered user, allows login if & only if validated
-     * @author Mo.Msaad
-     **/
-    private void verifyAccount(EditText email) {
-
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            FirebaseUser user = mAuth.getCurrentUser();
-            isVerified = user.isEmailVerified(); // getting boolean true or false from database
-            if (isVerified) {
-//                verifyFirstEmailLogin(email, "Chose a user name", avatarURL);
-//                addUserToDataBase();
-//                initStitchApp(email);
-                goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class); // if yes goto mainActivity
-            } else {
-                // else we first sign out the user, until he checks his email then he can connect
-                mAuth.signOut();
-                Toast.makeText(getApplicationContext(), "Please verify your account.", Toast.LENGTH_SHORT).show();
-            }
-        } catch (NullPointerException e) {
-            Toast.makeText(getApplicationContext(), "Somthing went wrong...", Toast.LENGTH_SHORT).show();
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            assert account != null;
+
+            GoogleCredential googleCredential =
+                    new GoogleCredential(account.getServerAuthCode());
+
+            Stitch.getDefaultAppClient().getAuth().loginWithCredential(googleCredential)
+                    .addOnCompleteListener(
+                            task -> {
+                                if (task.isSuccessful()) {
+                                    final String displayName = task.getResult().getProfile().getFirstName()
+                                            + " " + task.getResult().getProfile().getLastName();
+                                    final String email = task.getResult().getProfile().getEmail();
+                                    final String photoURL = task.getResult().getProfile().getPictureUrl();
+
+                                    Log.d(TAG, "google sign in result: " + "\n" + "displayName: " + displayName + "\n" + "email: " + email
+                                            + "\n" + "PictureURL: " + photoURL);
+
+//                        verifyFirstGoogleLogin(email, displayName, photoURL);
+//                                    addUserToMongoDatabase(email, photoURL);
+
+                                    Log.d(Google_Tag, "signInWithCredential:success");
+                                    Snackbar.make(findViewById(R.id.login_layout), "Authentication successful.", Snackbar.LENGTH_SHORT).show();
+
+                                    new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(),
+                                            getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
+                                    Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                                }
+
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(mContext, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+        } catch (ApiException e) {
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }
 
@@ -308,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                        addUserToDataBase();
                         Log.d(Google_Tag, "signInWithCredential:success");
                         Snackbar.make(findViewById(R.id.login_layout), "Authentication successful.", Snackbar.LENGTH_SHORT).show();
-                        new Handler().postDelayed(() -> goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
+                        new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
 
                     } else {
                         // If sign in fails, display a message to the user.
@@ -328,8 +230,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
 
             case R.id.button_id_log_in:
-//                signInWithEmail();
-//                getMongoDbConnection();
                 loginEmailMongoDb(mEmailField, mPasswordField);
 
                 break;
@@ -423,16 +323,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // [START signOut]
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, task -> {
-                    // [START_EXCLUDE]
-                    new Handler().postDelayed(() -> goToWhereverWithFlags(getApplicationContext(),
-                            getApplicationContext(), LoginActivity.class), Toast.LENGTH_SHORT);
-
-                    // [END_EXCLUDE]
-                });
-    }
+//    private void signOut() {
+//        mGoogleSignInClient.signOut()
+//                .addOnCompleteListener(this, task -> {
+//                    // [START_EXCLUDE]
+//                    new Handler().postDelayed(() -> goToWhereverWithFlags(getApplicationContext(),
+//                            getApplicationContext(), LoginActivity.class), Toast.LENGTH_SHORT);
+//
+//                    // [END_EXCLUDE]
+//                });
+//    }
+//    public void addUserToMongoDatabase(String email, String picture) {
+//
+//        final Document userDoc = new Document(
+//                getResources().getString(R.string.email_for_db),
+//                email)
+//                .append(getResources().getString(R.string.picture_for_db),
+//                        picture);
+//
+//        MongoDbSetup.getUsers_collection().insertOne(userDoc);
+//    }
 
     // [END signOut]
     private void loginEmailMongoDb(
@@ -462,33 +372,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setIcon(R.drawable.ai_plant);
             progressDialog.show();
-        }
 
-        UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
 
-        Stitch.
-                getDefaultAppClient()
-                .getAuth().loginWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                            if (!task.isSuccessful()) {
-                                Log.e("stitch", "Error logging in with email/password auth:", task.getException());
+            UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
 
-                                String error = task.getException().getMessage();// get error from fireBase
-                                Toast.makeText(mContext, "Error: " + error, Toast.LENGTH_SHORT).show();
+            Stitch.
+                    getDefaultAppClient()
+                    .getAuth().loginWithCredential(credential)
+                    .addOnCompleteListener(task -> {
+                                if (!task.isSuccessful()) {
+                                    Log.e("stitch", "Error logging in with email/password auth:", task.getException());
 
-                            } else {
-                                Log.d("stitch", "Successfully logged in as user " + task.getResult().getId());
+                                    String error = task.getException().getMessage();// get error from fireBase
+                                    Toast.makeText(mContext, "Error: " + error, Toast.LENGTH_SHORT).show();
 
-                                new Handler().postDelayed(() ->
-                                        LoginActivity.goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
+                                } else {
+                                    Log.d("stitch", "Successfully logged in as user " + task.getResult().getId());
+
+                                    new Handler().postDelayed(() ->
+                                            mongoDbSetup.goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
+                                }
                             }
-                        }
-                );
+                    );
+        }
     }
 
-    public static void goToWhereverWithFlags(Context activityContext, Context c, Class<? extends AppCompatActivity> cl) {
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
 
-        activityContext.startActivity(new Intent(c, cl).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mongoDbSetup.checkAuth(getApplicationContext(), mAuth);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
 }

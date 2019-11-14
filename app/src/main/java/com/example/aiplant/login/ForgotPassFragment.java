@@ -1,5 +1,6 @@
 package com.example.aiplant.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,15 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.aiplant.R;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
 
 public class ForgotPassFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
+
+    private MongoDbSetup mongoDbSetup;
+    private Context mContext;
+    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView forgot_password, simply_enter;
@@ -35,6 +42,11 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);
+        mContext = getActivity();
+
+        mongoDbSetup = MongoDbSetup.getInstance(mContext, appClient);
+
+
         mAuth = FirebaseAuth.getInstance();
         findWidgets(v);
 
@@ -97,7 +109,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
                             if (task.isSuccessful()) {
                                 Log.d("stitch", getResources().getString(R.string.sent_reset_email));
                                 new Handler().postDelayed(() ->
-                                        LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
 
                                 Toast.makeText(getActivity(), getResources().getString(R.string.sent_reset_email), Toast.LENGTH_SHORT).show();
 

@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +38,9 @@ import org.bson.Document;
 public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
+
+    private MongoDbSetup mongoDbSetup;
+    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
@@ -59,6 +63,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         this.savedInstanceState = savedInstanceState;
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
+
+        mongoDbSetup = MongoDbSetup.getInstance(mContext, appClient);
 
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());
@@ -244,7 +250,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                             if (task.isSuccessful()) {
                                 Log.d("stitch", "Successfully sent account confirmation email");
                                 new Handler().postDelayed(() ->
-                                        LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
                                 Toast.makeText(getContext(), "Registration complete please verify: ", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
 
@@ -278,7 +284,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                             } else {
                                 Log.d("stitch", "Successfully logged in as user " + task.getResult().getId());
                                 new Handler().postDelayed(() ->
-                                        LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class), Toast.LENGTH_SHORT);
+                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class), Toast.LENGTH_SHORT);
                             }
                         }
                 );
