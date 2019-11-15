@@ -170,7 +170,23 @@ All provisions of the Terms which by their nature should survive termination sha
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
 
+<!--    database-->
+    <string name="eye_plant">eye_plant</string>
+    <string name="service_name">mongodb-atlas</string>
+    <string name="eye_plant_plants">plants</string>
+    <string name="eye_plant_users">users</string>
+    <string name="picture_for_db">picture</string>
+    <string name="email_for_db">email</string>
+
+
+    <string name="sent_reset_email">Successfully sent password reset email</string>
+    <string name="google_web_client_id">556950483367–9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com</string>
+<!--    <string name="google_web_client_id">1046169347129-hnood922edmveaqmr3kdnfiqn6gmc8ap.apps.googleusercontent.com</string>-->
+<!--    <string name="google_web_client_id">556950483367-i2gs0sujvtbtoi281f1dtsbaujqh2k8c.apps.googleusercontent.com</string>-->
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_of_plant">Name of Plant</string>
+
 </resources>

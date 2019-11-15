@@ -15,15 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "556950483367-hpkjgusklhjnkqbho9q065uhs0g0b6v0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.aiplant",
-            "certificate_hash": "d219415c16b0b838e2e16dcc3ce7c2519e71b59f"
-          }
-        },
-        {
-          "client_id": "556950483367-iigs79v2buhgi0qb2lkpsbinlihtoh7n.apps.googleusercontent.com",
+          "client_id": "556950483367-i2gs0sujvtbtoi281f1dtsbaujqh2k8c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.aiplant",
@@ -31,8 +23,28 @@
           }
         },
         {
-          "client_id": "556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "556950483367-4fabucv28tp371mqc43sfjbif8g34hd9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aiplant",
+            "certificate_hash": "96dcbc54338569fbecebb8609de5073ab634342f"
+          }
+        },
+        {
+          "client_id": "556950483367-qeo5dmtflvj1le174mqfe0bbmo11hc63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aiplant",
+            "certificate_hash": "63a4132b27e648423ef57e4b652dc52d8d9c1980"
+          }
+        },
+        {
+          "client_id": "556950483367-hpkjgusklhjnkqbho9q065uhs0g0b6v0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aiplant",
+            "certificate_hash": "d219415c16b0b838e2e16dcc3ce7c2519e71b59f"
+          }
         }
       ],
       "api_key": [

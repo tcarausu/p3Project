@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +21,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
 public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
+
+    private MongoDbSetup mongoDbSetup;
 
     private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
@@ -49,6 +54,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         this.savedInstanceState = savedInstanceState;
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
+
+        mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
 
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());
@@ -99,6 +106,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         // getting input from device
         final String email = signUp_email.getText().toString();
         final String user_name = name_last_name.getText().toString();
+
         String password = pass_field.getText().toString();
         String confPass = confirm_pass.getText().toString();
 
@@ -149,50 +157,38 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             loadingBar.setCanceledOnTouchOutside(false);
             //if all are fine, then try to create a user
 
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                // if success
-
-                if (task.isSuccessful()) {
-                    loadingBar.dismiss();
-                    Toast.makeText(getContext(), R.string.registration_success, Toast.LENGTH_SHORT).show();
-                    sendVerifyEmail();
-
-                    mAuth.signOut();
-                    new Handler().postDelayed(() ->
-                            LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
-
-                } else {
-                    loadingBar.dismiss();
-                    Toast.makeText(getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    mAuth.signOut(); // always sign out the user if something goes wrong
-                }
-
-
-            });
-
+            registerToMongoDbWithEmail(signUp_email, pass_field);
         }
 
     }
 
-    // verification email
-    private void sendVerifyEmail() {
+    private void registerToMongoDbWithEmail(
+            EditText email, EditText password
+    ) {
+        String emailToUse = String.valueOf(email.getText());
+        String passToUse = String.valueOf(password.getText());
 
-        FirebaseUser user = mAuth.getCurrentUser();// check user
-        if (mAuth != null && user != null) {
+        UserPasswordAuthProviderClient emailPassClient = Stitch.
+                getDefaultAppClient()
+                .getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
 
-            user.sendEmailVerification().addOnCompleteListener(task -> {
+        emailPassClient.registerWithEmail(emailToUse, passToUse)
+                .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Log.d("stitch", "Successfully sent account confirmation email");
+                                new Handler().postDelayed(() ->
+                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                Toast.makeText(getContext(), "Registration complete please verify: ", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
 
-                if (task.isSuccessful()) {
-                    mAuth.signOut();// need to sign out the user every time until he confirms email
+                            } else {
+                                Log.e("stitch", "Error registering new user:", task.getException());
 
-                } else {
-                    String error = task.getException().getMessage();// get error from fireBase
-                    Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
-                    mAuth.signOut();// need to sign out the user every time until he confirms email
-                }
-
-            });
-        }
+                                String error = task.getException().getMessage();// get error from fireBase
+                                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
     }
 
     @Override
@@ -227,10 +223,10 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         String password = pass_field.getText().toString();
         String confirm_password = confirm_pass.getText().toString();
 
-        bundle.putString("email",email);
-        bundle.putString("name_lastName",name_lastName);
-        bundle.putString("password",password);
-        bundle.putString("confirm_password",confirm_password);
+        bundle.putString("email", email);
+        bundle.putString("name_lastName", name_lastName);
+        bundle.putString("password", password);
+        bundle.putString("confirm_password", confirm_password);
 
         terms.setArguments(bundle);
 
