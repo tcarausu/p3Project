@@ -3,79 +3,88 @@
 <androidx.drawerlayout.widget.DrawerLayout
 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
     android:fitsSystemWindows="true"
-    android:background="@color/dark_green_transparent"
-    tools:context=".user_profile.User_Profile"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".user_profile.User_Profile">
 
-    <FrameLayout
-        android:id="@+id/useThisFragmentID"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/useThisFragmentID"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
 
     <LinearLayout
-        android:weightSum="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1">
 
 
         <RelativeLayout
-            android:layout_weight=".6"
+
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight=".7">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolBar"
+                style="@style/Theme.AppCompat.Light.NoActionBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                style="@style/Theme.AppCompat.Light.NoActionBar"
-                app:titleTextColor="@color/green_dark"
-                android:background="@drawable/eyeplant_toprec">
+                android:background="@drawable/eyeplant_toprec"
+                app:titleTextColor="@color/green_dark">
+
             </androidx.appcompat.widget.Toolbar>
 
-        <LinearLayout
-            android:gravity="center"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <include layout="@layout/top_user_profile" />
+                <include layout="@layout/top_user_profile" />
 
-        </LinearLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="20dp"
-            android:layout_weight=".4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight=".3">
+
             <include layout="@layout/bottom_user_profile" />
-            <include layout="@layout/layout_bottom_navigation"/>
+
+            <include layout="@layout/layout_bottom_navigation" />
 
         </RelativeLayout>
     </LinearLayout>
-    </FrameLayout>
+    <!--    </FrameLayout>-->
 
     <com.google.android.material.navigation.NavigationView
+
         android:id="@+id/nav_view"
-        android:padding="16dp"
-        android:layout_marginTop="80dp"
-        android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-
-        app:menu="@menu/nav_bar_menu"
-        app:itemTextColor="@color/black"
-        android:background="@drawable/button_green"
-        android:fitsSystemWindows="true"
+        android:layout_gravity="start"
+        android:layout_marginBottom="50dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        android:textAlignment="viewStart"
+        app:elevation="4dp"
+        app:itemHorizontalPadding="16dp"
+        app:itemIconTint="@color/green_dark"
+        app:itemTextColor="@color/green_dark"
+        tools:animateLayoutChanges="true"
         app:headerLayout="@layout/nav_header"
-        />
+        app:itemBackground="@color/green_dark"
+        app:menu="@menu/nav_bar_menu">
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
