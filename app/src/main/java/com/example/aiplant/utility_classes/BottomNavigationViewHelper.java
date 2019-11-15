@@ -8,7 +8,7 @@ import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.user_profile.User_Profile;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * File created by tcarau18
@@ -21,16 +21,17 @@ public class BottomNavigationViewHelper {
     /**
      * Bottom Navigation View settup
      */
-    public static void setupBottomNavigationView(BottomNavigationViewEx bottomNavigationViewEx) {
+    public static void setupBottomNavigationView(BottomNavigationView bottomNavigationView) {
         Log.d(TAG, "setupBottomNavigationView: Setting up  BottomNavigationViewEx ");
-        bottomNavigationViewEx.enableAnimation(false);
-        bottomNavigationViewEx.enableShiftingMode(0, false);
-        bottomNavigationViewEx.setItemHorizontalTranslationEnabled(false);
-        bottomNavigationViewEx.setTextVisibility(false);
+//        bottomNavigationView.enableAnimation(false);
+//        bottomNavigationView.setAnimation(null);
+//        bottomNavigationViewEx.enableShiftingMode(0, false);
+//        bottomNavigationViewEx.setItemHorizontalTranslationEnabled(false);
+//        bottomNavigationViewEx.setTextVisibility(false);
 
     }
 
-    public static void enableNavigation(final Context context, BottomNavigationViewEx viewEx) {
+    public static void enableNavigation(final Context context, BottomNavigationView viewEx) {
         viewEx.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.ic_home:

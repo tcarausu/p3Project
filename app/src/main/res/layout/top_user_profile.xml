@@ -4,137 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".user_profile.User_Profile">
 
+
     <LinearLayout
         android:id="@+id/user_profile_pic_image"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight=".3"
-            android:background="@drawable/border_not_sharp"
-            android:elevation="4dp">
 
-            <LinearLayout
-                android:id="@+id/profileLinear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/profilePicture"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="3dp"
-                    android:layout_marginTop="5dp"
-                    android:onClick="onClick"
-                    android:src="@drawable/avatar_final"
-                    app:civ_border_color="@color/green_dark" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/hintTextLinear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/profileLinear"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/hint_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/click_on_image_to_edit_profile_picture"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/editNameLinear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/hintTextLinear">
-
-
-                <TextView
-                    android:id="@+id/userNameTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="@string/user876543"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/username_editText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/green_fade"
-                    android:hint="@string/chose_a_user_name"
-                    android:textAlignment="center"
-                    android:visibility="invisible" />
-
-                <Button
-                    android:id="@+id/editUserNameButton"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/button_green"
-                    android:onClick="onClick"
-                    android:text="@string/edit"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
-
-                <Button
-                    android:id="@+id/saveUserNameButton"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/button_green"
-                    android:onClick="onClick"
-                    android:text="@string/save"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:visibility="invisible" />
-            </RelativeLayout>
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_weight=".7"
-            android:background="@color/white">
+            android:layout_height="match_parent">
+
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/avatar_final"
+                android:elevation="4dp"
+                android:padding="5dp"
+                app:civ_border="true"
+                app:civ_border_color="@color/green_dark" />
+
+            <TextView
+                android:id="@+id/userNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profilePicture"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:text="@string/user876543"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/username_editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profilePicture"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:elevation="5dp"
+                android:hint="@string/chose_a_user_name"
+                android:padding="5dp"
+                android:textAlignment="center"
+                android:visibility="invisible" />
+
+
+
+            <ImageButton
+                android:id="@+id/saveUserNameButton"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/username_editText"
+                android:layout_alignBottom="@id/username_editText"
+                android:onClick="onClick"
+                android:padding="5dp"
+                android:src="@drawable/check"
+                android:text="@string/save"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
         </RelativeLayout>
-
 
     </LinearLayout>
 

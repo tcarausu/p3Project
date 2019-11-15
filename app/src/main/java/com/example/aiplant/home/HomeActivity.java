@@ -15,7 +15,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,16 +37,16 @@ import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.mikhaellopez.circularimageview.CircularImageView;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.example.aiplant.R.*;
+import static com.example.aiplant.R.drawable;
 import static com.example.aiplant.R.drawable.mood_cold;
 import static com.example.aiplant.R.drawable.mood_hot;
 import static com.example.aiplant.R.drawable.mood_medium;
+import static com.example.aiplant.R.id;
+import static com.example.aiplant.R.layout;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -58,10 +57,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public static final String LAST_TEXT_NAME = "", LAST_TEXT_TIME_PERIOD = "";
 
 
-
     // widgets
+    private BottomNavigationView bottomNavigationViewEx;
     private Button editPlantNameButton, savePlantNameButton, editTimePeriodButton, saveTimePeriodButton, adjustConditions, saveChangesButton;
-    private TextView change_picture,flowerNameTextView, flowerTimeTextView, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current;
+    private TextView change_picture, flowerNameTextView, flowerTimeTextView, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current;
     private SeekBar humidity, temperature, light;
     private ImageView mood_pic;
     private RelativeLayout home_Layout;
@@ -86,7 +85,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         SeekBar temperature = findViewById(id.temperature_slider);
         SeekBar light = findViewById(id.sunlight_slider);
 
- //       changePlantPicture();
+        //       changePlantPicture();
         setupBottomNavigationView();
         humidity.setProgress(50);
         humidity.getProgress();
@@ -95,20 +94,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         light.setProgress(40);
         light.getProgress();
 
+        mongoDatabase();
+
+    }
+
+    private void mongoDatabase() {
+
     }
 
 
     public void initLayout() {
         home_Layout = findViewById(id.home_activity);
         profileImage = findViewById(id.profileImage);
-
         change_picture = findViewById(id.change_picture);
         flowerNameEditText = findViewById(id.flower_pic_name);
         flowerNameEditText.setEnabled(false);
         flowerTimeEditText = findViewById(id.flower_pic_time);
         flowerTimeEditText.setEnabled(false);
         flowerTimeTextView = findViewById(id.flower_pic_time_text_view);
-
         //Conditions
         temperature_text = findViewById(id.temperature_text);
         humidity_text = findViewById(id.humidity_text);
@@ -133,8 +136,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
     private void changePlantPicture() {
         String text = "change plant picture";
 
@@ -151,7 +152,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
 
 //        wlp.windowAnimations = R.style.AlertDialogAnimation;
-        wlp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL;
+        wlp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         alertDialog.getWindow().setAttributes(wlp);
         alertDialog.setCanceledOnTouchOutside(true);
@@ -226,7 +227,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void afterTextChanged(Editable s) {
                 flowerNameEditText.setEnabled(false);
-              //  flowerNameEditText.setText(LAST_TEXT_NAME);
+                //  flowerNameEditText.setText(LAST_TEXT_NAME);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
                     pref.edit().putString(LAST_TEXT_NAME, s.toString()).apply();
                 }
@@ -292,9 +293,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         light_max.setEnabled(false);
 
 
-     //   humidity.setEnabled(false);
-   //     temperature.setEnabled(false);
-   //     light.setEnabled(false);
+        //   humidity.setEnabled(false);
+        //     temperature.setEnabled(false);
+        //     light.setEnabled(false);
 
 
         humidity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -388,7 +389,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
         adjustConditions.setOnClickListener(v -> {
             hum_min.setEnabled(true);
             hum_max.setEnabled(true);
@@ -415,7 +415,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 "Yes",
                 (dialog, id) ->
                         dialog.cancel());
-            saveChangesButton.setVisibility(View.GONE);
+        saveChangesButton.setVisibility(View.GONE);
 
         builder1.setNegativeButton(
                 "No",
@@ -452,14 +452,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(id.bottomNavigationBar);
+        bottomNavigationViewEx = findViewById(id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
-            menuItem = menu.getItem(ACTIVITY_NUM);
-        }
+        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
 
     }

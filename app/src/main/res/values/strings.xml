@@ -27,7 +27,7 @@
 
     <string name="name_plant">Name of the plant</string>
     <string name="hint_name_plant">Name your plant</string>
-    <string name="birthday_plant">Birthday of the plant</string>
+    <string name="birthday_plant">plant Birthday</string>
     <string name="minimum_humidity">Min %</string>
     <string name="maximum_humidity">Max %</string>
     <string name="minimum_sunlight">Min lux</string>
@@ -72,7 +72,6 @@
     <string name="chose_a_user_name">Chose a user name</string>
     <string name="user876543">User876543</string>
     <string name="edit">Edit</string>
-    <string name="save">Save</string>
     <string name="home">Home</string>
     <string name="library">Library</string>
     <string name="profile">Profile</string>
@@ -88,6 +87,7 @@
     <string name="reset_device">Reset device</string>
     <string name="example_email_com">example@email.com</string>
     <string name="delete_account">Delete account</string>
+    <string name="save">Save</string>
     <!--   HINTS    -->
     <string name="full_name_hint">Full Name</string>
     <string name="username_hint">Username</string>
@@ -191,5 +191,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_of_plant">Name of Plant</string>
+    <string name="change_username">Username</string>
+    <string name="change_profile_image">Change profile image</string>
 
 </resources>
