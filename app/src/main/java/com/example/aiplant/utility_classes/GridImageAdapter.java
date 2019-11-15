@@ -2,7 +2,6 @@ package com.example.aiplant.utility_classes;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.example.aiplant.R;
 import com.example.myapplication.utility_classes.SquareImageView;
@@ -71,8 +69,8 @@ public class GridImageAdapter extends ArrayAdapter<String> {
         String imgURL = getItem(position);
 
         //MyModifications
-        ImageLoaderConfiguration configuration =  ImageLoaderConfiguration.createDefault(mContext);
-        ImageLoader imageLoader =  ImageLoader.getInstance();
+        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
+        ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(configuration);
 
         imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {

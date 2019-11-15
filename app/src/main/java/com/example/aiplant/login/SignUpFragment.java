@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
@@ -33,7 +32,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
 
     private MongoDbSetup mongoDbSetup;
 
-    private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
     private EditText name_last_name, signUp_email, pass_field, confirm_pass;
 
@@ -57,7 +55,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
 
         mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
 
-        mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());
         findWidgets(v);
 

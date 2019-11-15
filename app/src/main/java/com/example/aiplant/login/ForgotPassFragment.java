@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
@@ -26,7 +25,6 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     private MongoDbSetup mongoDbSetup;
     private Context mContext;
 
-    private FirebaseAuth mAuth;
     private TextView forgot_password, simply_enter;
     private EditText forgot_email;
     private ImageView aiplant_icon;
@@ -43,7 +41,6 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
 
         mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
 
-        mAuth = FirebaseAuth.getInstance();
         findWidgets(v);
 
         return v;
