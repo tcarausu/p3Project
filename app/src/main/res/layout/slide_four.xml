@@ -17,7 +17,8 @@
             android:text="@string/slide_4_title"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,11 +31,11 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />
 
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:src="@drawable/edit_info_gif" />
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:src="@drawable/modify_screen"
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
 

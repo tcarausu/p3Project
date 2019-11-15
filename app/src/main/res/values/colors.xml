@@ -55,7 +55,7 @@
     <!-- welcome slides colours -->
 
     <!-- Screens background color-->
-    <color name="bg_screen">#20d2bb</color>
+    <color name="bg_screen">#0D8D5E</color>
 
     <!-- dots inactive colors -->
 
@@ -77,6 +77,20 @@
         <item>@color/dot_dark_screen</item>
         <item>@color/dot_dark_screen</item>
         <item>@color/dot_dark_screen</item>
+    </array>
+
+    <array name="array_dot_active_connect">
+        <item>#90EE90</item>
+        <item>#90EE90</item>
+        <item>#90EE90</item>
+
+    </array>
+
+    <array name="array_dot_inactive_connect">
+        <item>#008000</item>
+        <item>#008000</item>
+        <item>#008000</item>
+
     </array>
 
 </resources>
