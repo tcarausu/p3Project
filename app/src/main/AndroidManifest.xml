@@ -25,16 +25,32 @@
 
         <activity
             android:name=".home.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
 
         <activity
+
             android:name=".search.SearchActivity"
             android:windowSoftInputMode="adjustResize|adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+        </activity>
+
 
         <activity
             android:name=".user_profile.User_Profile"
-            android:theme="@style/AppTheme"
+            android:theme="@style/Theme.Design.NoActionBar"
             android:windowSoftInputMode="adjustResize|adjustPan"
             android:screenOrientation="portrait" >
 
@@ -49,6 +65,7 @@
 
         <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait">
+
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -60,7 +77,6 @@
         <activity
             android:name=".login.LoginActivity"
             android:screenOrientation="portrait">
-
 
         </activity>
 

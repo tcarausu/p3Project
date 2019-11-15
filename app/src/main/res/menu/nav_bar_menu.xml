@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:checkableBehavior="single">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    tools:showDividers="middle"
+    tools:theme="@style/Theme.Design.NoActionBar">
+
+
+    <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/resetPassItem"
-            android:icon="@drawable/password"
-            android:title="@string/reset_password">
-        </item>
+            android:id="@+id/chengeUserNameItem"
+            android:icon="@drawable/pen"
+            android:title="@string/change_username" />
+
+        <item
+            android:id="@+id/changeProfPictureItem"
+            android:icon="@drawable/face"
+            android:title="@string/change_profile_image" />
 
         <item
             android:id="@+id/reset_deviceItem"
             android:icon="@drawable/device"
-            android:title="@string/reset_device">
-        </item>
+            android:title="@string/reset_device" />
 
-        <item android:title=""
-            android:id="@+id/emptyItem1">
-        </item>
         <item
-            android:title="@string/sign_out"
             android:id="@+id/signOutItem"
-            >
-        </item>
+            android:icon="@drawable/log_out"
+            android:title="@string/sign_out" />
 
+        <item
+            android:id="@+id/resetPassItem"
+            android:icon="@drawable/reset"
+            android:title="@string/reset_password" />
 
+        <item android:title="" />
+
+        <item
+            android:id="@+id/delete_accountItem"
+            android:icon="@drawable/delete_red"
+            android:title="@string/delete_account" />
     </group>
 
-    <item
-        android:title="@string/account_settings">
-
-        <menu>
 
 
-            <item
-                android:id="@+id/emptyItem2"
-                android:title="">
-
-            </item>
-            <item
-                android:id="@+id/delete_accountItem"
-                android:title="@string/delete_account"
-                />
 
 
-        </menu>
 
-    </item>
-
-
-</menu>
+    </menu>

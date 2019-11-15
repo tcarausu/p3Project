@@ -3,7 +3,7 @@ package com.example.aiplant.model;
 import android.graphics.drawable.Drawable;
 
 public class Plant {
-    private String name ;
+    private String _id, name ;
     private int age;
     private int minTemperature, maxTemperature, minHumidity, maxHumidity, minSunLight, maxSunlight;
     private Drawable image ;

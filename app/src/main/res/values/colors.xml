@@ -21,8 +21,9 @@
     <color name="green_main_">#3C6F46</color>
     <color name="green_dark">#334420</color>
     <color name="green_fade">#80CCFF90</color>
+    <color name="red">#D50000</color>
 
-    <color name="orangeMainTheme">#FF9047</color>
+    <color name="grey_dark">#CFCECC</color>
 
     <!--end of user colors-->
 

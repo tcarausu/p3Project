@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,6 +22,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private EditText mSearchParam;
     private ImageView backArrow;
     private ImageButton mSearchButton;
+    private BottomNavigationView bottomNavigationViewEx ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+        bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();

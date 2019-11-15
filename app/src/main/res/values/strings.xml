@@ -1,5 +1,10 @@
 <resources>
+        <!-- app res-->
     <string name="app_name">AIPlant</string>
+    <string name="app_id">eye-plant-tilrj</string>
+
+        <!--activities res-->
+
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="btn_log_in">Login</string>
@@ -96,5 +101,10 @@
     <string name="reset_device">Reset device</string>
     <string name="example_email_com">example@email.com</string>
     <string name="delete_account">Delete account</string>
+    <string name="Nothing_selected">Nothing is selected!</string>
+
     <string name="save">Save</string>
+    <string name="profile_settings">Profile Settings</string>
+    <string name="change_profile_image">Change Profile image</string>
+    <string name="change_username">Change username</string>
 </resources>

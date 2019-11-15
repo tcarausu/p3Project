@@ -1,17 +1,6 @@
 package com.example.aiplant.login;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.aiplant.R;
-import com.google.firebase.auth.FirebaseAuth;
 
 
 public class ForgotPassFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {

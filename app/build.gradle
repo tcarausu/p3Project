@@ -18,8 +18,6 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -55,11 +53,24 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
 
 
-    //Fire base dependency
-    implementation 'com.google.firebase:firebase-auth:19.1.0'
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    //mongo-dep
+    implementation 'org.mongodb:stitch-android-core:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-aws:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-fcm:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-http:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-mongodb-remote:4.6.0'
+    implementation 'org.mongodb:stitch-android-services-twilio:4.6.0'
+    implementation 'org.mongodb:stitch-android-sdk:4.6.0'
+    implementation 'org.mongodb:mongodb-driver-sync:3.11.2'
+    implementation 'org.mongodb:stitch-android-services-mongodb-local:4.6.0'
+    implementation 'androidx.room:room-runtime:2.2.1'
+    annotationProcessor 'androidx.room:room-compiler:2.2.1'
+
+//    //Fire base dependency
+//    implementation 'com.google.firebase:firebase-auth:19.1.0'
+//    implementation 'com.google.firebase:firebase-core:17.2.1'
+//    implementation 'com.google.firebase:firebase-database:19.2.0'
+//    implementation 'com.google.firebase:firebase-storage:19.1.0'
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 

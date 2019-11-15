@@ -1,23 +1,26 @@
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-      <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+      <com.google.android.material.bottomnavigation.BottomNavigationView
+
+          android:id="@+id/bottomNavigationBar"
           android:layout_width="match_parent"
           android:layout_height="50dp"
           android:background="@color/green_main_"
           app:itemTextColor="@color/white"
           android:textAlignment="viewStart"
-          app:itemHorizontalTranslationEnabled="true"
-          app:menu="@menu/bottom_navigation_menu"
-          android:id="@+id/bottomNavigationBar">
+          app:elevation="4dp"
+          tools:animateLayoutChanges="true"
+          app:itemIconTint="@color/white"
+          app:menu="@menu/bottom_navigation_menu">
 
-      </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
+      </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </RelativeLayout>
 

@@ -6,6 +6,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_gravity="center"
+        android:background="@color/white"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -13,8 +14,7 @@
         <RelativeLayout
             android:layout_marginBottom="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <GridView
                 android:id="@+id/grid_view_user_profile"
@@ -29,6 +29,9 @@
                 tools:animateLayoutChanges="true"
                 tools:soundEffectsEnabled="true"
                 android:stretchMode="columnWidth"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+
                 android:verticalSpacing="5dp">
 
             </GridView>

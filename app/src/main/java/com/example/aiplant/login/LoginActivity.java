@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginLayout = findViewById(R.id.login_activity);
         signUp = findViewById(R.id.sign_up);
         orView = findViewById(R.id.orView);
-//        loginButton = findViewById(R.id.facebookLoginButton);
 
         fragmentManager = getSupportFragmentManager();
 

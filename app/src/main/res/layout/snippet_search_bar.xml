@@ -32,7 +32,7 @@
                     android:layout_toEndOf="@+id/backArrow"
                     android:background="@null"
                     android:hint="@string/search_Hint"
-                    android:textColor="@color/orangeMainTheme"
+                    android:textColor="@color/dark_green_transparent"
                     android:textSize="20sp" />
 
                 <ImageButton
