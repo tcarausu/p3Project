@@ -52,7 +52,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int RC_SIGN_IN = 9001;
 
     //firebase
-    private FirebaseAuth mAuth;
     private MongoDbSetup mongoDbSetup;
     private DatabaseReference user_ref;
     private DatabaseReference myRef;
@@ -120,17 +119,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.googleSignInButton).setOnClickListener(this);
         findViewById(R.id.forgotPass_logIn).setOnClickListener(this);
 
-//        // Configure Google Sign In
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //token taken from firebase authentication data
-//                .requestServerAuthCode("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //auth code from firebase authentication data
-//                .requestEmail()
-//                .build();
-
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//        mGoogleSignInClient = MongoDbSetup.getClient();
-        // Initialize Facebook Login button
-//        mCallbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -203,13 +191,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     List<Document> docs = new ArrayList<>();
                                     docs.add(userDoc);
-//                                    docs.add(userDoc2);
                                     return MongoDbSetup.getUsers_collection().insertMany(docs);
                                 }
                             }
 
                     )
-//
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.d("STITCH", "Found docs: " + task.getResult().toString());
