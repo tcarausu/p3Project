@@ -81,10 +81,10 @@
         app:itemTextColor="@color/green_dark"
         tools:animateLayoutChanges="true"
         app:headerLayout="@layout/nav_header"
-        app:itemBackground="@color/green_dark"
         app:menu="@menu/nav_bar_menu">
 
     </com.google.android.material.navigation.NavigationView>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
