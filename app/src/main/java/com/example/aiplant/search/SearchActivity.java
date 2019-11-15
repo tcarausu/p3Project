@@ -11,18 +11,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aiplant.R;
-import com.example.aiplant.create_profile.PlantProfile;
-import com.example.aiplant.model.RecyclerViewPlantItem;
+import com.example.aiplant.create_profile.PlantProfileActivity;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
-import com.example.aiplant.utility_classes.RecyclerViewAdapter;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -72,7 +65,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (v.getId()) {
             case R.id.create_new_plant_button:
-                startActivity(new Intent(this, PlantProfile.class));
+                startActivity(new Intent(this, PlantProfileActivity.class));
                 break;
             case R.id.library_button:
                 startActivity(new Intent(this,AuxActivity.class));
