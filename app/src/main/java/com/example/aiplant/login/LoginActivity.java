@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.model.User;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -30,22 +31,17 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
 
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -181,32 +177,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             + " " + task.getResult().getProfile().getLastName();
                                     final String email = task.getResult().getProfile().getEmail();
                                     final String photoURL = task.getResult().getProfile().getPictureUrl();
+                                    final String birthday = task.getResult().getProfile().getBirthday();
 
                                     Log.d(TAG, "google sign in result: " + "\n" + "displayName: " + displayName + "\n" + "email: " + email
                                             + "\n" + "PictureURL: " + photoURL);
 
+                                    User user = new User(task.getResult().getId(),
+                                            displayName, email, photoURL, 0, birthday);
+
                                     final Document userDoc = new Document(
                                             "logged_user_id",
-                                            task.getResult().getId())
+                                            user.getId())
+                                            .append(
+                                                    getResources().getString(R.string.name_for_db),
+                                                    displayName)
                                             .append(
                                                     getResources().getString(R.string.email_for_db),
-                                                    email)
+                                                    user.getEmail())
                                             .append(getResources().getString(R.string.picture_for_db),
-                                                    photoURL);
-
-                                    final Document userDoc2 = new Document(
-                                            "logged_user_id",
-                                            task.getResult().getId())
-                                            .append(
-                                                    getResources().getString(R.string.email_for_db),
-                                                    "boiii")
-                                            .append(getResources().getString(R.string.picture_for_db),
-                                                    "piiic");
-
+                                                    photoURL)
+                                            .append(getResources().getString(R.string.number_of_plants_for_db),
+                                                    user.getNumber_of_plants())
+                                            .append(getResources().getString(R.string.birthday_for_db),
+                                                    birthday);
 
                                     List<Document> docs = new ArrayList<>();
                                     docs.add(userDoc);
-                                    docs.add(userDoc2);
+//                                    docs.add(userDoc2);
                                     return MongoDbSetup.getUsers_collection().insertMany(docs);
                                 }
                             }
@@ -224,252 +221,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.e("STITCH", "Error: " + task.getException().toString());
                         task.getException().printStackTrace();
                     });
-//                    .addOnCompleteListener(
-//                            task -> {
-//                                if (task.isSuccessful()) {
-//                                    final String displayName = task.getResult().getProfile().getFirstName()
-//                                            + " " + task.getResult().getProfile().getLastName();
-//                                    final String email = task.getResult().getProfile().getEmail();
-//                                    final String photoURL = task.getResult().getProfile().getPictureUrl();
-//
-//                                    Log.d(TAG, "google sign in result: " + "\n" + "displayName: " + displayName + "\n" + "email: " + email
-//                                            + "\n" + "PictureURL: " + photoURL);
-//
-////                        verifyFirstGoogleLogin(email, displayName, photoURL);
-//                                    addUserToMongoDatabase(email, photoURL);
-//
-//                                    Log.d(Google_Tag, "signInWithCredential:success");
-//                                    Snackbar.make(findViewById(R.id.login_layout), "Authentication successful.", Snackbar.LENGTH_SHORT).show();
-//
-//                                    new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(),
-//                                            getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
-//                                } else {
-//                                    // If sign in fails, display a message to the user.
-//                                    Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
-//                                    Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-//                                }
-//
-//                                if (!task.isSuccessful()) {
-//                                    Toast.makeText(mContext, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }
 
-    public void instantUserDb(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            assert account != null;
-
-            GoogleCredential googleCredential =
-                    new GoogleCredential(account.getServerAuthCode());
-
-            Stitch.getDefaultAppClient().getAuth().loginWithCredential(googleCredential)
-                    .continueWithTask(
-                            task -> {
-                                final String displayName = task.getResult().getProfile().getFirstName()
-                                        + " " + task.getResult().getProfile().getLastName();
-                                final String email = task.getResult().getProfile().getEmail();
-                                final String photoURL = task.getResult().getProfile().getPictureUrl();
-
-                                if (!task.isSuccessful()) {
-                                    Log.e("STITCH", "Login failed!");
-                                    throw task.getException();
-                                }
-
-                                final Document updateDoc = new Document(
-                                        "owner_id",
-                                        task.getResult().getId())
-                                        .append(
-                                                getResources().getString(R.string.email_for_db),
-                                                email)
-                                        .append(getResources().getString(R.string.picture_for_db),
-                                                photoURL);
-
-
-                                return MongoDbSetup.getUsers_collection().updateOne(
-                                        null, updateDoc, new RemoteUpdateOptions().upsert(true)
-                                );
-                            }
-                    ).continueWithTask(task -> {
-                if (!task.isSuccessful()) {
-                    Log.e("STITCH", "Update failed!");
-                    throw task.getException();
-                }
-                List<Document> docs = new ArrayList<>();
-                return MongoDbSetup.getUsers_collection()
-                        .find(new Document("owner_id", MongoDbSetup.getAppClient().getAuth().getUser().getId()))
-                        .limit(100)
-                        .into(docs);
-            }).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Log.d("STITCH", "Found docs: " + task.getResult().toString());
-                    return;
-                }
-                Log.e("STITCH", "Error: " + task.getException().toString());
-                task.getException().printStackTrace();
-            });
-        } catch (ApiException e) {
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-        }
-    }
-
-    // [START auth_with_google]
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(Google_Tag, "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-
-                        final String displayName = task.getResult().getUser().getDisplayName();
-                        final String email = task.getResult().getUser().getEmail();
-                        final String photoURL = task.getResult().getUser().getPhotoUrl().toString();
-
-                        Log.d(TAG, "google sign in result: " + "\n" + "displayName: " + displayName + "\n" + "email: " + email
-                                + "\n" + "PictureURL: " + photoURL);
-
-//                        verifyFirstGoogleLogin(email, displayName, photoURL);
-//                        addUserToDataBase();
-                        Log.d(Google_Tag, "signInWithCredential:success");
-                        Snackbar.make(findViewById(R.id.login_layout), "Authentication successful.", Snackbar.LENGTH_SHORT).show();
-                        new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(), getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
-
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(mContext, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
-            case R.id.button_id_log_in:
-                loginEmailMongoDb(mEmailField, mPasswordField);
-
-                break;
-
-            case R.id.googleSignInButton:
-                signIn();
-                break;
-
-            case R.id.forgotPass_logIn:
-
-                Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-
-                if (fragmentForgotPass == null) {
-                    fragmentForgotPass = new ForgotPassFragment();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
-                }
-
-                break;
-
-            case R.id.sign_up_text:
-                Fragment fragmentRegister = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-                if (fragmentRegister == null) {
-                    fragmentRegister = new SignUpFragment();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.addToBackStack(null);
-
-                    fragmentTransaction.add(R.id.useThisFragmentID, fragmentRegister).commit();
-                }
-
-                break;
-
-
-        }
-
-    }
-
-//    private void getMongoDbConnection() {
-//        MongoClientURI uri = new MongoClientURI(
-//                "mongodb+srv://Simortusos:<password>@gettingstarted-zmxym.gcp.mongodb.net/test?retryWrites=true&w=majority");
-//
-//        MongoClient mongoClient = new MongoClient(uri);
-//        MongoDatabase database = mongoClient.getDatabase("test");
-//    }
-
-    //
-//    /**
-//     * @param displayName: email fetched from google provider, used to add user email
-//     * @param email:       name fetched from google provider, used to add user name
-//     * @param photoURL:    phot fetched from google provider, used to add profile pic
-//     * @author Mo.Msaad
-//     **/
-//    private void verifyFirstGoogleLogin(String email, String displayName, String photoURL) {
-//
-//        SharedPreferences ggPrefs = getSharedPreferences("ggPrefs", MODE_PRIVATE);
-//        boolean googleFirstLogin = ggPrefs.getBoolean("ggPrefs", true);
-//
-//        //if its the first run we change the boolean to false
-//        if (googleFirstLogin) {
-//            addNewUser(email, displayName, "description", "website", photoURL);
-//            SharedPreferences.Editor editor = ggPrefs.edit();
-//            editor.putBoolean("ggPrefs", false);
-//            editor.apply();
-//            Log.d(TAG, "verifyFirstRun: boolean first run is: " + googleFirstLogin);
-//        }
-//    }
-//    /**
-//     * @param  email: email fetched   used to login
-//     * @param displayName: display name provider
-//     * @param photoURL: photo url fetched from google provider
-//     *
-//     * */
-//    private void verifyFirstEmailLogin(String email, String displayName, String photoURL) {
-//
-//        SharedPreferences firstLogin = getSharedPreferences("logPrefs", MODE_PRIVATE);
-//        boolean FirstLogin = firstLogin.getBoolean("logPrefs", true);
-//
-//        //if its the first run we change the boolean to false
-//        if (FirstLogin) {
-//            addNewUser(email, displayName, "description", "website", photoURL);
-//            SharedPreferences.Editor editor = firstLogin.edit();
-//            editor.putBoolean("logPrefs", false);
-//            editor.apply();
-//            Log.d(TAG, "verifyFirstRun: boolean first run is: " + FirstLogin);
-//        }
-//    }
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    // [START signOut]
-//    private void signOut() {
-//        mGoogleSignInClient.signOut()
-//                .addOnCompleteListener(this, task -> {
-//                    // [START_EXCLUDE]
-//                    new Handler().postDelayed(() -> goToWhereverWithFlags(getApplicationContext(),
-//                            getApplicationContext(), LoginActivity.class), Toast.LENGTH_SHORT);
-//
-//                    // [END_EXCLUDE]
-//                });
-//    }
-    public void addUserToMongoDatabase(String email, String picture) {
-
-        final Document userDoc = new Document(
-                getResources().getString(R.string.email_for_db),
-                email)
-                .append(getResources().getString(R.string.picture_for_db),
-                        picture);
-        RemoteMongoCollection<Document> usersDb = MongoDbSetup.getUsers_collection();
-
-        usersDb.insertOne(userDoc);
     }
 
     // [END signOut]
@@ -523,6 +282,50 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                     );
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.button_id_log_in:
+                loginEmailMongoDb(mEmailField, mPasswordField);
+
+                break;
+
+            case R.id.googleSignInButton:
+                signIn();
+                break;
+
+            case R.id.forgotPass_logIn:
+
+                Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+
+                if (fragmentForgotPass == null) {
+                    fragmentForgotPass = new ForgotPassFragment();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
+                }
+
+                break;
+
+            case R.id.sign_up_text:
+                Fragment fragmentRegister = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+                if (fragmentRegister == null) {
+                    fragmentRegister = new SignUpFragment();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.addToBackStack(null);
+
+                    fragmentTransaction.add(R.id.useThisFragmentID, fragmentRegister).commit();
+                }
+
+                break;
+
+
+        }
+
     }
 
     @Override

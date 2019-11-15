@@ -175,8 +175,11 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="service_name">mongodb-atlas</string>
     <string name="eye_plant_plants">plants</string>
     <string name="eye_plant_users">users</string>
-    <string name="picture_for_db">picture</string>
+    <string name="name_for_db">name</string>
     <string name="email_for_db">email</string>
+    <string name="picture_for_db">picture</string>
+    <string name="number_of_plants_for_db">number_of_plants</string>
+    <string name="birthday_for_db">birthday</string>
 
 
     <string name="sent_reset_email">Successfully sent password reset email</string>
