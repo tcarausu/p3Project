@@ -46,6 +46,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mongodb.stitch.android.core.Stitch;
 
 import java.util.ArrayList;
 
@@ -116,6 +117,14 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(mContext, "Sign out clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
+
+                    Log.d("auth", String.valueOf(Stitch.getDefaultAppClient().getAuth()));
+
+                    Stitch.getDefaultAppClient().getAuth().logout();
+                    startActivity(new Intent(this, LoginActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    finish();
+
                     break;
 
                 case R.id.delete_accountItem:

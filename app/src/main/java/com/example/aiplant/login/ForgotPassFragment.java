@@ -17,9 +17,7 @@ import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
-
 
 public class ForgotPassFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
@@ -27,7 +25,6 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
 
     private MongoDbSetup mongoDbSetup;
     private Context mContext;
-//    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView forgot_password, simply_enter;
@@ -44,8 +41,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);
         mContext = getActivity();
 
-        mongoDbSetup = MongoDbSetup.getInstance(mContext);
-
+        mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
 
         mAuth = FirebaseAuth.getInstance();
         findWidgets(v);
@@ -63,40 +59,8 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
         send_forgot_instructions = v.findViewById(R.id.send_forgot_instructions);
 
         send_forgot_instructions.setOnClickListener(this);
-//
-//        final StitchAppClient client =
-//                Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
-//
-//        final RemoteMongoClient mongoClient =
-//                client.getServiceClient(RemoteMongoClient.factory, getResources().getString(R.string.service_name));
-//
-//
-//        final RemoteMongoCollection<Document> coll =
-//                mongoClient.getDatabase(getResources().getString(R.string.eye_plant))
-//                        .getCollection(getResources().getString(R.string.eye_plant_plants));
     }
 
-    // sending the mail to user to reset pass
-//    private void sendPassResetMail() {
-//
-//        String email = forgot_email.getText().toString();
-//        if (TextUtils.isEmpty(email)) {
-//            forgot_email.setError("Required.");
-//            Toast.makeText(getContext(), "Please type a valid email", Toast.LENGTH_SHORT).show();
-//        } else {
-//            mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
-//                if (task.isSuccessful()) {
-//                    Toast.makeText(getContext(), "Please check your inbox, we sent you a change password link", Toast.LENGTH_SHORT).show();
-//
-//                    Intent intent = new Intent(getContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//
-//                } else
-//                    Toast.makeText(getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//            });
-//
-//        }
-//    }
     private void handlePasswordReset(EditText forgot_email) {
         String forgot_mail = forgot_email.getText().toString();
 

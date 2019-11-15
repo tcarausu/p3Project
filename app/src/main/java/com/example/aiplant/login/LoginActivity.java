@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,12 +36,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.Document;
 
@@ -82,7 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mContext = LoginActivity.this;
         connectMongoDb();
-        mongoDbSetup.checkAuth(getApplicationContext(), mAuth);
 
         initLayout();
         buttonListeners();
@@ -90,11 +86,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
+        MongoDbSetup.runAppClientInit();
         fragmentManager = getSupportFragmentManager();
-        mAuth = MongoDbSetup.getAuth();
 
         mGoogleSignInClient = MongoDbSetup.getClient();
+        setMongoDbForLaterUse(mongoDbSetup);
         String bs = "s";
+    }
+
+    public void setMongoDbForLaterUse(MongoDbSetup mongoDbSetup) {
+        this.mongoDbSetup = mongoDbSetup;
+    }
+
+    public MongoDbSetup getMongoDbForLaterUse() {
+        return mongoDbSetup;
     }
 
     public void initLayout() {
@@ -199,8 +204,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     "piiic");
 
 
-//                                    return MongoDbSetup.getPlants_Collection().insertOne(userDoc);
-//                                    return MongoDbSetup.getUsers_collection().insertOne(userDoc);
                                     List<Document> docs = new ArrayList<>();
                                     docs.add(userDoc);
                                     docs.add(userDoc2);
@@ -209,22 +212,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
 
                     )
-//                    .continueWithTask(task -> {
 //
-//                        if (!task.isSuccessful()) {
-//                            Log.e("STITCH", "Update failed!");
-//                            Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
-//                            Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-//
-//                            throw task.getException();
-//                        }
-//                        List<Document> docs = new ArrayList<>();
-//                        String gotId = MongoDbSetup.getAppClient().getAuth().getUser().getId();
-//                        return MongoDbSetup.getUsers_collection()
-//                                .find(new Document("logged_user_id", gotId))
-//                                .limit(100)
-//                                .into(docs);
-//                    })
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.d("STITCH", "Found docs: " + task.getResult().toString());
@@ -540,15 +528,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mongoDbSetup.checkAuth(getApplicationContext(), mAuth);
     }
 
     @Override
@@ -556,7 +540,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onPause();
 
     }
-
 
     @Override
     public void onStop() {

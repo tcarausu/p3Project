@@ -21,26 +21,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
-import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
-import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
-
-import org.bson.Document;
 
 public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
 
     private MongoDbSetup mongoDbSetup;
-//    private StitchAppClient appClient;
 
     private FirebaseAuth mAuth;
     private TextView register_for_free, terms_and_conditions;
@@ -64,7 +55,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
 
-        mongoDbSetup = MongoDbSetup.getInstance(mContext);
+        mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
 
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this.getContext());
@@ -166,84 +157,20 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             loadingBar.setCanceledOnTouchOutside(false);
             //if all are fine, then try to create a user
 
-            initStitchApp(signUp_email, pass_field);
-//            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-//                // if success
-//
-//                if (task.isSuccessful()) {
-//                    loadingBar.dismiss();
-//                    Toast.makeText(getContext(), R.string.registration_success, Toast.LENGTH_SHORT).show();
-//                    sendVerifyEmail();
-//
-//                    mAuth.signOut();
-//                    new Handler().postDelayed(() ->
-//                            LoginActivity.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
-//
-//                } else {
-//                    loadingBar.dismiss();
-//                    Toast.makeText(getContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-//                    mAuth.signOut(); // always sign out the user if something goes wrong
-//                }
-//            });
-
-
+            registerToMongoDbWithEmail(signUp_email, pass_field);
         }
 
     }
 
-    private void initStitchApp(
+    private void registerToMongoDbWithEmail(
             EditText email, EditText password
     ) {
         String emailToUse = String.valueOf(email.getText());
         String passToUse = String.valueOf(password.getText());
-//        Stitch.initialize(mContext);
-
-//        client.getAuth().loginWithCredential(credential).continueWithTask(
-//                task -> {
-//                    if (!task.isSuccessful()) {
-//                        Log.e("STITCH", "Login failed!");
-//                        throw task.getException();
-//                    }
-//
-//                    final Document updateDoc = new Document(
-//                            "owner_id",
-//                            task.getResult().getId()
-//                    );
-//
-//                    updateDoc.put("number", 69);
-//                    updateDoc.put("nr", 55);
-//                    updateDoc.put("extraNum", 69);
-//                    updateDoc.put("email", String.valueOf(email.getText()));
-//
-//                    return coll.updateMany(
-//                            null, updateDoc, new RemoteUpdateOptions().upsert(true)
-//                    );
-//                }
-//        ).continueWithTask(task -> {
-//            if (!task.isSuccessful()) {
-//                Log.e("STITCH", "Update failed!");
-//                throw task.getException();
-//            }
-//            List<Document> docs = new ArrayList<>();
-//            return coll
-//                    .find(new Document("owner_id", client.getAuth().getUser().getId()))
-//                    .limit(100)
-//                    .into(docs);
-//        }).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                Log.d("STITCH", "Found docs: " + task.getResult().toString());
-//                return;
-//            }
-//            Log.e("STITCH", "Error: " + task.getException().toString());
-//            task.getException().printStackTrace();
-//        });
 
         UserPasswordAuthProviderClient emailPassClient = Stitch.
-//        getAppClient(getResources().getString(R.string.my_app_id))
-        getDefaultAppClient()
-                .getAuth().getProviderClient(
-                        UserPasswordAuthProviderClient.factory
-                );
+                getDefaultAppClient()
+                .getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
 
         emailPassClient.registerWithEmail(emailToUse, passToUse)
                 .addOnCompleteListener(task -> {
@@ -254,8 +181,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                                 Toast.makeText(getContext(), "Registration complete please verify: ", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
 
-                            }
-                            else {
+                            } else {
                                 Log.e("stitch", "Error registering new user:", task.getException());
 
                                 String error = task.getException().getMessage();// get error from fireBase
@@ -265,39 +191,12 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                 );
     }
 
-    private void loginEmailMongoDb(
-            String email, String password
-    ) {
-//        String emailToUse = String.valueOf(email.getText());
-//        String passToUse = String.valueOf(password.getText());
-
-        UserPasswordCredential credential = new UserPasswordCredential(email, password);
-
-        Stitch.getDefaultAppClient().getAuth().loginWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Log.e("stitch", "Error logging in with email/password auth:", task.getException());
-
-                                String error = task.getException().getMessage();// get error from fireBase
-                                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                Log.d("stitch", "Successfully logged in as user " + task.getResult().getId());
-                                new Handler().postDelayed(() ->
-                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class), Toast.LENGTH_SHORT);
-                            }
-                        }
-                );
-    }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.send_registration_instructions:
                 createUserWithEmail();
-//                createMongoDb(signUp_email,pass_field);
 
                 break;
 
@@ -314,28 +213,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
 
                     break;
                 }
-        }
-    }
-
-    //     verification email
-    private void sendVerifyEmail() {
-
-        FirebaseUser user = mAuth.getCurrentUser();// check user
-        if (mAuth != null && user != null) {
-
-            user.sendEmailVerification().addOnCompleteListener(task -> {
-
-                if (task.isSuccessful()) {
-                    mAuth.signOut();// need to sign out the user every time until he confirms email
-
-                } else {
-
-                    String error = task.getException().getMessage();// get error from fireBase
-                    Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
-                    mAuth.signOut();// need to sign out the user every time until he confirms email
-                }
-
-            });
         }
     }
 

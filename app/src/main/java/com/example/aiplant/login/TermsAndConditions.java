@@ -70,7 +70,6 @@ public class TermsAndConditions extends androidx.fragment.app.Fragment implement
 
     @Override
     public void onClick(View v) {
-//        if (v.getId() == R.id.back_button) {
         if (v.getId() == R.id.I_agree_to_terms_and_conditions) {
 
             Bundle bundle_with_arguments = getArguments();
