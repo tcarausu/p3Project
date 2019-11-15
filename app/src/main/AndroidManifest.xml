@@ -44,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+
         </activity>
 
         <activity
@@ -58,8 +59,14 @@
 
         </activity>
 
-        <activity android:name=".create_profile.PlantProfile"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".create_profile.PlantProfileActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".device_connection.DeviceConnectionActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
 
     </application>
 

@@ -53,11 +53,9 @@
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
-    <string name="button_connect">Connect to device</string>
-    <string name="device_connected">Connection successful</string>
 
-    <string name="slide_1_title">Turn on the device</string>
-    <string name="slide_1_desc">Press the button on the device. The led on it should turn from red to green when it\'s on. Then press the "connect" button on the screen to establish the connection between the device and the application. This may take a few seconds. </string>
+    <string name="slide_1_title">Welcome to eyePlant!</string>
+    <string name="slide_1_desc">Our product is meant to help you take better care of your indoor plants by measuring the humidity in the soil, the temperature in the room and the amount of sunlight reaching the plant. Remember, good living conditions make the plant happy.</string>
 
     <string name="slide_2_title">Create a profile for your plant</string>
     <string name="slide_2_desc">You can either browse our plant list to find your plant and get the default niche for it or you can create a brand new plant with the conditions you decide on. You can always adjust the them from the settings if necessary.</string>
@@ -65,7 +63,7 @@
     <string name="slide_3_title">Keep an eye on your plant</string>
     <string name="slide_3_desc">The application will let you know if the environment measured by the device is optimal or not for your plant.</string>
 
-    <string name="slide_4_title">Check on your plant profiles</string>
+    <string name="slide_4_title">Manage your plant profiles</string>
     <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
 
     <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
@@ -173,4 +171,17 @@ All provisions of the Terms which by their nature should survive termination sha
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_of_plant">Name of Plant</string>
+
+
+    <!-- Strings for connecting the device -->
+    <string name="connect_device_title">Connect your device</string>
+    <string name="turn_on_device">Turn on the device</string>
+    <string name="place_the_device">Place the device</string>
+    <string name="step_one">1. Turn the device on by pressing the button on it. A blue light will flash on the device when it\'s on.</string>
+     <string name="step_two">2. Press the "connect device" button on the screen. This may take a few moments, so wait for the confirmation that the device has been successfully connected. </string>
+      <string name="step_three">3. Put the device in the soil.</string>
+
+    <string name="button_connect">Connect device</string>
+    <string name="device_connected">Connection successful</string>
+
 </resources>
