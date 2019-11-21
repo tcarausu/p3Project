@@ -54,7 +54,7 @@ public class User {
         this.email = email;
     }
 
-    public String getPicture() {
+    public String getProfilePicture() {
         return picture;
     }
 

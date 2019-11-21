@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -20,7 +22,6 @@ import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
-import com.mongodb.stitch.android.services.mongodb.remote.internal.RemoteFindIterableImpl;
 
 import org.bson.Document;
 
@@ -217,6 +218,30 @@ public class MongoDbSetup {
             Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
     }
+
+    public void checkIfExists(RemoteMongoCollection coll, Document documentToCheck) {
+        coll.findOne().continueWith(task -> {
+            try {
+                if (task.getResult(documentToCheck.getClass()) == null) {
+                    int number_of_plants = documentToCheck.getInteger("number_of_plants");
+
+                    coll.insertOne(documentToCheck);
+
+                            new User(documentToCheck.getString("logged_user_id"),
+                            documentToCheck.getString("name"),
+                            documentToCheck.getString("email"), documentToCheck.getString("picture"),
+                            number_of_plants, documentToCheck.getString("birthday"));
+
+                    goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                } else goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+            } catch (Throwable throwable) {
+                Log.d(TAG, "checkIfExists:Error throwable: " + throwable);
+            }
+
+            return null;
+        });
+    }
+
 
     private void setListOfPlants(List<Document> docs) {
         this.plantsList = docs;
