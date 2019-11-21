@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -99,6 +100,47 @@ public class MongoDbSetup {
 
     public void goToWhereverWithOutFlags(Context activityContext, Context c, Class<? extends AppCompatActivity> cl) {
         activityContext.startActivity(new Intent(c, cl));
+    }
+
+    public static Document createUserDocument(String id, String displayName,
+                                              String userMail, String photoURL, int nrOfPlant, String birthday) {
+
+        return new Document(
+                "logged_user_id",
+                id)
+                .append(
+                        "name",
+                        displayName)
+                .append(
+                        "email",
+                        userMail)
+                .append("picture",
+                        photoURL)
+                .append("number_of_plants",
+                        nrOfPlant)
+                .append("birthday",
+                        birthday);
+    }
+
+    public static Document createPlantProfileDocument(String uId, String pId, String plantName,
+                                              String userMail, String photoURL, int nrOfPlant, String birthday) {
+
+        return new Document(
+                "logged_user_id",
+                uId)
+                .append("profile_id", pId)
+                .append(
+                        "name",
+                        plantName)
+                .append(
+                        "email",
+                        userMail)
+                .append("picture",
+                        photoURL)
+                .append("number_of_plants",
+                        nrOfPlant)
+                .append("birthday",
+                        birthday);
     }
 
     public static class Once {

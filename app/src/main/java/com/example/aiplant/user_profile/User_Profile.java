@@ -41,6 +41,7 @@ import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.Plant;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.GridImageAdapter;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +50,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mongodb.stitch.android.core.Stitch;
 
 import java.util.ArrayList;
+
+import static com.example.aiplant.utility_classes.MongoDbSetup.getClient;
 
 public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
 
@@ -119,7 +122,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     mDrawerLayout.closeDrawer(GravityCompat.START);
 
                     Log.d("auth", String.valueOf(Stitch.getDefaultAppClient().getAuth()));
-
+                    MongoDbSetup setup = MongoDbSetup.getInstance(mContext);
+                    getClient().signOut();
                     Stitch.getDefaultAppClient().getAuth().logout();
                     startActivity(new Intent(this, LoginActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));

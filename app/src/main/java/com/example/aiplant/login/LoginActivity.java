@@ -189,6 +189,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     throw task.getException();
                                 } else {
+
                                     final String displayName = task.getResult().getProfile().getFirstName()
                                             + " " + task.getResult().getProfile().getLastName();
                                     final String email = task.getResult().getProfile().getEmail();
@@ -201,21 +202,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     User user = new User(task.getResult().getId(),
                                             displayName, email, photoURL, 0, birthday);
 
-                                    final Document userDoc = new Document(
-                                            "logged_user_id",
-                                            user.getId())
-                                            .append(
-                                                    getResources().getString(R.string.name_for_db),
-                                                    displayName)
-                                            .append(
-                                                    getResources().getString(R.string.email_for_db),
-                                                    user.getEmail())
-                                            .append(getResources().getString(R.string.picture_for_db),
-                                                    photoURL)
-                                            .append(getResources().getString(R.string.number_of_plants_for_db),
-                                                    user.getNumber_of_plants())
-                                            .append(getResources().getString(R.string.birthday_for_db),
-                                                    birthday);
+//                                    final Document userDoc = new Document(
+//                                            "logged_user_id",
+//                                            user.getId())
+//                                            .append(
+//                                                    getResources().getString(R.string.name_for_db),
+//                                                    displayName)
+//                                            .append(
+//                                                    getResources().getString(R.string.email_for_db),
+//                                                    user.getEmail())
+//                                            .append(getResources().getString(R.string.picture_for_db),
+//                                                    photoURL)
+//                                            .append(getResources().getString(R.string.number_of_plants_for_db),
+//                                                    user.getNumber_of_plants())
+//                                            .append(getResources().getString(R.string.birthday_for_db),
+//                                                    birthday);
+                                    final Document userDoc = MongoDbSetup.createUserDocument(user.getId(), displayName,
+                                            user.getEmail(), photoURL, user.getNumber_of_plants(), user.getBirthday());
 
                                     List<Document> docs = new ArrayList<>();
                                     docs.add(userDoc);
@@ -225,18 +228,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     )
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && mGoogleSignInClient!= null) {
                             Log.d("STITCH", "Found docs: " + task.getResult().toString());
 
-                            new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(),
-                                    getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
-                            return;
+                            new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(this,
+//                                    this, HomeActivity.class), Toast.LENGTH_SHORT);
+                                    this, DeviceConnectionActivity.class), Toast.LENGTH_SHORT);
                         }
-                        Log.e("STITCH", "Error: " + task.getException().toString());
-                        task.getException().printStackTrace();
+                        else{
+
+                        }
+                        Log.e("STITCH", "Error: " + task.getException());
                     });
-        } catch (ApiException e) {
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+        } catch (Exception e) {
+            Log.w(TAG, "signInResult:failed code=" + e.getMessage());
         }
     }
 
@@ -304,13 +309,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
 
             case R.id.button_id_log_in:
-                signInWithEmail();
+                loginEmailMongoDb(mEmailField, mPasswordField);
+
                 break;
 
             case R.id.googleSignInButton:
                 signIn();
-                startActivity(new Intent(getApplicationContext(), DeviceConnectionActivity.class));
-
                 break;
 
             case R.id.forgotPass_logIn:
@@ -346,6 +350,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
+//
+//        if (mGoogleSignInClient!= null ){
+//            mongoDbSetup.goToWhereverWithFlags(this, this,DeviceConnectionActivity.class);
+//        }
     }
 
     @Override

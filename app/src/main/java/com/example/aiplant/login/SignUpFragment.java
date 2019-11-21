@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
