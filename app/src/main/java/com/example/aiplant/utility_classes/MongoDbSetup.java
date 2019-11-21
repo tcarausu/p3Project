@@ -24,9 +24,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * File created by tcarau18
- **/
+
 public class MongoDbSetup {
 
     private static final String TAG = "MongoDbSetup";
