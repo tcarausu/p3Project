@@ -3,16 +3,22 @@ package com.example.aiplant.user_profile;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -21,24 +27,31 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
-import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.Plant;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.GridImageAdapter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mongodb.stitch.android.core.Stitch;
 
 import java.util.ArrayList;
+
+import static com.example.aiplant.utility_classes.MongoDbSetup.getClient;
 
 public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
 
@@ -47,10 +60,9 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int REQUEST_CAMERA = 22;
     private static final int REQUEST_GALLERY = 33;
-    private static final int REQUEST_CODE = 11;
 
     // widgets
-    private ImageButton editUsernameButton, saveUsernameButton;
+    private Button editUsernameButton, saveUsernameButton;
     private TextView userNameTextView;
     private EditText usernameEditText; //usernameEditText
     private GridView gridView;
@@ -58,16 +70,16 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private androidx.appcompat.widget.Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private BottomNavigationView bottomNavigationViewEx;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+
     //context and others
     private FragmentManager fragmentManager;
+    Drawable drawable1, drawable2, drawable3, drawable4;
     private Context mContext;
     OnGridImageSelectedListener onGridImageSelectedListener;
-    private InputMethodManager mInputManager;
-
-    //vars
-    private String[] permissions = {Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     //variables
     private String userName;
@@ -78,7 +90,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.user_profile);
         mContext = getApplicationContext();
         fragmentManager = getSupportFragmentManager();
-        mInputManager = (InputMethodManager) getSystemService((INPUT_METHOD_SERVICE));
         initLayout();
         checkPermissions();
         buttonListeners();
@@ -89,43 +100,35 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
-                case R.id.chengeUserNameItem:
+                case R.id.resetPassItem:
                     menuItem.setChecked(true);
-                    Toast.makeText(mContext, "change username clicked", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Reset password clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     //todo
                     break;
-
-                case R.id.changeProfPictureItem:
-                    menuItem.setChecked(true);
-                    Toast.makeText(mContext, "change picture clicked", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                    //todo
-                    break;
-
                 case R.id.reset_deviceItem:
-                    //todo
                     menuItem.setChecked(true);
                     Toast.makeText(mContext, "Reset device clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
+                    //todo
                     break;
-
                 case R.id.signOutItem:
                     //todo
                     menuItem.setChecked(true);
                     Toast.makeText(mContext, "Sign out clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
-                    break;
-                case R.id.resetPassItem:
-                    //todo
-                    menuItem.setChecked(true);
-                    Toast.makeText(mContext, "Reset pass clicked", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
+
+                    Log.d("auth", String.valueOf(Stitch.getDefaultAppClient().getAuth()));
+                    MongoDbSetup setup = MongoDbSetup.getInstance(mContext);
+                    getClient().signOut();
+                    Stitch.getDefaultAppClient().getAuth().logout();
+                    startActivity(new Intent(this, LoginActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    finish();
+
                     break;
 
                 case R.id.delete_accountItem:
@@ -135,21 +138,31 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     break;
+
+
             }
             return false;
         });
+
+        //How to get a drawable
+        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
+        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
+        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
+        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
 
     }
 
     public void initLayout() {
         usernameEditText = findViewById(R.id.username_editText);
         userNameTextView = findViewById(R.id.userNameTextView);
+        editUsernameButton = findViewById(R.id.editUserNameButton);
         saveUsernameButton = findViewById(R.id.saveUserNameButton);
         profilePic = findViewById(R.id.profilePicture);
         gridView = findViewById(R.id.grid_view_user_profile);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolBar);
+
     }
 
     @Override
@@ -167,6 +180,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     }
 
     public void buttonListeners() {
+        editUsernameButton.setOnClickListener(this);
         saveUsernameButton.setOnClickListener(this);
         profilePic.setOnClickListener(this);
     }
@@ -196,21 +210,30 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void takePicture() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        } else Toast.makeText(mContext, "Nothing selected..", Toast.LENGTH_SHORT).show();
+    }
+
+    private void selectPicture() {
+        Intent galleryIntent = new Intent();
+        galleryIntent.setType("image/*");
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), REQUEST_GALLERY);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Todo: continue here with results from the camera
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+        if (resultCode == RESULT_OK && (requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY)) {
             //Todo: we can add other implementation here, like loading the image to database
-            try {
-                Uri uri = data.getData();
-                Glide.with(this).load(uri).fitCenter().into(profilePic);
-                profilePic.refreshDrawableState();
-            } catch (NullPointerException e) {
-                Log.e(TAG, "onActivityResult:  " + e.getMessage());
-
-            }
-        } else Toast.makeText(mContext, "canceled", Toast.LENGTH_SHORT).show();
+            Uri uri = Uri.parse(data.getData().toString());
+            Glide.with(this).load(uri).fitCenter().into(profilePic);
+            profilePic.refreshDrawableState();
+        } else Toast.makeText(mContext, "Nothing is selected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -218,21 +241,51 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()) {
 
+            case R.id.editUserNameButton:
+                hideEditText();
+                break;
+
             case R.id.saveUserNameButton:
                 saveUsername();
                 break;
 
             case R.id.profilePicture:
-                optionDialog();
+                profileDialog();
+
                 break;
         }
-
-    }
-
-    private void optionDialog() {
-        Intent chooseImageIntent = ImagePicker.getPickImageIntent(mContext);
-        startActivityForResult(chooseImageIntent, REQUEST_CODE);
-        checkPermissions();
+//            switch (v.getId()) {
+//
+//                case R.id.button_id_log_in:
+////                    signInWithEmail();
+//
+//                    break;
+//                case R.id.textView_id_forgotPass_logIn:
+//
+//                    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+//
+//                    if (fragmentForgotPass == null) {
+//                        fragmentForgotPass = new ForgotPassFragment();
+//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.addToBackStack(null);
+//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
+//                    }
+//
+//                    break;
+//
+//                case R.id.sign_up:
+//                    Fragment fragmentRegister = fragmentManager.findFragmentById(R.id.useThisFragmentID);
+//                    if (fragmentRegister == null) {
+//                        fragmentRegister = new SignUpFragment();
+//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.addToBackStack(null);
+//
+//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentRegister).commit();
+//                    }
+//
+//                    break;
+//
+//
     }
 
     private void signOut() {
@@ -246,7 +299,11 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
 //        try {
         final ArrayList<Plant> posts = new ArrayList<>();
-
+        final ArrayList<Drawable> drawables = new ArrayList<>();
+        drawables.add(0, drawable1);
+        drawables.add(0, drawable2);
+        drawables.add(0, drawable3);
+        drawables.add(0, drawable4);
 
 //            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //
@@ -334,10 +391,12 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
-        bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+//        menuItem.setTitle(R.string.profile);
         menuItem.setChecked(true);
 
     }
@@ -351,43 +410,43 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         void onGridImageSelected(Plant plant, int activityNr);
     }
 
+    private void profileDialog() {
+        View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
+        ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
+        ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
+        ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
 
-//    private void profileDialog() {
-//        View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
-//        ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
-//        ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
-//        ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
-//
-//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-//        dialogBuilder.setView(dialogLayout);
-//        dialogBuilder.setTitle("Chose an action");
-//
-//        final AlertDialog alertDialog = dialogBuilder.create();
-//        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
-//
-//        wlp.windowAnimations = R.anim.slide_down_anim;
-//        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        alertDialog.getWindow().setAttributes(wlp);
-//        alertDialog.setCanceledOnTouchOutside(true);
-//        // Setting transparent the background (layout) of alert dialog
-//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        alertDialog.show();
-//
-//        cameraButton.setOnClickListener(v -> {
-//            takePicture();
-//            alertDialog.dismiss();
-//        });
-//
-//        galleryButton.setOnClickListener(v -> {
-//            selectPicture();
-//            alertDialog.dismiss();
-//        });
-//
-//        cancelButton.setOnClickListener(v -> {
-//            alertDialog.dismiss();
-//        });
-//    }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(dialogLayout);
+        dialogBuilder.setTitle("Chose an action");
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
+
+        wlp.windowAnimations = R.anim.slide_down_anim;
+        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        alertDialog.getWindow().setAttributes(wlp);
+        alertDialog.setCanceledOnTouchOutside(true);
+        // Setting transparent the background (layout) of alert dialog
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
+        cameraButton.setOnClickListener(v -> {
+            takePicture();
+            alertDialog.dismiss();
+        });
+
+        galleryButton.setOnClickListener(v -> {
+            selectPicture();
+            alertDialog.dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+    }
+
 //    private void topBarDialog() {
 //        View dialogLayout = getLayoutInflater().inflate(R.layout.top_bar_dialog_layout, null);
 //
@@ -481,33 +540,4 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 //
 //        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
 //        setBackgroundResource(R.drawable.logo_eye_plant);
-
-
-    //How to get a drawable
-//        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
-//        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
-//        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
-//        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
-//}
-//    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-//
-//                    if (fragmentForgotPass == null) {
-//                        fragmentForgotPass = new ForgotPassFragment();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        fragmentTransaction.addToBackStack(null);
-//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
-//                    }
-//    private void takePicture() {
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
-//            startActivityForResult(cameraIntent, REQUEST_CAMERA);
-//        } else Toast.makeText(mContext, "Nothing selected..", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    private void selectPicture() {
-//        Intent galleryIntent = new Intent();
-//        galleryIntent.setType("image/*");
-//        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), REQUEST_GALLERY);
-//    }
 }

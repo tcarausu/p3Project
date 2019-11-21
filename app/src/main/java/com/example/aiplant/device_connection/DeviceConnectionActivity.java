@@ -98,11 +98,6 @@ public class DeviceConnectionActivity extends AppCompatActivity {
             } else {
                 launchHomeScreen();
             }
-
-
-
-
-
         });
     }
 
