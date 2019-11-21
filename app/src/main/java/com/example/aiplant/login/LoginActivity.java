@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
+import com.example.aiplant.device_connection.DeviceConnectionActivity;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.User;
 import com.example.aiplant.utility_classes.MongoDbSetup;
@@ -27,26 +28,35 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     private static final String Google_Tag = "GoogleActivity";
+
+    public StitchAppClient client = null;
 
     //Google signIn
     private static final int RC_SIGN_IN = 9001;
@@ -57,6 +67,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseReference myRef;
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager;
+
+    // Stitch and Mongodb Cluster
+    private StitchAppClient stitchAppClient;
+    private RemoteMongoClient remoteMongoClient;
+    private RemoteMongoCollection<Document> remoteMongoCollection;
+    private Document myFirstDocument;
+    private Date currentDate;
 
     // widgets
     private MaterialButton loginButton;
@@ -119,7 +136,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.googleSignInButton).setOnClickListener(this);
         findViewById(R.id.forgotPass_logIn).setOnClickListener(this);
 
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //token taken from firebase authentication data
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        // Initialize Facebook Login button
+//        mCallbackManager = CallbackManager.Factory.create();
+
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -276,12 +304,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
 
             case R.id.button_id_log_in:
-                loginEmailMongoDb(mEmailField, mPasswordField);
-
+                signInWithEmail();
                 break;
 
             case R.id.googleSignInButton:
                 signIn();
+                startActivity(new Intent(getApplicationContext(), DeviceConnectionActivity.class));
+
                 break;
 
             case R.id.forgotPass_logIn:

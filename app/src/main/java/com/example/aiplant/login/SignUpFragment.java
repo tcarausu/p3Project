@@ -2,6 +2,7 @@ package com.example.aiplant.login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
-import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
@@ -193,7 +193,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         switch (v.getId()) {
 
             case R.id.send_registration_instructions:
-                createUserWithEmail();
+
+                    createUserWithEmail();
 
                 break;
 
