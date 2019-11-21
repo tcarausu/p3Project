@@ -151,12 +151,9 @@ public class MongoDbSetup {
                         humidity)
                 .append("temperature",
                         temperature)
-
                 .append("sunlight",
                         sunlight)
                 ;
-
-
     }
 
     public void fetchUserData(StitchUser stitchUser, TextView userNameTextView
@@ -219,6 +216,14 @@ public class MongoDbSetup {
         }
     }
 
+    private void setListOfPlants(List<Document> docs) {
+        this.plantsList = docs;
+    }
+
+    public List<Document> getPlantsList() {
+        return plantsList;
+    }
+
     public void checkIfExists(RemoteMongoCollection coll, Document documentToCheck) {
         coll.findOne().continueWith(task -> {
             try {
@@ -227,7 +232,7 @@ public class MongoDbSetup {
 
                     coll.insertOne(documentToCheck);
 
-                            new User(documentToCheck.getString("logged_user_id"),
+                    new User(documentToCheck.getString("logged_user_id"),
                             documentToCheck.getString("name"),
                             documentToCheck.getString("email"), documentToCheck.getString("picture"),
                             number_of_plants, documentToCheck.getString("birthday"));
@@ -240,15 +245,6 @@ public class MongoDbSetup {
 
             return null;
         });
-    }
-
-
-    private void setListOfPlants(List<Document> docs) {
-        this.plantsList = docs;
-    }
-
-    public List<Document> getPlantsList() {
-        return plantsList;
     }
 
     public void updateOne() {
