@@ -99,6 +99,13 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -215,7 +222,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 }
 
                 else{
-                    birthday = bd_day.getText().toString()+"/"+bd_month+"/"+bd_year;
+                    setBirthday(bd_day.getText().toString()+"/"+bd_month.getText().toString()+"/"+bd_year.getText().toString());
                     createProfile();
                 }
                 break;
@@ -233,7 +240,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
         PlantProfile profile = new PlantProfile.Builder()
                 .withName(namePlant.getText().toString())
-                //.withAge()
+                .withAge(getBirthday())
                 .withHumid(Integer.parseInt(minHumidity.getText().toString()), Integer.parseInt(maxHumidity.getText().toString()))
                 .withTemp(Integer.parseInt(minTemperature.getText().toString()), Integer.parseInt(maxTemperature.getText().toString()))
                 .withSun(Integer.parseInt(minSunlight.getText().toString()), Integer.parseInt(maxSunlight.getText().toString()))
