@@ -51,7 +51,6 @@ import com.mongodb.stitch.android.core.Stitch;
 
 import java.util.ArrayList;
 
-import static com.example.aiplant.utility_classes.MongoDbSetup.getClient;
 
 public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
 
@@ -123,7 +122,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
                     Log.d("auth", String.valueOf(Stitch.getDefaultAppClient().getAuth()));
                     MongoDbSetup setup = MongoDbSetup.getInstance(mContext);
-                    getClient().signOut();
+
                     Stitch.getDefaultAppClient().getAuth().logout();
                     startActivity(new Intent(this, LoginActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -155,8 +154,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     public void initLayout() {
         usernameEditText = findViewById(R.id.username_editText);
         userNameTextView = findViewById(R.id.userNameTextView);
-        editUsernameButton = findViewById(R.id.editUserNameButton);
-        saveUsernameButton = findViewById(R.id.saveUserNameButton);
         profilePic = findViewById(R.id.profilePicture);
         gridView = findViewById(R.id.grid_view_user_profile);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -240,10 +237,10 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         switch (v.getId()) {
-
-            case R.id.editUserNameButton:
-                hideEditText();
-                break;
+//
+//            case R.id.editUserNameButton:
+//                hideEditText();
+//                break;break
 
             case R.id.saveUserNameButton:
                 saveUsername();

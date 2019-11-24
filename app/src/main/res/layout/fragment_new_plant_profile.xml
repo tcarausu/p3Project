@@ -92,7 +92,6 @@
                     android:text="@string/humidity" />
 
                 <LinearLayout
-                    android:id="@+id/birthday_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

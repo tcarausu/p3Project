@@ -2,6 +2,7 @@ package com.example.aiplant.utility_classes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +11,7 @@ import com.example.aiplant.home.HomeActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
@@ -19,9 +21,13 @@ import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -33,6 +39,8 @@ public class MongoDbSetup {
     private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private static StitchAppClient appClient;
+    private static RemoteMongoClient mongoClient;
+    private static String databaseName = "eye_plant";
 
     // Configure Google Sign In
     private GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -45,7 +53,7 @@ public class MongoDbSetup {
 
     private static GoogleSignInClient mGoogleSignInClient;
 
-    private MongoDbSetup(Context context) {
+    public MongoDbSetup(Context context) {
         synchronized (MongoDbSetup.class) {
             mContext = context;
             mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
@@ -67,6 +75,11 @@ public class MongoDbSetup {
                         Stitch.initializeDefaultAppClient("eye-plant-tilrj")
 
         );
+
+    }
+
+    public static String getAppClientId (){
+         return Objects.requireNonNull(appClient.getAuth().getUser()).getId();
     }
 
     public static StitchAppClient getAppClient() {
@@ -84,10 +97,10 @@ public class MongoDbSetup {
                         .getCollection("plants");
     }
 
-    public static RemoteMongoCollection<Document> getUsers_collection() {
+    public static RemoteMongoCollection<Document> getUsers_collection(String databaseName, String collectionName) {
         return
-                getRemoteMongoDbClient().getDatabase("eye_plant")
-                        .getCollection("users");
+                getRemoteMongoDbClient().getDatabase(databaseName)
+                        .getCollection(collectionName);
     }
 
     public void goToWhereverWithFlags(Context activityContext, Context c, Class<? extends AppCompatActivity> cl) {
@@ -120,26 +133,34 @@ public class MongoDbSetup {
                         birthday);
     }
 
-    public static Document createPlantProfileDocument(String uId, String pId, String plantName,
-                                              String userMail, String photoURL, int nrOfPlant, String birthday) {
+    public static void createPlantProfileDocument( String collectionName, String profileId, String plantName, String birthday,
+                                                   int minHumidity, int maxHumidity, int minTemperature,
+                                                   int maxTemperature, int minSun,
+                                                   int maxSun) {
+       // String profileId =  UUID.randomUUID().toString();
 
-        return new Document(
-                "logged_user_id",
-                uId)
-                .append("profile_id", pId)
+        Document doc = new Document("user_id",getAppClientId())
+                .append("profile_id", profileId)
+                .append("name", plantName)
+                        .append("birthday", birthday)
                 .append(
-                        "name",
-                        plantName)
-                .append(
-                        "email",
-                        userMail)
-                .append("picture",
-                        photoURL)
-                .append("number_of_plants",
-                        nrOfPlant)
-                .append("birthday",
-                        birthday);
+                        "humidity min",
+                        minHumidity)
+                .append("humidity max",
+                        maxHumidity)
+                .append("temperature min",
+                        minTemperature)
+                .append("temperature max",
+                        maxTemperature)
+                .append("sunlight min", minSun)
+                .append("sunlight max", maxSun);
+               // .append("photo URL", photoURL);
+
+        getUsers_collection(databaseName, collectionName).insertOne(doc);
+
+
     }
+
 
     public static class Once {
         private AtomicBoolean done = new AtomicBoolean();

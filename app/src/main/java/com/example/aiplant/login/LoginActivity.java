@@ -37,12 +37,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
 import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -213,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     List<Document> docs = new ArrayList<>();
                                     docs.add(userDoc);
-                                    return MongoDbSetup.getUsers_collection().insertMany(docs);
+                                    return MongoDbSetup.getUsers_collection("eye_plant", "users").insertMany(docs);
                                 }
                             }
 
