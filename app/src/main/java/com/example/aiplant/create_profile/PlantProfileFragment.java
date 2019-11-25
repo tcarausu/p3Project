@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +21,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
+import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 
 import java.io.IOException;
@@ -56,9 +57,12 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_new_plant_profile,container,false);
+        View view = inflater.inflate(R.layout.fragment_new_plant_profile, container, false);
+
+        mongoDbSetup = ((PlantProfileActivity) getActivity()).getMongoDbForFragmentUse();
+
         profilePicture = view.findViewById(R.id.profilePicPlant_imgView);
         namePlant = view.findViewById(R.id.namePlant_editText);
         bd_day = view.findViewById(R.id.bd_day);
@@ -75,8 +79,6 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
         profilePicture.setOnClickListener(this);
 
-
-
         createProfileBtn.setOnClickListener(this);
 //            if(namePlant.getText().toString().equals("")) {
 //                namePlant.setError(getString(R.string.error_name));
@@ -84,10 +86,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 //            }
 
 
-
         return view;
-
-
     }
 
 
@@ -111,118 +110,96 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d( TAG, "request code: " + requestCode );
-        Log.d( TAG, "result code: " + resultCode );
-        if ( resultCode == RESULT_OK ) {
-            if ( requestCode == REQUEST_CODE ) {
+        Log.d(TAG, "request code: " + requestCode);
+        Log.d(TAG, "result code: " + resultCode);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
                 Bitmap bitmap = null;
                 try {
-                    bitmap = ImagePicker.getImageFromResult( getContext(), resultCode, data );
-                } catch ( IOException e ) {
+                    bitmap = ImagePicker.getImageFromResult(getContext(), resultCode, data);
+                } catch (IOException e) {
                     //do sth
                 }
-                profilePicture.setImageBitmap( bitmap );
+                profilePicture.setImageBitmap(bitmap);
                 picture = bitmap;
-                profilePicture.setScaleType( ImageView.ScaleType.CENTER_CROP );
+                profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
-                super.onActivityResult( requestCode, resultCode, data );
+                super.onActivityResult(requestCode, resultCode, data);
             }
 
         } else
-            Log.d( TAG, "Error on camera/Gallery" );
+            Log.d(TAG, "Error on camera/Gallery");
 
     }
-
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.createProfile_btn:
-                if(profilePicture==null){
-                    Toast.makeText( getContext( ), R.string.please_picture, Toast.LENGTH_SHORT ).show( );
-                }
-                else if(namePlant.getText().toString().length()==0){
+                if (profilePicture == null) {
+                    Toast.makeText(getContext(), R.string.please_picture, Toast.LENGTH_SHORT).show();
+                } else if (namePlant.getText().toString().length() == 0) {
                     namePlant.requestFocus();
                     namePlant.setError(getString(R.string.error_empty));
-                }
-                else if(bd_day.getText().toString().length()==0) {
+                } else if (bd_day.getText().toString().length() == 0) {
                     bd_day.requestFocus();
                     bd_day.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(bd_day.getText().toString())>31 || Integer.parseInt(bd_day.getText().toString())<1){
+                } else if (Integer.parseInt(bd_day.getText().toString()) > 31 || Integer.parseInt(bd_day.getText().toString()) < 1) {
                     bd_day.requestFocus();
                     bd_day.setError(getString(R.string.error_wrong_input));
-                }
-
-                else if(bd_month.getText().toString().length()==0){
+                } else if (bd_month.getText().toString().length() == 0) {
                     bd_month.setError(getString(R.string.error_empty));
                     bd_month.requestFocus();
-                }
-                else if(Integer.parseInt(bd_month.getText().toString())>12 || Integer.parseInt(bd_month.getText().toString())<1){
+                } else if (Integer.parseInt(bd_month.getText().toString()) > 12 || Integer.parseInt(bd_month.getText().toString()) < 1) {
                     bd_month.requestFocus();
                     bd_month.setError(getString(R.string.error_wrong_input));
-                }
-                else if(bd_year.getText().toString().length()==0){
+                } else if (bd_year.getText().toString().length() == 0) {
                     bd_year.requestFocus();
                     bd_year.setError(getString(R.string.error_empty));
                 }
-               // else if(Integer.parseInt(bd_year.getText().toString()))
-                else if(minHumidity.getText().toString().length()==0){
+                // else if(Integer.parseInt(bd_year.getText().toString()))
+                else if (minHumidity.getText().toString().length() == 0) {
                     minHumidity.requestFocus();
                     minHumidity.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(minHumidity.getText().toString())<0 ||
-                        Integer.parseInt(minHumidity.getText().toString())>Integer.parseInt(maxHumidity.getText().toString())){
+                } else if (Integer.parseInt(minHumidity.getText().toString()) < 0 ||
+                        Integer.parseInt(minHumidity.getText().toString()) > Integer.parseInt(maxHumidity.getText().toString())) {
                     minHumidity.requestFocus();
                     minHumidity.setError(getString(R.string.error_wrong_input));
-                }
-                else if (maxHumidity.getText().toString().length()==0){
+                } else if (maxHumidity.getText().toString().length() == 0) {
                     maxHumidity.requestFocus();
                     maxHumidity.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(maxHumidity.getText().toString())>100){
+                } else if (Integer.parseInt(maxHumidity.getText().toString()) > 100) {
                     maxHumidity.requestFocus();
                     maxHumidity.setError(getString(R.string.error_wrong_input));
-                }
-                else if(minTemperature.getText().toString().length()==0){
+                } else if (minTemperature.getText().toString().length() == 0) {
                     minTemperature.requestFocus();
                     minTemperature.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(minTemperature.getText().toString())<0 ||
-                        Integer.parseInt(minTemperature.getText().toString())>Integer.parseInt(maxTemperature.getText().toString())){
+                } else if (Integer.parseInt(minTemperature.getText().toString()) < 0 ||
+                        Integer.parseInt(minTemperature.getText().toString()) > Integer.parseInt(maxTemperature.getText().toString())) {
                     minTemperature.requestFocus();
                     minTemperature.setError(getString(R.string.error_wrong_input));
-                }
-                else if(maxTemperature.getText().toString().length()==0){
+                } else if (maxTemperature.getText().toString().length() == 0) {
                     maxTemperature.requestFocus();
                     maxTemperature.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(maxTemperature.getText().toString())>30){
+                } else if (Integer.parseInt(maxTemperature.getText().toString()) > 30) {
                     maxTemperature.requestFocus();
                     maxTemperature.setError(getString(R.string.error_wrong_input));
-                }
-                else if(minSunlight.getText().toString().length()==0){
+                } else if (minSunlight.getText().toString().length() == 0) {
                     minSunlight.requestFocus();
                     minSunlight.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(minSunlight.getText().toString())<25 ||
-                Integer.parseInt(minSunlight.getText().toString())>Integer.parseInt(maxSunlight.getText().toString())){
+                } else if (Integer.parseInt(minSunlight.getText().toString()) < 25 ||
+                        Integer.parseInt(minSunlight.getText().toString()) > Integer.parseInt(maxSunlight.getText().toString())) {
                     minSunlight.requestFocus();
                     minSunlight.setError(getString(R.string.error_wrong_input));
-                }
-                else if(maxSunlight.getText().toString().length()==0){
+                } else if (maxSunlight.getText().toString().length() == 0) {
                     maxSunlight.requestFocus();
                     maxSunlight.setError(getString(R.string.error_empty));
-                }
-                else if(Integer.parseInt(maxSunlight.getText().toString())>75){
+                } else if (Integer.parseInt(maxSunlight.getText().toString()) > 75) {
                     maxSunlight.requestFocus();
                     maxSunlight.setError(getString(R.string.error_wrong_input));
-                }
-
-                else{
-                    setBirthday(bd_day.getText().toString()+"/"+bd_month.getText().toString()+"/"+bd_year.getText().toString());
+                } else {
+                    setBirthday(bd_day.getText().toString() + "/" + bd_month.getText().toString() + "/" + bd_year.getText().toString());
                     createProfile();
                 }
                 break;
@@ -235,8 +212,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private void createProfile(){
-
+    private void createProfile() {
 
         PlantProfile profile = new PlantProfile.Builder()
                 .withName(namePlant.getText().toString())
@@ -245,9 +221,13 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 .withTemp(Integer.parseInt(minTemperature.getText().toString()), Integer.parseInt(maxTemperature.getText().toString()))
                 .withSun(Integer.parseInt(minSunlight.getText().toString()), Integer.parseInt(maxSunlight.getText().toString()))
                 .build();
-        MongoDbSetup.createPlantProfileDocument(collectionName, profile.getProfileId(), profile.getName(),profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
+
+        mongoDbSetup.createPlantProfileDocument(
+                getResources().getString(R.string.eye_plant_plant_profiles),
+                profile.getProfileId(), profile.getName(),
+                profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
                 profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun());
 
-
+        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
     }
 }

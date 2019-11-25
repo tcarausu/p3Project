@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +38,14 @@ import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
+import com.example.aiplant.utility_classes.MongoDbSetup;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.core.auth.StitchAuth;
+import com.mongodb.stitch.android.core.auth.StitchUser;
+
+import org.bson.Document;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,6 +64,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_GALLERY = 33;
     public static final String LAST_TEXT_NAME = "", LAST_TEXT_TIME_PERIOD = "";
 
+    //database
+    private MongoDbSetup mongoDbSetup;
+    private GoogleSignInClient mGoogleSignInClient;
+    private StitchAuth mStitchAuth;
+    private StitchUser mStitchUser;
+    private Document updateDoc;
+    private Context mContext;
+    private StitchAppClient appClient;
 
     // widgets
     private BottomNavigationView bottomNavigationViewEx;
@@ -67,7 +83,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private CircleImageView profileImage;
     private EditText flowerNameEditText, flowerTimeEditText, hum_min, hum_max, temp_min, temp_max, light_min, light_max;
     private int minimumTemperature = 5, maximumTemperature = 28, minimumHumidity = 25, maximumHumidity = 75, minimumLight = 25, maximumLight = 75;
-    private Context mContext;
 
     private String plantName, plantDate;
 
@@ -78,6 +93,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_home);
+        mContext = this;
+
+        connectMongoDb();
+
         initLayout();
         buttonListeners();
 
@@ -94,14 +113,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         light.setProgress(40);
         light.getProgress();
 
-        mongoDatabase();
-
     }
 
-    private void mongoDatabase() {
+    private void connectMongoDb() {
+        mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
+        MongoDbSetup.runAppClientInit();
+        mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
+
+        appClient = MongoDbSetup.getAppClient();
+
+        mStitchAuth = mongoDbSetup.getStitchAuth();
+        mStitchUser = mongoDbSetup.getStitchUser();
 
     }
-
 
     public void initLayout() {
         home_Layout = findViewById(id.home_activity);
