@@ -2,7 +2,6 @@ package com.example.aiplant.login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +26,7 @@ import com.google.android.material.button.MaterialButton;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
-public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
+public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
 
@@ -194,8 +193,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         switch (v.getId()) {
 
             case R.id.send_registration_instructions:
-
-                    createUserWithEmail();
+                createUserWithEmail();
 
                 break;
 

@@ -1,4 +1,4 @@
-package com.example.aiplant.create_profile;
+package com.example.aiplant.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
