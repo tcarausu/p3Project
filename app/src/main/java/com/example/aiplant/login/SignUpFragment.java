@@ -2,6 +2,7 @@ package com.example.aiplant.login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -193,7 +194,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         switch (v.getId()) {
 
             case R.id.send_registration_instructions:
-                createUserWithEmail();
+
+                    createUserWithEmail();
 
                 break;
 

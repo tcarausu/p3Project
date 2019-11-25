@@ -1,108 +1,223 @@
 package com.example.aiplant.create_profile;
 
-import android.Manifest;
-import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import java.io.Serializable;
+import java.util.InputMismatchException;
+import java.util.UUID;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import com.bumptech.glide.Glide;
-import com.example.aiplant.R;
-import com.example.aiplant.cameraandgallery.ImagePicker;
-
-import java.io.IOException;
-import java.util.Calendar;
-
-public class PlantProfile extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String TAG = "PlantProfile";
-    static final int REQUEST_CODE = 123;
-    private ImageView profilePicture;
-    private LinearLayout birthdayLayout;
-    private EditText minHumidity, maxHumidity, minSunlight ,maxSunlight,
-                     minTemperature ,maxTemperature, bd_year, bd_month, bd_day, namePlant;
-    private Bitmap picture;
-    private ImageButton createProfile;
-    private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private final int REQUEST_GALLERY=2;
-    private final int REQUEST_CAMERA=1;
+public class PlantProfile implements Serializable, Parcelable {
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_plant_profile);
-       initializeView();
-
-        profilePicture.setOnClickListener(v -> {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent( getApplicationContext() );
-            startActivityForResult( chooseImageIntent, REQUEST_CODE );
-            checkPermissions();
-        });
-
-        createProfile.setOnClickListener(v -> {
-            if(namePlant.getText().toString().equals("")) {
-                namePlant.setError(getString(R.string.error_name));
-                namePlant.requestFocus();
-            }
-        });
-
-
-    }
-
-    private void initializeView() {
-        profilePicture = findViewById(R.id.profilePicPlant_imgView);
-        namePlant = findViewById(R.id.namePlant_editText);
-        bd_day = findViewById(R.id.bd_day);
-        bd_month = findViewById(R.id.bd_month);
-        bd_year = findViewById(R.id.bd_year);
-        birthdayLayout = findViewById(R.id.birthday_layout);
-        minHumidity = findViewById(R.id.minHumidity_editText);
-        maxHumidity = findViewById(R.id.maxHumidity_editText);
-        minSunlight = findViewById(R.id.minSunlight_editText);
-        maxSunlight = findViewById(R.id.maxSunlight_editText);
-        minTemperature = findViewById(R.id.minTemperature_editText);
-        maxTemperature = findViewById(R.id.maxTemperature_editText);
-        createProfile = findViewById(R.id.createProfile_btn);
-    }
-
-    private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_GALLERY | REQUEST_CAMERA);
+    public static final Creator<PlantProfile> CREATOR = new Creator<PlantProfile>() {
+        @Override
+        public PlantProfile createFromParcel(Parcel in) {
+            return new PlantProfile(in);
         }
+
+        @Override
+        public PlantProfile[] newArray(int size) {
+            return new PlantProfile[size];
+        }
+    };
+
+    private String name;
+    private String userID;
+    private String profileId;
+    private String birthday;
+    private int minHumid;
+    private int maxHumid;
+    private int minTemp;
+    private int maxTemp;
+    private int minSun;
+    private int maxSun;
+
+    public PlantProfile (String userID, String name, String profileId, String birthday, int minHumid, int maxHumid, int minTemp,
+                         int maxTemp, int minSun, int maxSun){
+        this.userID = userID;
+        this.name = name;
+        this.profileId = profileId;
+        this.birthday = birthday;
+        this.minHumid = minHumid;
+        this.maxHumid = maxHumid;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
+        this.minSun = minSun;
+        this.maxSun = maxSun;
+
+    }
+
+    public PlantProfile(){
+
+    }
+
+    protected PlantProfile(Parcel in){
+        userID = in.readString();
+        name = in.readString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getProfileId() {
+        return profileId;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getMinHumid() {
+        return minHumid;
+    }
+
+    public void setMinHumid(int minHumid) {
+        this.minHumid = minHumid;
+    }
+
+    public int getMaxHumid() {
+        return maxHumid;
+    }
+
+    public void setMaxHumid(int maxHumid) {
+        this.maxHumid = maxHumid;
+    }
+
+    public int getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(int minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public int getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(int maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+    public int getMinSun() {
+        return minSun;
+    }
+
+    public void setMinSun(int minSun) {
+        this.minSun = minSun;
+    }
+
+    public int getMaxSun() {
+        return maxSun;
+    }
+
+    public void setMaxSun(int maxSun) {
+        this.maxSun = maxSun;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d( TAG, "request code: " + requestCode );
-        Log.d( TAG, "result code: " + resultCode );
-        if ( resultCode == RESULT_OK && requestCode == REQUEST_CODE ) {
-            Glide.with(this).load(data.getData()).fitCenter().into(profilePicture);
-
-        } else
-            Log.d( TAG, "Nothing selected!" );
-
+    public int describeContents() {
+        return 0;
     }
 
     @Override
-    public void onClick(View view) {
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(userID);
+        dest.writeString(profileId);
+        dest.writeString(birthday);
+        dest.writeInt(minHumid);
+        dest.writeInt(maxHumid);
+        dest.writeInt(minTemp);
+        dest.writeInt(maxTemp);
+        dest.writeInt(minSun);
+        dest.writeInt(maxSun);
+    }
 
+    public static class Builder{
+        private String sUserID;
+        private String sProfileId;
+        private String sName;
+        private String sBirthday;
+        private int sMinHumid;
+        private int sMaxHumid;
+        private int sMinTemp;
+        private int sMaxTemp;
+        private int sMinSun;
+        private int sMaxSun;
+
+        public Builder() {
+           // sUserID = uId;
+            sProfileId = UUID.randomUUID().toString();
+
+        }
+
+        public Builder withName(String name){
+            if(name.length() == 0) {
+                throw new InputMismatchException("No name");
+            }
+            sName = name;
+            return this;
+        }
+
+        public Builder withAge(String birthday) {
+            if (birthday.length() == 0)
+                throw new InputMismatchException("No birthday");
+            sBirthday = birthday;
+            return this;
+        }
+
+        public Builder withHumid(int minHumid, int maxHumid){
+            if(minHumid<0 || minHumid>maxHumid || maxHumid>101)
+                throw new InputMismatchException("Wrong humidity parameters");
+            sMinHumid = minHumid;
+            sMaxHumid = maxHumid;
+            return this;
+        }
+
+        public Builder withTemp(int minTemp, int maxTemp){
+            if(minTemp<0 || minTemp>maxTemp || maxTemp>30)
+                throw new InputMismatchException("Wrong temperature parameters");
+            sMinTemp = minTemp;
+            sMaxTemp = maxTemp;
+            return this;
+        }
+
+        public Builder withSun(int minSun, int maxSun){
+            if(minSun<25 || minSun>maxSun || maxSun>75)
+                throw new InputMismatchException("Wrong sunlight parameters");
+            sMinSun = minSun;
+            sMaxSun = maxSun;
+            return this;
+        }
+
+        public PlantProfile build(){
+            PlantProfile profile = new PlantProfile();
+            profile.userID = sUserID;
+            profile.profileId = sProfileId;
+            profile.name = sName;
+            profile.birthday = sBirthday;
+            profile.minHumid = sMinHumid;
+            profile.maxHumid = sMaxHumid;
+            profile.minTemp = sMinTemp;
+            profile.maxTemp = sMaxTemp;
+            profile.minSun = sMinSun;
+            profile.maxSun = sMaxSun;
+            return profile;
+        }
     }
 }

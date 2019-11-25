@@ -13,6 +13,14 @@
         android:orientation="vertical"
         tools:visibility="visible">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/logo"
+
+            />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,7 +28,8 @@
             android:text="@string/slide_1_title"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,21 +42,14 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_desc" />
 
-        <Button
-            android:id="@+id/button_connect_to_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/button_connect">
 
-        </Button>
 
 
         <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:src="@drawable/giphy" />
+            android:src="@drawable/dying_plant_gif" />
 
     </LinearLayout>
 
