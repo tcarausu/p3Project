@@ -111,18 +111,6 @@ public class MongoDbSetup {
         return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
     }
 
-    public RemoteMongoCollection<Document> getPlants_Collection() {
-        return
-                getRemoteMongoDbClient().getDatabase("eye_plant")
-                        .getCollection("plants");
-    }
-
-//    public RemoteMongoCollection<Document> getUsers_collection() {
-//        return
-//                getRemoteMongoDbClient().getDatabase("eye_plant")
-//                        .getCollection("users");
-//    }
-
     public RemoteMongoCollection<Document> getCollectionByName(String collectionName) {
         return
                 getRemoteMongoDbClient().getDatabase("eye_plant")
@@ -211,7 +199,7 @@ public class MongoDbSetup {
     public void findPlantsList() {
         try {
 
-            RemoteMongoCollection<Document> plants = getPlants_Collection();
+            RemoteMongoCollection<Document> plants = getCollectionByName("plants");
             RemoteMongoIterable<Document> plantIterator = plants.find();
 
             final List<Document> docs = new ArrayList<>();
@@ -274,13 +262,13 @@ public class MongoDbSetup {
 
     public void updateOne() {
 
-        getPlants_Collection().updateOne(eq("plant_id", "5dcd80de1e36d318eb99fe8c"),
+        getCollectionByName("plants").updateOne(eq("plant_id", "5dcd80de1e36d318eb99fe8c"),
                 combine(set("size.uom", "cm")));
 
     }
 
     public void deleteOne() {
-        getPlants_Collection().deleteOne(eq("plant_id", "5dcd80de1e36d318eb99fe8c"));
+        getCollectionByName("plants").deleteOne(eq("plant_id", "5dcd80de1e36d318eb99fe8c"));
 
     }
 
