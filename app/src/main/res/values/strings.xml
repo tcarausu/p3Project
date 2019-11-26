@@ -14,7 +14,7 @@
     <string name="search_Hint">Search</string>
 
     <string name="change_picture">click here to change picture</string>
-    <string name="save_changes">Save changes</string>
+    <string name="save_changes">Save</string>
     <string name="lux">lux</string>
     <string name="percent">%</string>
     <string name="celsius">°C</string>
@@ -40,6 +40,7 @@
     <string name="bd_day">DD</string>
     <string name="bd_month">MM</string>
     <string name="bd_year">YYYY</string>
+    <string name="mood">mood</string>
 
 
     <string name="error_name">Please give your plant a name!</string>

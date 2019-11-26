@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.model.Plant_Profile;
 import com.example.aiplant.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -63,6 +66,7 @@ public class MongoDbSetup {
     private static GoogleSignInClient mGoogleSignInClient;
     private List<Document> plantsList;
     private List<Document> plant_profiles;
+    private Plant_Profile plantProfileToKeep;
 
     private MongoDbSetup(Context context) {
         synchronized (MongoDbSetup.class) {
@@ -90,7 +94,7 @@ public class MongoDbSetup {
         return new MongoDbSetup(context);
     }
 
-    public static void runAppClientInit() {
+    public  void runAppClientInit() {
         initAppClient.run(() ->
                 appClient =
                         Stitch.initializeDefaultAppClient("eye-plant-tilrj")
@@ -99,12 +103,12 @@ public class MongoDbSetup {
 
     }
 
-    public String getAppClientId(){
-         return Objects.requireNonNull(getStitchUser()).getId();
+    public  StitchAppClient getAppClient() {
+        return appClient;
     }
 
-    public static StitchAppClient getAppClient() {
-        return appClient;
+    public String getAppClientId() {
+        return Objects.requireNonNull(getStitchUser()).getId();
     }
 
     private static RemoteMongoClient getRemoteMongoDbClient() {
@@ -229,6 +233,92 @@ public class MongoDbSetup {
         } catch (Throwable e) {
             Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
+    }
+    public void bluetoothConnectivity() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(mContext, "Device doesn't Support Bluetooth", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "it has it", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    public void findPlantProfileList() {
+        try {
+
+            RemoteMongoCollection<Document> plant_profiles = getCollectionByName("plant_profiles");
+            RemoteMongoIterable<Document> plantIterator = plant_profiles.find();
+
+            final List<Document> docs = new ArrayList<>();
+
+            plantIterator
+                    .forEach(document -> {
+                        docs.add(document);
+                        Log.d(TAG, "doc" + docs.size());
+                    })
+
+                    .addOnCompleteListener(task -> {
+                        Log.d(TAG, "doc" + docs.size());
+
+                        setupPlantProfileList(docs);
+
+                    });
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
+        }
+    }
+
+    public List<Plant_Profile> setupPlantProfileList(List<Document> docs) {
+        try {
+
+            for (Document profile : docs) {
+                String plant_id = profile.getString("plant_id");
+                String user_id = profile.getString("user_id");
+                String name_of_plant = profile.getString("name_of_plant");
+                String date_of_creation = profile.getString("date_of_creation");
+                String picture = profile.getString("picture");
+                int measured_humidity = profile.getInteger("measured_humidity");
+                int measured_temperature = profile.getInteger("measured_temperature");
+                int measured_sunlight = profile.getInteger("measured_sunlight");
+                ArrayList<Integer> humidity = profile.get("humidity", ArrayList.class);
+                ArrayList temperature = profile.get("humidity", ArrayList.class);
+                ArrayList sunlight = profile.get("humidity", ArrayList.class);
+                Log.d(TAG, "profile" + user_id);
+//                Plant_Profile plant_profile = new Plant_Profile(user_id, plant_id, name_of_plant, picture, date_of_creation,
+//                        new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+//                        measured_humidity, measured_temperature, measured_sunlight);
+                Plant_Profile plant_profile = new Plant_Profile(user_id,plant_id,name_of_plant,picture,date_of_creation,temperature
+                ,humidity,sunlight,measured_humidity,measured_temperature,measured_sunlight);
+
+                Log.d(TAG, "setupPlantProfileList: plantProfile: "+plant_profile.getPlant_id());
+                Log.d(TAG, "setupPlantProfileList: plantProfile: "+plant_profile.getUser_id());
+            }
+
+//                flowerName.setText(plant_profile.getName_of_plant());
+//                timeOfCreation.setText(plant_profile.getDate_of_creation());
+//                hum_current.setProgress(plant_profile.getMeasured_humidity());
+//                temp_current.setProgress(plant_profile.getMeasured_temperature());
+//                light_current.setProgress(plant_profile.getMeasured_sunlight());
+
+
+//                plantProfiles.add(plant_profile);
+//                keepPlantProfile(plant_profile);
+                return null;
+
+        } catch (Throwable e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
+        }
+        return null;
+    }
+
+    private void keepPlantProfile(Plant_Profile plant_profile) {
+        this.plantProfileToKeep = plant_profile;
+    }
+
+    public Plant_Profile getPlantProfile() {
+        return plantProfileToKeep;
     }
 
     private void setListOfPlants(List<Document> docs) {

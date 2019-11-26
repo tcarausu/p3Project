@@ -21,8 +21,8 @@ public class Plant_Profile {
     @ColumnInfo(name = "name_of_plant")
     private String name_of_plant;
 
-    @ColumnInfo(name = "description")
-    private String description;
+    @ColumnInfo(name = "date_of_creation")
+    private String date_of_creation;
 
     @ColumnInfo(name = "picture")
     private String picture;
@@ -34,18 +34,31 @@ public class Plant_Profile {
     @ColumnInfo(name = "sunlight")
     private ArrayList<Integer> sunlight;
 
+    @ColumnInfo(name = "measured_humidity")
+    private int measured_humidity;
+
+    @ColumnInfo(name = "date_of_creation")
+    private int measured_temperature;
+
+    @ColumnInfo(name = "picture")
+    private int measured_sunlight;
+
     public Plant_Profile(String user_id, String plant_id,
-                         String name_of_plant, String description,
-                         String picture, ArrayList<Integer> temperature,
-                         ArrayList<Integer> humidity, ArrayList<Integer> sunlight) {
+                         String name_of_plant,
+                         String picture, String date_of_creation, ArrayList<Integer> temperature,
+                         ArrayList<Integer> humidity, ArrayList<Integer> sunlight,
+                         int measured_humidity, int measured_temperature, int measured_sunlight) {
         this.user_id = user_id;
         this.plant_id = plant_id;
         this.name_of_plant = name_of_plant;
-        this.description = description;
+        this.date_of_creation = date_of_creation;
         this.picture = picture;
         this.temperature = temperature;
         this.humidity = humidity;
         this.sunlight = sunlight;
+        this.measured_humidity = measured_humidity;
+        this.measured_temperature = measured_temperature;
+        this.measured_sunlight = measured_sunlight;
     }
 
     public String getUser_id() {
@@ -75,13 +88,13 @@ public class Plant_Profile {
         this.name_of_plant = name_of_plant;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDate_of_creation() {
+        return date_of_creation;
     }
 
     @Exclude
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDate_of_creation(String date_of_creation) {
+        this.date_of_creation = date_of_creation;
     }
 
     public String getPicture() {
@@ -122,4 +135,31 @@ public class Plant_Profile {
         this.sunlight = sunlight;
     }
 
+
+    public int getMeasured_humidity() {
+        return measured_humidity;
+    }
+
+    @Exclude
+    public void setMeasured_humidity(int measured_humidity) {
+        this.measured_humidity = measured_humidity;
+    }
+
+    public int getMeasured_temperature() {
+        return measured_temperature;
+    }
+
+    @Exclude
+    public void setMeasured_temperature(int measured_temperature) {
+        this.measured_temperature = measured_temperature;
+    }
+
+    public int getMeasured_sunlight() {
+        return measured_sunlight;
+    }
+
+    @Exclude
+    public void setMeasured_sunlight(int measured_sunlight) {
+        this.measured_sunlight = measured_sunlight;
+    }
 }

@@ -90,11 +90,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
-        MongoDbSetup.runAppClientInit();
+        mongoDbSetup.runAppClientInit();
         mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
 
         setMongoDbForLaterUse(mongoDbSetup);
-        appClient = MongoDbSetup.getAppClient();
+        appClient = mongoDbSetup.getAppClient();
 
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mongoDbSetup.getStitchUser();
