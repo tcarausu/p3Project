@@ -7,7 +7,8 @@
         android:background="@drawable/border_not_sharp"
         android:elevation="4dp"
         android:gravity="center"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
+
         >
 
         <LinearLayout
@@ -27,7 +28,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/ic_option_button" />
 
             </RelativeLayout>
@@ -99,10 +100,9 @@
                         android:id="@+id/humidity_max_value"
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_marginEnd="10dp"
                         android:layout_weight="2"
                         android:background="@null"
-                        android:textAlignment="textEnd"
+                        android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
@@ -113,6 +113,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:weightSum="10">
 
                 <TextView
@@ -161,6 +162,7 @@
                     android:layout_height="20dp"
                     android:layout_weight="2"
                     android:background="@null"
+                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
@@ -169,6 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_height="20dp"
                     android:layout_weight="2"
+                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
@@ -177,6 +180,7 @@
                     android:layout_width="0dp"
                     android:layout_height="20dp"
                     android:layout_weight="2"
+                    android:textAlignment="center"
                     android:background="@null"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -188,6 +192,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:weightSum="10">
 
                 <TextView
@@ -230,35 +235,38 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4" />
 
-                <EditText
-                    android:id="@+id/light_max_value"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:layout_weight="2"
-                    android:layout_gravity="end"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <EditText
+                        android:id="@+id/light_min_value"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="20dp"
+                        android:textAlignment="center"
+                        android:layout_gravity="start"
+                        android:background="@null"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/light_current_value"
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="20dp"
+                    android:textAlignment="center"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
+                    <EditText
+                        android:id="@+id/light_max_value"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="2"
+                        android:layout_gravity="end"
+                        android:background="@null"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/light_min_value"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="20dp"
-                    android:layout_gravity="start"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
 
                 </LinearLayout>
 
@@ -266,25 +274,26 @@
 
             <Button
                 android:id="@+id/save_changes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:textColor="@color/white"
                 android:layout_gravity="center"
+                android:textSize="12sp"
                 android:background="@drawable/button_green"
                 android:text="@string/save_changes"
                 android:visibility="gone" />
-        </LinearLayout>
 
         <ImageView
             android:id="@+id/mood_pic"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@+id/information_sliders"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="167dp"
-            android:layout_marginBottom="10dp"
-            android:contentDescription="Mood_Pic" />
+            android:layout_width="70dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/mood"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.home.HomeActivity;
+import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.mongodb.BasicDBObject;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
@@ -28,12 +30,15 @@ import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
 import org.bson.Document;
+import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
@@ -90,7 +95,7 @@ public class MongoDbSetup {
         return new MongoDbSetup(context);
     }
 
-    public static void runAppClientInit() {
+    public void runAppClientInit() {
         initAppClient.run(() ->
                 appClient =
                         Stitch.initializeDefaultAppClient("eye-plant-tilrj")
@@ -99,12 +104,12 @@ public class MongoDbSetup {
 
     }
 
-    public String getAppClientId(){
-         return Objects.requireNonNull(getStitchUser()).getId();
+    public StitchAppClient getAppClient() {
+        return appClient;
     }
 
-    public static StitchAppClient getAppClient() {
-        return appClient;
+    public String getAppClientId() {
+        return Objects.requireNonNull(getStitchUser()).getId();
     }
 
     private static RemoteMongoClient getRemoteMongoDbClient() {
@@ -146,12 +151,12 @@ public class MongoDbSetup {
                                            int maxSun, byte[] picture) {
 
         List<Integer> humidity = new ArrayList<>();
-        humidity.add(0,minHumidity);
+        humidity.add(0, minHumidity);
         humidity.add(1, maxHumidity);
         List<Integer> temperature = new ArrayList<>();
         temperature.add(0, minTemperature);
         temperature.add(1, maxTemperature);
-        List<Integer> sunlight= new ArrayList<>();
+        List<Integer> sunlight = new ArrayList<>();
         sunlight.add(0, minSun);
         sunlight.add(1, maxSun);
 
@@ -229,6 +234,100 @@ public class MongoDbSetup {
         } catch (Throwable e) {
             Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
+    }
+
+    public void bluetoothConnectivity() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(mContext, "Device doesn't Support Bluetooth", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "it has it", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    public void findPlantProfileList(
+            EditText flowerName, EditText timeOfCreation,
+            SeekBar hum_current, SeekBar temp_current, SeekBar light_current
+            , CircleImageView imageView
+    ) {
+        try {
+
+            RemoteMongoCollection<Document> plant_profiles = getCollectionByName("plant_profiles");
+            RemoteMongoIterable<Document> plantIterator = plant_profiles.find();
+
+            final List<Document> docs = new ArrayList<>();
+
+            plantIterator
+                    .forEach(document -> {
+                        docs.add(document);
+                        Log.d(TAG, "doc" + docs.size());
+                    })
+
+                    .addOnCompleteListener(task -> {
+                        Log.d(TAG, "doc" + docs.size());
+
+                        setupPlantProfileList(docs, flowerName, timeOfCreation, hum_current, temp_current, light_current,imageView);
+
+                    });
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
+        }
+    }
+
+    public List<PlantProfile> setupPlantProfileList(List<Document> docs,
+                                                    EditText flowerName, EditText timeOfCreation,
+                                                    SeekBar hum_current, SeekBar temp_current, SeekBar light_current
+            , CircleImageView imageView
+    ) {
+        try {
+
+            for (Document profile : docs) {
+                String profile_id = profile.getString("profile_id");
+                String user_id = profile.getString("user_id");
+                String name = profile.getString("name");
+                String birthday = profile.getString("birthday");
+                int measured_humidity = profile.getInteger("measured_humidity");
+                int measured_temperature = profile.getInteger("measured_temperature");
+                int measured_sunlight = profile.getInteger("measured_sunlight");
+
+                Binary picture = profile.get("picture", Binary.class);
+                byte[] pic_bytes = picture.getData();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(pic_bytes, 0, pic_bytes.length);
+
+                ArrayList<Integer> humidity = profile.get("humidity", ArrayList.class);
+                ArrayList<Integer> temperature = profile.get("temperature", ArrayList.class);
+                ArrayList<Integer> sunlight = profile.get("sunlight", ArrayList.class);
+
+                int min_hum = humidity.get(0);
+                int max_hum = humidity.get(1);
+                int min_temp = temperature.get(0);
+                int max_temp = temperature.get(1);
+                int min_sun = sunlight.get(0);
+                int max_sun = sunlight.get(1);
+                Log.d(TAG, "profile" + user_id);
+
+
+                PlantProfile profileForUser = new PlantProfile(user_id, profile_id, name, birthday
+                        , min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, pic_bytes, measured_humidity, measured_temperature, measured_sunlight);
+
+                flowerName.setText(profileForUser.getName());
+                timeOfCreation.setText(profileForUser.getBirthday());
+                hum_current.setProgress(profileForUser.getMeasured_humidity());
+                temp_current.setProgress(profileForUser.getMeasured_temperature());
+                light_current.setProgress(profileForUser.getMeasured_sunlight());
+
+                Glide.with(mContext).load(bitmap).centerCrop().into(imageView);
+                Log.d(TAG, "setupPlantProfileList: plantProfile: " + plant_profiles);
+            }
+
+            return null;
+
+        } catch (Throwable e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
+        }
+        return null;
     }
 
     private void setListOfPlants(List<Document> docs) {

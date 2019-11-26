@@ -48,11 +48,11 @@ public class PlantProfileActivity extends AppCompatActivity {
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
-        MongoDbSetup.runAppClientInit();
+        mongoDbSetup.runAppClientInit();
         mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
 
         setMongoDbForLaterUse(mongoDbSetup);
-        appClient = MongoDbSetup.getAppClient();
+        appClient = mongoDbSetup.getAppClient();
 
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mongoDbSetup.getStitchUser();

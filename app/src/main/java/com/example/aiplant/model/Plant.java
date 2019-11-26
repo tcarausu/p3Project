@@ -33,6 +33,9 @@ public class Plant {
     @ColumnInfo(name = "sunlight")
     private ArrayList<Integer> sunlight;
 
+    public Plant(){
+
+    }
 
     public Plant(String plant_id, String plant_name, String description, String picture_url,
                  ArrayList<Integer> humidity, ArrayList<Integer> temperature,ArrayList<Integer> sunlight) {

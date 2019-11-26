@@ -26,12 +26,75 @@ public class PlantProfile implements Serializable, Parcelable {
     private String userID;
     private String profileId;
     private String birthday;
+    private byte[] picture_bytes ;
     private int minHumid;
     private int maxHumid;
     private int minTemp;
     private int maxTemp;
     private int minSun;
     private int maxSun;
+    private int measured_humidity;
+    private int measured_temperature;
+    private int measured_sunlight;
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
+    }
+
+    public byte[] getPicture_bytes() {
+        return picture_bytes;
+    }
+
+    public void setPicture_bytes(byte[] picture_bytes) {
+        this.picture_bytes = picture_bytes;
+    }
+
+    public int getMeasured_humidity() {
+        return measured_humidity;
+    }
+
+    public void setMeasured_humidity(int measured_humidity) {
+        this.measured_humidity = measured_humidity;
+    }
+
+    public int getMeasured_temperature() {
+        return measured_temperature;
+    }
+
+    public void setMeasured_temperature(int measured_temperature) {
+        this.measured_temperature = measured_temperature;
+    }
+
+    public int getMeasured_sunlight() {
+        return measured_sunlight;
+    }
+
+    public void setMeasured_sunlight(int measured_sunlight) {
+        this.measured_sunlight = measured_sunlight;
+    }
+
+    public PlantProfile(String userID, String profileId, String name, String birthday,
+                        int minHumid, int maxHumid, int minTemp, int maxTemp, int minSun, int maxSun, byte[] picture_bytes
+            , int measured_humidity, int measured_temperature, int measured_sunlight) {
+        this.name = name;
+        this.userID = userID;
+        this.profileId = profileId;
+        this.birthday = birthday;
+        this.picture_bytes = picture_bytes;
+        this.minHumid = minHumid;
+        this.maxHumid = maxHumid;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
+        this.minSun = minSun;
+        this.maxSun = maxSun;
+        this.measured_humidity = measured_humidity;
+        this.measured_temperature = measured_temperature;
+        this.measured_sunlight = measured_sunlight;
+    }
 
     public PlantProfile (String userID, String name, String profileId, String birthday, int minHumid, int maxHumid, int minTemp,
                          int maxTemp, int minSun, int maxSun){
