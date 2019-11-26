@@ -331,7 +331,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 mStitchAuth.loginWithCredential(credential).addOnCompleteListener(task -> {
                     if (task.isSuccessful())
-                        Toast.makeText(mContext, "Logged in successfully", Toast.LENGTH_SHORT).show();
+                        Log.d("LoginActivity","Logged in successfully");
 
                     mStitchUser = task.getResult();
                     client_id = mStitchUser.getId();

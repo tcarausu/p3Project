@@ -3,6 +3,8 @@ package com.example.aiplant.utility_classes;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mongodb.BasicDBObject;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
@@ -26,6 +29,7 @@ import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
 import org.bson.Document;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,9 +38,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
-
-//import com.example.aiplant.model.Plant;
-//import com.example.aiplant.model.Plant_Profile;
 
 /**
  * File created by tcarau18
@@ -120,43 +121,52 @@ public class MongoDbSetup {
     public Document createUserDocument(String id, String displayName,
                                        String userMail, String photoURL, int nrOfPlant, String birthday) {
 
-        return new Document(
-                "logged_user_id",
-                id)
-                .append(
-                        "name",
-                        displayName)
-                .append(
-                        "email",
-                        userMail)
-                .append("picture",
-                        photoURL)
-                .append("number_of_plants",
-                        nrOfPlant)
-                .append("birthday",
-                        birthday);
+        return new Document("logged_user_id", id)
+                .append("name", displayName)
+                .append("email", userMail)
+                .append("picture", photoURL)
+                .append("number_of_plants", nrOfPlant)
+                .append("birthday", birthday);
+    }
+
+    public static byte[] mBitmapToArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    private Bitmap arrayToBitmap(byte[] array) {
+        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(array, 0, array.length);
+        return compressedBitmap;
     }
 
     public void createPlantProfileDocument(String collectionName, String profileId, String plantName, String birthday,
                                            int minHumidity, int maxHumidity, int minTemperature,
                                            int maxTemperature, int minSun,
-                                           int maxSun) {
+                                           int maxSun, byte[] picture) {
+
+        List<Integer> humidity = new ArrayList<>();
+        humidity.add(0,minHumidity);
+        humidity.add(1, maxHumidity);
+        List<Integer> temperature = new ArrayList<>();
+        temperature.add(0, minTemperature);
+        temperature.add(1, maxTemperature);
+        List<Integer> sunlight= new ArrayList<>();
+        sunlight.add(0, minSun);
+        sunlight.add(1, maxSun);
+
 
         Document createdPlantProfile = new Document("user_id", getAppClientId())
                 .append("profile_id", profileId)
                 .append("name", plantName)
                 .append("birthday", birthday)
-                .append(
-                        "humidity min",
-                        minHumidity)
-                .append("humidity max",
-                        maxHumidity)
-                .append("temperature min",
-                        minTemperature)
-                .append("temperature max",
-                        maxTemperature)
-                .append("sunlight min", minSun)
-                .append("sunlight max", maxSun);
+                .append("humidity", humidity)
+                .append("temperature", temperature)
+                .append("sunlight", sunlight)
+                .append("picture", picture)
+                .append("measured_humidity", 0)
+                .append("measured_temperature", 0)
+                .append("measured_sunlight", 0);
 
         getCollectionByName(collectionName).insertOne(createdPlantProfile);
     }

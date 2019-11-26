@@ -19,10 +19,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.PlantProfile;
+import com.example.aiplant.utility_classes.DateValidator;
+import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 
 import java.io.IOException;
@@ -32,11 +35,9 @@ import static android.app.Activity.RESULT_OK;
 public class PlantProfileFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "PlantProfileFragment";
-    private String collectionName = "plant_profiles";
 
     static final int REQUEST_CODE = 123;
 
-    private String userID;
     private ImageView profilePicture;
     private EditText namePlant;
     private EditText bd_day;
@@ -53,6 +54,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     private Button createProfileBtn;
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private MongoDbSetup mongoDbSetup;
+    DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
 
     @Nullable
     @Override
@@ -80,15 +82,17 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         profilePicture.setOnClickListener(this);
 
         createProfileBtn.setOnClickListener(this);
-//            if(namePlant.getText().toString().equals("")) {
-//                namePlant.setError(getString(R.string.error_name));
-//                namePlant.requestFocus();
-//            }
-
 
         return view;
     }
 
+    public Bitmap getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
+    }
 
     private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -118,10 +122,11 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 try {
                     bitmap = ImagePicker.getImageFromResult(getContext(), resultCode, data);
                 } catch (IOException e) {
-                    //do sth
+                    e.printStackTrace();
                 }
-                profilePicture.setImageBitmap(bitmap);
-                picture = bitmap;
+
+                setPicture(bitmap);
+                Glide.with(getContext()).load(getPicture()).into(profilePicture);
                 profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
@@ -137,7 +142,8 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.createProfile_btn:
-                if (profilePicture == null) {
+                setBirthday(bd_day.getText().toString() + "/" + bd_month.getText().toString() + "/" + bd_year.getText().toString());
+                if (getPicture() == null) {
                     Toast.makeText(getContext(), R.string.please_picture, Toast.LENGTH_SHORT).show();
                 } else if (namePlant.getText().toString().length() == 0) {
                     namePlant.requestFocus();
@@ -145,20 +151,16 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 } else if (bd_day.getText().toString().length() == 0) {
                     bd_day.requestFocus();
                     bd_day.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(bd_day.getText().toString()) > 31 || Integer.parseInt(bd_day.getText().toString()) < 1) {
-                    bd_day.requestFocus();
-                    bd_day.setError(getString(R.string.error_wrong_input));
                 } else if (bd_month.getText().toString().length() == 0) {
                     bd_month.setError(getString(R.string.error_empty));
                     bd_month.requestFocus();
-                } else if (Integer.parseInt(bd_month.getText().toString()) > 12 || Integer.parseInt(bd_month.getText().toString()) < 1) {
-                    bd_month.requestFocus();
-                    bd_month.setError(getString(R.string.error_wrong_input));
                 } else if (bd_year.getText().toString().length() == 0) {
                     bd_year.requestFocus();
                     bd_year.setError(getString(R.string.error_empty));
                 }
-                // else if(Integer.parseInt(bd_year.getText().toString()))
+                else if(!validator.isValid(getBirthday())) {
+                    Toast.makeText(getContext(), R.string.wrong_date, Toast.LENGTH_SHORT).show();
+                }
                 else if (minHumidity.getText().toString().length() == 0) {
                     minHumidity.requestFocus();
                     minHumidity.setError(getString(R.string.error_empty));
@@ -198,9 +200,10 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 } else if (Integer.parseInt(maxSunlight.getText().toString()) > 75) {
                     maxSunlight.requestFocus();
                     maxSunlight.setError(getString(R.string.error_wrong_input));
-                } else {
-                    setBirthday(bd_day.getText().toString() + "/" + bd_month.getText().toString() + "/" + bd_year.getText().toString());
-                    createProfile();
+
+                } else{
+                        createProfile();
+                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
                 }
                 break;
 
@@ -226,8 +229,6 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 getResources().getString(R.string.eye_plant_plant_profiles),
                 profile.getProfileId(), profile.getName(),
                 profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
-                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun());
-
-        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
+                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun(),MongoDbSetup.mBitmapToArray(getPicture()));
     }
 }

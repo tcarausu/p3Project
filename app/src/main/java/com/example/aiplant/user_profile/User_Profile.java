@@ -3,6 +3,7 @@ package com.example.aiplant.user_profile;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
@@ -200,17 +203,26 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Todo: continue here with results from the camera
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            //Todo: we can add other implementation here, like loading the image to database
-            try {
-                Uri uri = data.getData();
-                Glide.with(this).load(uri).fitCenter().into(profilePic);
-                profilePic.refreshDrawableState();
-            } catch (NullPointerException e) {
-                Log.e(TAG, "onActivityResult:  " + e.getMessage());
-
+        Log.d(TAG, "request code: " + requestCode);
+        Log.d(TAG, "result code: " + resultCode);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
+                Bitmap bitmap = null;
+                try {
+                    bitmap = ImagePicker.getImageFromResult(getApplicationContext(), resultCode, data);
+                } catch (IOException e) {
+                    //do sth
+                }
+               // profilePic.setImageBitmap(bitmap);
+                //Bitmap picture = bitmap;
+                Glide.with(getApplicationContext()).load(bitmap).into(profilePic);
+               // profilePic.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
             }
-        } else Toast.makeText(mContext, "canceled", Toast.LENGTH_SHORT).show();
+
+        } else
+            Log.d(TAG, "Error on camera/Gallery");
     }
 
     @Override
