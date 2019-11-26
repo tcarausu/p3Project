@@ -104,7 +104,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light.getProgress();
 
         mongoDbSetup.findPlantsList();
-        mongoDbSetup.findPlantProfileList();
+        mongoDbSetup.findPlantProfileList(flowerNameEditText, flowerTimeEditText, humidity, temperature, light,profileImage);
         return v;
     }
 
