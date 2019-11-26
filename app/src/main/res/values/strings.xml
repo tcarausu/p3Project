@@ -212,6 +212,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="error_wrong_input">Wrong input</string>
     <string name="error_empty">This field cannot be empty</string>
     <string name="please_picture">Please add a profile picture</string>
+    <string name="wrong_date">The birthday is invalid</string>
 
 
 
