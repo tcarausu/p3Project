@@ -157,11 +157,9 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 } else if (bd_year.getText().toString().length() == 0) {
                     bd_year.requestFocus();
                     bd_year.setError(getString(R.string.error_empty));
-                }
-                else if(!validator.isValid(getBirthday())) {
+                } else if (!validator.isValid(getBirthday())) {
                     Toast.makeText(getContext(), R.string.wrong_date, Toast.LENGTH_SHORT).show();
-                }
-                else if (minHumidity.getText().toString().length() == 0) {
+                } else if (minHumidity.getText().toString().length() == 0) {
                     minHumidity.requestFocus();
                     minHumidity.setError(getString(R.string.error_empty));
                 } else if (Integer.parseInt(minHumidity.getText().toString()) < 0 ||
@@ -201,9 +199,9 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                     maxSunlight.requestFocus();
                     maxSunlight.setError(getString(R.string.error_wrong_input));
 
-                } else{
-                        createProfile();
-                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
+                } else {
+                    createProfile();
+                    mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
                 }
                 break;
 
@@ -223,12 +221,13 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 .withHumid(Integer.parseInt(minHumidity.getText().toString()), Integer.parseInt(maxHumidity.getText().toString()))
                 .withTemp(Integer.parseInt(minTemperature.getText().toString()), Integer.parseInt(maxTemperature.getText().toString()))
                 .withSun(Integer.parseInt(minSunlight.getText().toString()), Integer.parseInt(maxSunlight.getText().toString()))
+                .withUrl(null)
                 .build();
 
         mongoDbSetup.createPlantProfileDocument(
                 getResources().getString(R.string.eye_plant_plant_profiles),
                 profile.getProfileId(), profile.getName(),
                 profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
-                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun(),MongoDbSetup.mBitmapToArray(getPicture()));
+                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun(), profile.getUrl(), MongoDbSetup.mBitmapToArray(getPicture()));
     }
 }

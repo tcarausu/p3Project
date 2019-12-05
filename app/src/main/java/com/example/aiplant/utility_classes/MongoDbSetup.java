@@ -148,7 +148,7 @@ public class MongoDbSetup {
     public void createPlantProfileDocument(String collectionName, String profileId, String plantName, String birthday,
                                            int minHumidity, int maxHumidity, int minTemperature,
                                            int maxTemperature, int minSun,
-                                           int maxSun, byte[] picture) {
+                                           int maxSun, String url, byte[] picture) {
 
         List<Integer> humidity = new ArrayList<>();
         humidity.add(0, minHumidity);
@@ -168,10 +168,11 @@ public class MongoDbSetup {
                 .append("humidity", humidity)
                 .append("temperature", temperature)
                 .append("sunlight", sunlight)
-                .append("picture", picture)
+                .append("picture", url)
                 .append("measured_humidity", 0)
                 .append("measured_temperature", 0)
-                .append("measured_sunlight", 0);
+                .append("measured_sunlight", 0)
+                .append("edited_pic", picture);
 
         getCollectionByName(collectionName).insertOne(createdPlantProfile);
     }

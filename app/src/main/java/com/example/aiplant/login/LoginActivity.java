@@ -23,8 +23,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.User;
+import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.utility_classes.MongoDbSetup;
-import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,7 +32,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
@@ -227,6 +226,85 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void loginEmailMongoDb() {
+        String emailToUse = mEmailField.getText().toString();
+        String passToUse = mPasswordField.getText().toString();
+
+        // first check if our textFields aren't empty
+        if (TextUtils.isEmpty(emailToUse) && TextUtils.isEmpty(passToUse)) {
+            mEmailField.setError("Required.");
+            mPasswordField.setError("Required.");
+
+            Toast.makeText(getApplicationContext(), "Please type in email and password", Toast.LENGTH_SHORT).show();
+
+        } else if (TextUtils.isEmpty(emailToUse)) {
+            mEmailField.setError("Required.");
+            Toast.makeText(getApplicationContext(), "Please type in email or phone", Toast.LENGTH_SHORT).show();
+
+        } else if (TextUtils.isEmpty(passToUse)) {
+            mPasswordField.setError("Required.");
+            Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
+
+        } else {
+            ProgressDialog progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Signing in");
+            progressDialog.setMessage("Signing in, please wait...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setIcon(R.drawable.ai_plant);
+            progressDialog.show();
+
+            SecureRandom random = new SecureRandom();
+            int randomInt = random.nextInt((int) Math.pow(10.0, 1000.0));
+
+            final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+            UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
+
+            mStitchAuth.loginWithCredential(credential).addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                    Log.d("LoginActivity", "Logged in successfully");
+
+                mStitchUser = task.getResult();
+                client_id = mStitchUser.getId();
+                firstName = mStitchUser.getProfile().getFirstName();
+                lastName = mStitchUser.getProfile().getLastName();
+                mail = mStitchUser.getProfile().getEmail();
+                birthday = mStitchUser.getProfile().getBirthday();
+                photo = mStitchUser.getProfile().getPictureUrl();
+
+                if (firstName == null) {
+                    firstName = "user";
+                }
+                if (lastName == null) {
+                    lastName = "_" + randomInt;
+                }
+                if (birthday == null) {
+                    birthday = "01/01/1919";
+                }
+                if (photo == null) {
+                    photo = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+                }
+
+                emailPassUser = new User(client_id, firstName + lastName, mail, photo, 0, birthday);
+
+                emailUserUpdateDoc = mongoDbSetup.createUserDocument(
+                        emailPassUser.getId(), emailPassUser.getName(),
+                        emailPassUser.getEmail(), emailPassUser.getProfilePicture(),
+                        emailPassUser.getNumber_of_plants(), emailPassUser.getBirthday()
+                );
+
+                mongoDbSetup.checkIfExists(user_coll, emailUserUpdateDoc);
+
+                progressDialog.dismiss();
+
+            }).addOnFailureListener(e -> {
+                progressDialog.dismiss();
+                Toast.makeText(mContext, "Log in Error: " + e.getCause(), Toast.LENGTH_SHORT).show();
+                mStitchAuth.logout();
+            });
+
+        }
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -234,7 +312,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.button_id_log_in:
 //                loginEmailMongoDb();
-                new LoginWithCredentails().execute((Void[]) null);
+//                new LoginWithCredentails().execute((Void[]) null);
+//                NotificationService.createNotification(getApplicationContext(),
+//                        "Log in","Thanks for logging in");
                 break;
 
             case R.id.googleSignInButton:
@@ -296,87 +376,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private class LoginWithCredentails extends AsyncTask<Void, Void, Void> {
-        private void loginEmailMongoDb() {
-            String emailToUse = mEmailField.getText().toString();
-            String passToUse = mPasswordField.getText().toString();
-
-            // first check if our textFields aren't empty
-            if (TextUtils.isEmpty(emailToUse) && TextUtils.isEmpty(passToUse)) {
-                mEmailField.setError("Required.");
-                mPasswordField.setError("Required.");
-
-                Toast.makeText(getApplicationContext(), "Please type in email and password", Toast.LENGTH_SHORT).show();
-
-            } else if (TextUtils.isEmpty(emailToUse)) {
-                mEmailField.setError("Required.");
-                Toast.makeText(getApplicationContext(), "Please type in email or phone", Toast.LENGTH_SHORT).show();
-
-            } else if (TextUtils.isEmpty(passToUse)) {
-                mPasswordField.setError("Required.");
-                Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
-
-            } else {
-//                ProgressDialog progressDialog = new ProgressDialog(mContext);
-//                progressDialog.setTitle("Signing in");
-//                progressDialog.setMessage("Signing in, please wait...");
-//                progressDialog.setCanceledOnTouchOutside(false);
-//                progressDialog.setIcon(R.drawable.ai_plant);
-//                progressDialog.show();
-
-                SecureRandom random = new SecureRandom();
-                int randomInt = random.nextInt((int) Math.pow(10.0, 1000.0));
-
-                final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
-                UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
-
-                mStitchAuth.loginWithCredential(credential).addOnCompleteListener(task -> {
-                    if (task.isSuccessful())
-                        Log.d("LoginActivity","Logged in successfully");
-
-                    mStitchUser = task.getResult();
-                    client_id = mStitchUser.getId();
-                    firstName = mStitchUser.getProfile().getFirstName();
-                    lastName = mStitchUser.getProfile().getLastName();
-                    mail = mStitchUser.getProfile().getEmail();
-                    birthday = mStitchUser.getProfile().getBirthday();
-                    photo = mStitchUser.getProfile().getPictureUrl();
-
-                    if (firstName == null) {
-                        firstName = "user";
-                    }
-                    if (lastName == null) {
-                        lastName = "_" + randomInt;
-                    }
-                    if (birthday == null) {
-                        birthday = "01/01/1919";
-                    }
-                    if (photo == null) {
-                        photo = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
-                    }
-
-                    emailPassUser = new User(client_id, firstName + lastName, mail, photo, 0, birthday);
-
-                    emailUserUpdateDoc = mongoDbSetup.createUserDocument(
-                            emailPassUser.getId(), emailPassUser.getName(),
-                            emailPassUser.getEmail(), emailPassUser.getProfilePicture(),
-                            emailPassUser.getNumber_of_plants(), emailPassUser.getBirthday()
-                    );
-
-                    mongoDbSetup.checkIfExists(user_coll, emailUserUpdateDoc);
-
-//                    progressDialog.dismiss();
-
-                }).addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(mContext, "Log in Error: " + e.getCause(), Toast.LENGTH_SHORT).show();
-                    mStitchAuth.logout();
-                });
-
-            }
-        }
 
         protected Void doInBackground(Void... param) {
-            loginEmailMongoDb();
+
             return null;
         }
 

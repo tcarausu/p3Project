@@ -26,7 +26,8 @@ public class PlantProfile implements Serializable, Parcelable {
     private String userID;
     private String profileId;
     private String birthday;
-    private byte[] picture_bytes ;
+    private String url;
+    private byte[] picture_bytes;
     private int minHumid;
     private int maxHumid;
     private int minTemp;
@@ -36,6 +37,7 @@ public class PlantProfile implements Serializable, Parcelable {
     private int measured_humidity;
     private int measured_temperature;
     private int measured_sunlight;
+
 
     public void setUserID(String userID) {
         this.userID = userID;
@@ -77,6 +79,14 @@ public class PlantProfile implements Serializable, Parcelable {
         this.measured_sunlight = measured_sunlight;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public PlantProfile(String userID, String profileId, String name, String birthday,
                         int minHumid, int maxHumid, int minTemp, int maxTemp, int minSun, int maxSun, byte[] picture_bytes
             , int measured_humidity, int measured_temperature, int measured_sunlight) {
@@ -95,9 +105,49 @@ public class PlantProfile implements Serializable, Parcelable {
         this.measured_temperature = measured_temperature;
         this.measured_sunlight = measured_sunlight;
     }
+    public PlantProfile(String name, String user_id, String profile_id, String birthday,
+                        String picture, byte[] pic_bytes, int min_hum, int max_hum, int min_temp,
+                        int max_temp, int min_sun, int max_sun, int measured_humidity, int measured_temperature, int measured_sunlight) {
+        this.name = name;
+        this.userID = user_id;
+        this.profileId = profile_id;
+        this.birthday = birthday;
+        this.url = picture;
+        this.picture_bytes = pic_bytes;
+        this.minHumid = min_hum;
+        this.maxHumid = max_hum;
+        this.minTemp = min_temp;
+        this.maxTemp = max_temp;
+        this.minSun = min_sun;
+        this.maxSun = max_sun;
+        this.measured_humidity = measured_humidity;
+        this.measured_temperature = measured_temperature;
+        this.measured_sunlight = measured_sunlight;
+    }
 
-    public PlantProfile (String userID, String name, String profileId, String birthday, int minHumid, int maxHumid, int minTemp,
-                         int maxTemp, int minSun, int maxSun){
+    public PlantProfile(String userID, String profileId, String name, String birthday,
+                        int minHumid, int maxHumid, int minTemp, int maxTemp, int minSun, int maxSun, String url, byte[] picture_bytes
+            , int measured_humidity, int measured_temperature, int measured_sunlight) {
+        this.name = name;
+        this.userID = userID;
+        this.profileId = profileId;
+        this.birthday = birthday;
+        this.picture_bytes = picture_bytes;
+        this.url = url;
+        this.minHumid = minHumid;
+        this.maxHumid = maxHumid;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
+        this.minSun = minSun;
+        this.maxSun = maxSun;
+        this.measured_humidity = measured_humidity;
+        this.measured_temperature = measured_temperature;
+        this.measured_sunlight = measured_sunlight;
+    }
+
+
+    public PlantProfile(String userID, String name, String profileId, String birthday, int minHumid, int maxHumid, int minTemp,
+                        int maxTemp, int minSun, int maxSun) {
         this.userID = userID;
         this.name = name;
         this.profileId = profileId;
@@ -111,11 +161,11 @@ public class PlantProfile implements Serializable, Parcelable {
 
     }
 
-    public PlantProfile(){
+    public PlantProfile() {
 
     }
 
-    protected PlantProfile(Parcel in){
+    protected PlantProfile(Parcel in) {
         userID = in.readString();
         name = in.readString();
     }
@@ -211,7 +261,7 @@ public class PlantProfile implements Serializable, Parcelable {
         dest.writeInt(maxSun);
     }
 
-    public static class Builder{
+    public static class Builder {
         private String sUserID;
         private String sProfileId;
         private String sName;
@@ -222,15 +272,16 @@ public class PlantProfile implements Serializable, Parcelable {
         private int sMaxTemp;
         private int sMinSun;
         private int sMaxSun;
+        private String url;
 
         public Builder() {
-           // sUserID = uId;
+            // sUserID = uId;
             sProfileId = UUID.randomUUID().toString();
 
         }
 
-        public Builder withName(String name){
-            if(name.length() == 0) {
+        public Builder withName(String name) {
+            if (name.length() == 0) {
                 throw new InputMismatchException("No name");
             }
             sName = name;
@@ -244,31 +295,39 @@ public class PlantProfile implements Serializable, Parcelable {
             return this;
         }
 
-        public Builder withHumid(int minHumid, int maxHumid){
-            if(minHumid<0 || minHumid>maxHumid || maxHumid>101)
+        public Builder withUrl(String urlToUse) {
+            if (urlToUse == null)
+                urlToUse = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+
+            url = urlToUse;
+            return this;
+        }
+
+        public Builder withHumid(int minHumid, int maxHumid) {
+            if (minHumid < 0 || minHumid > maxHumid || maxHumid > 101)
                 throw new InputMismatchException("Wrong humidity parameters");
             sMinHumid = minHumid;
             sMaxHumid = maxHumid;
             return this;
         }
 
-        public Builder withTemp(int minTemp, int maxTemp){
-            if(minTemp<0 || minTemp>maxTemp || maxTemp>30)
+        public Builder withTemp(int minTemp, int maxTemp) {
+            if (minTemp < 0 || minTemp > maxTemp || maxTemp > 30)
                 throw new InputMismatchException("Wrong temperature parameters");
             sMinTemp = minTemp;
             sMaxTemp = maxTemp;
             return this;
         }
 
-        public Builder withSun(int minSun, int maxSun){
-            if(minSun<25 || minSun>maxSun || maxSun>75)
+        public Builder withSun(int minSun, int maxSun) {
+            if (minSun < 25 || minSun > maxSun || maxSun > 75)
                 throw new InputMismatchException("Wrong sunlight parameters");
             sMinSun = minSun;
             sMaxSun = maxSun;
             return this;
         }
 
-        public PlantProfile build(){
+        public PlantProfile build() {
             PlantProfile profile = new PlantProfile();
             profile.userID = sUserID;
             profile.profileId = sProfileId;
