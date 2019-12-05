@@ -15,23 +15,21 @@ public class Plant {
 
     @PrimaryKey
     private String plant_id;
-
-    @ColumnInfo(name = "plant_name")
+    @ColumnInfo(name = "name")
     private String plant_name;
-
     @ColumnInfo(name = "description")
     private String description;
-
     @ColumnInfo(name = "picture_url")
     private String picture_url;
-//    @ColumnInfo(name = "age")
-//    private int age;
+    @ColumnInfo(name = "age")
+    private int age;
     @ColumnInfo(name = "temperature")
     private ArrayList<Integer> temperature;
     @ColumnInfo(name = "humidity")
     private ArrayList<Integer> humidity;
     @ColumnInfo(name = "sunlight")
     private ArrayList<Integer> sunlight;
+
 
     public Plant(){
 
@@ -55,13 +53,13 @@ public class Plant {
 
     public Plant(String name, int age, Drawable image) {
         this.plant_name = name;
-//        this.age = age;
+        this.age = age;
         this.image = image;
     }
 
     public Plant(String name, int age, int minTemperature, int maxTemperature, int minHumidity, int maxHumidity, int minSunLight, int maxSunlight) {
         this.plant_name = name;
-//        this.age = age;
+        this.age = age;
         this.minTemperature = minTemperature;
         this.maxTemperature = maxTemperature;
         this.minHumidity = minHumidity;
@@ -72,7 +70,7 @@ public class Plant {
 
     public Plant(String name, int age) {
         this.plant_name = name;
-//        this.age = age;
+        this.age = age;
     }
 
     public String getPlant_id() {
@@ -108,13 +106,13 @@ public class Plant {
         this.picture_url = picture_url;
     }
 
-//    public int getAge() {
-//        return age;
-//    }
-//    @Exclude
-//    public void setAge(int age) {
-//        this.age = age;
-//    }
+    public int getAge() {
+        return age;
+    }
+    @Exclude
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public ArrayList<Integer> getTemperature() {
         return temperature;

@@ -15,18 +15,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
-public class SignUpFragment extends Fragment implements View.OnClickListener {
+public class SignUpFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
 
@@ -152,6 +150,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             loadingBar.setIcon(R.drawable.ai_plant);
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(false);
+//            try {
+//                loadingBar.wait(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             //if all are fine, then try to create a user
 
             registerToMongoDbWithEmail(signUp_email, pass_field);
@@ -159,9 +162,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void registerToMongoDbWithEmail(
-            EditText email, EditText password
-    ) {
+    private void registerToMongoDbWithEmail( EditText email,  EditText password) {
         String emailToUse = String.valueOf(email.getText());
         String passToUse = String.valueOf(password.getText());
 
@@ -173,8 +174,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Log.d("stitch", "Successfully sent account confirmation email");
-                                new Handler().postDelayed(() ->
-                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
                                 Toast.makeText(getContext(), "Registration complete please verify: ", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
 
@@ -194,15 +194,12 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
             case R.id.send_registration_instructions:
                 createUserWithEmail();
-
                 break;
 
             case R.id.terms_and_conditions:
                 if (!checkbox.isChecked()) {
                     TermsAndConditions terms = new TermsAndConditions();
-
                     bundleFunctionality(terms);
-
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.useThisFragmentID_sign_up, terms);
                     fragmentTransaction.addToBackStack(null);

@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+--db connection
+mongoose.connect('mongodb+srv://<Simortusos>:<Wxcvbnm12>@gettingstarted-zmxym.gcp.mongodb.net/test?retryWrites=true&w=majority');
+mongoose.connection.once('open',function{
+console.log('Connection established, you are awesome Simo').on('error',function(error){
+console.log('Connection error',error)});
+});
+
+
+
+

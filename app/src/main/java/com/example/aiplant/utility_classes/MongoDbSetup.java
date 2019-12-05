@@ -27,6 +27,7 @@ import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoDatabase;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
 import org.bson.Document;
@@ -75,6 +76,10 @@ public class MongoDbSetup {
             mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
         }
 
+    }
+
+    public RemoteMongoDatabase getDatabase() {
+        return getRemoteMongoDbClient().getDatabase("eye_plant");
     }
 
     public static GoogleSignInClient getGoogleSignInClient() {
@@ -176,7 +181,7 @@ public class MongoDbSetup {
 
         getCollectionByName(collectionName).insertOne(createdPlantProfile);
     }
-
+    
     public void fetchUserData(StitchUser stitchUser, TextView userNameTextView
             , CircularImageView profilePic) {
         {

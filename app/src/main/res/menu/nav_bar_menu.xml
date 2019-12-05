@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu
+
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
@@ -9,6 +10,12 @@
 
 
     <group android:checkableBehavior="single">
+
+        <item
+            android:title=""/>
+
+<!--        <item android:title="" />-->
+
 
         <item
             android:id="@+id/chengeUserNameItem"
@@ -36,10 +43,13 @@
             android:title="@string/reset_password" />
 
         <item android:title="" />
+        <item
+            android:title=""/>
 
         <item
             android:id="@+id/delete_accountItem"
             android:icon="@drawable/delete_red"
+            tools:textcolor="@color/red"
             android:title="@string/delete_account" />
     </group>
 

@@ -69,6 +69,7 @@
 
     <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
     <string name="chose_a_user_name">Chose a user name</string>
+    <string name="no_username">No name</string>
     <string name="user876543">User876543</string>
     <string name="edit">Edit</string>
     <string name="home">Home</string>
@@ -184,13 +185,11 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <string name="sent_reset_email">Successfully sent password reset email</string>
     <string name="google_web_client_id">556950483367–9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com</string>
-<!--    <string name="google_web_client_id">1046169347129-hnood922edmveaqmr3kdnfiqn6gmc8ap.apps.googleusercontent.com</string>-->
-<!--    <string name="google_web_client_id">556950483367-i2gs0sujvtbtoi281f1dtsbaujqh2k8c.apps.googleusercontent.com</string>-->
-
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_of_plant">Name of Plant</string>
+    <string name="change_username">Edit username</string>
 
     <!-- Strings for connecting the device -->
     <string name="connect_device_title">Connect your device</string>
@@ -204,9 +203,13 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="device_connected">Connection successful</string>
 
 
-    <string name="change_username">Username</string>
+    <string name="username">Username</string>
     <string name="change_profile_image">Change profile image</string>
 
+
+
+    <string name="data_lake_unique_id">b49511f7-1c3e-4ebe-8174-0dbcb46d1699</string>
+    <string name="Atlas_AWS_IAM_User_ARN">arn:aws:iam::962727799805:user/atlas-data-lake</string>
 
     <!-- error strings for plant profile creation -->
     <string name="error_plant_name">Please add a name for your plant</string>

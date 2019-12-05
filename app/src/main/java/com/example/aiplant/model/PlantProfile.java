@@ -320,7 +320,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withSun(int minSun, int maxSun) {
-            if (minSun < 25 || minSun > maxSun || maxSun > 75)
+            if (minSun <= 0 || minSun > maxSun || maxSun >=100)
                 throw new InputMismatchException("Wrong sunlight parameters");
             sMinSun = minSun;
             sMaxSun = maxSun;
