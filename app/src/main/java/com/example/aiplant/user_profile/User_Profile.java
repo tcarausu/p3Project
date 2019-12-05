@@ -183,7 +183,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
                 case R.id.resetPassItem:
                     menuItem.setChecked(true);
-                    Toast.makeText(mContext, "Reset pass clicked", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(() -> menuItem.setChecked(false), 500);
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     handlePasswordReset();

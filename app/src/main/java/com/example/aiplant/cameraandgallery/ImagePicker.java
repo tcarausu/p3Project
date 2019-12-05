@@ -88,10 +88,10 @@ public class ImagePicker {
     }
 
     /**
-     *
      * This method gets the picture from the chosen intent
-     * @param context gets the context of the application
-     * @param resultCode is the standard result of the operation
+     *
+     * @param context             gets the context of the application
+     * @param resultCode          is the standard result of the operation
      * @param imageReturnedIntent this is the intent from which the method will get the picture
      * @return returns the bitmap format of the picture
      * @throws IOException
@@ -117,11 +117,11 @@ public class ImagePicker {
             int rotation = getRotation(context, selectedImage, isCamera);
             if (bm.getHeight() >= bm.getWidth()) {
                 if (isCamera) {
-                    bm = rotate(bm, rotation );
-                } else bm = rotate(bm, rotation+90);
+                    bm = rotate(bm, rotation);
+                } else bm = rotate(bm, rotation);
             } else {
 
-                bm = rotate(bm, rotation );
+                bm = rotate(bm, rotation);
             }
 
         }
@@ -178,7 +178,7 @@ public class ImagePicker {
     /**
      * This method rotates the pictures
      *
-     * @param context gets the context of the application
+     * @param context  gets the context of the application
      * @param imageUri is the Uri reference of the picture
      * @param isCamera checks if the intent is the camera, else being the gallery
      * @return
@@ -231,7 +231,7 @@ public class ImagePicker {
                 result = cursor.getInt(orientationColumnIndex);
             }
         } catch (Exception e) {
-            Log.e(TAG, "getRotationFromGallery exception: ",e );
+            Log.e(TAG, "getRotationFromGallery exception: ", e);
             //Do nothing ??    hhehe why not! you can log the exception at least
         }
         return result;

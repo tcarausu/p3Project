@@ -30,6 +30,7 @@ import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoDatabase;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
+import org.bson.BsonBinary;
 import org.bson.Document;
 import org.bson.types.Binary;
 
@@ -78,8 +79,18 @@ public class MongoDbSetup {
 
     }
 
-    public RemoteMongoDatabase getDatabase() {
-        return getRemoteMongoDbClient().getDatabase("eye_plant");
+    public static MongoDbSetup getInstance(Context context) {
+
+        return new MongoDbSetup(context);
+    }
+
+    public void runAppClientInit() {
+        initAppClient.run(() ->
+                appClient =
+                        Stitch.initializeDefaultAppClient("eye-plant-tilrj")
+
+        );
+
     }
 
     public static GoogleSignInClient getGoogleSignInClient() {
@@ -95,25 +106,11 @@ public class MongoDbSetup {
         return stitchUser = stitchAuth.getUser();
     }
 
-    public static MongoDbSetup getInstance(Context context) {
-
-        return new MongoDbSetup(context);
-    }
-
-    public void runAppClientInit() {
-        initAppClient.run(() ->
-                appClient =
-                        Stitch.initializeDefaultAppClient("eye-plant-tilrj")
-
-        );
-
-    }
-
     public StitchAppClient getAppClient() {
         return appClient;
     }
 
-    public String getAppClientId() {
+    private String getAppClientId() {
         return Objects.requireNonNull(getStitchUser()).getId();
     }
 
@@ -122,21 +119,27 @@ public class MongoDbSetup {
         return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
     }
 
+    public RemoteMongoDatabase getDatabase() {
+        return getRemoteMongoDbClient().getDatabase("eye_plant");
+    }
+
     public RemoteMongoCollection<Document> getCollectionByName(String collectionName) {
         return
-                getRemoteMongoDbClient().getDatabase("eye_plant")
+                getDatabase()
                         .getCollection(collectionName);
     }
 
     public Document createUserDocument(String id, String displayName,
-                                       String userMail, String photoURL, int nrOfPlant, String birthday) {
+                                       String userMail, String photoURL, int nrOfPlant, String birthday, BsonBinary edited_pic
+    ) {
 
         return new Document("logged_user_id", id)
                 .append("name", displayName)
                 .append("email", userMail)
                 .append("picture", photoURL)
                 .append("number_of_plants", nrOfPlant)
-                .append("birthday", birthday);
+                .append("birthday", birthday)
+                .append("edited_pic", edited_pic);
     }
 
     public static byte[] mBitmapToArray(Bitmap bitmap) {
@@ -181,7 +184,7 @@ public class MongoDbSetup {
 
         getCollectionByName(collectionName).insertOne(createdPlantProfile);
     }
-    
+
     public void fetchUserData(StitchUser stitchUser, TextView userNameTextView
             , CircularImageView profilePic) {
         {
@@ -274,7 +277,7 @@ public class MongoDbSetup {
                     .addOnCompleteListener(task -> {
                         Log.d(TAG, "doc" + docs.size());
 
-                        setupPlantProfileList(docs, flowerName, timeOfCreation, hum_current, temp_current, light_current,imageView);
+                        setupPlantProfileList(docs, flowerName, timeOfCreation, hum_current, temp_current, light_current, imageView);
 
                     });
         } catch (Throwable e) {

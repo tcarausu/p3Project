@@ -12,7 +12,7 @@ import org.bson.BsonBinary;
 import java.io.Serializable;
 
 @Entity
-public class User implements Serializable, Block {
+public class User   implements Serializable, Block {
 
     @PrimaryKey
     private String id;
@@ -27,10 +27,9 @@ public class User implements Serializable, Block {
     @ColumnInfo(name = "birthday")
     private String birthday;
     @ColumnInfo(name = "edited_pic")
-    private BsonBinary edited_pic;
+    private BsonBinary edited_pic ;
 
-    private byte[] edited_pics;
-
+    private byte[] edited_pics ;
     public byte[] getEdited_pics() {
         return edited_pics;
     }
@@ -69,13 +68,11 @@ public class User implements Serializable, Block {
         return edited_pic;
     }
 
-    public User() {
-    }
+    public User() {}
 
     public String getId() {
         return id;
     }
-
     @Exclude
     public void setId(String id) {
         this.id = id;
@@ -93,7 +90,6 @@ public class User implements Serializable, Block {
     public String getEmail() {
         return email;
     }
-
     @Exclude
     public void setEmail(String email) {
         this.email = email;
@@ -102,7 +98,6 @@ public class User implements Serializable, Block {
     public String getPicture() {
         return picture;
     }
-
     @Exclude
     public void setPicture(String picture) {
         this.picture = picture;
@@ -111,7 +106,6 @@ public class User implements Serializable, Block {
     public int getNumber_of_plants() {
         return number_of_plants;
     }
-
     @Exclude
     public void setNumber_of_plants(String num_plants) {
         this.number_of_plants = number_of_plants;
@@ -120,7 +114,6 @@ public class User implements Serializable, Block {
     public String getBirthday() {
         return birthday;
     }
-
     @Exclude
     public void setBirthday(String birthday) {
         this.birthday = birthday;

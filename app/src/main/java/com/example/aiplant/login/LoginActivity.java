@@ -147,7 +147,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
+//                firebaseAuthWithGoogle(account);
                 handleGoogleSignInResult(task);
+//                instantUserDb(task);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Google_Tag, "Google sign in failed", e.getCause());
@@ -216,7 +218,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 googleUserUpdateDoc.get("edited_pic",BsonBinary.class));
 
                         mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
 
                         return null;
 
@@ -322,8 +323,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             updateDoc.getInteger("number_of_plants"),
                             updateDoc.getString("birthday"),
                             updateDoc.get("edited_pic",BsonBinary.class));
+
+                    mongoDbSetup.createUserDocument(client_id,firstName + lastName,mail,photo,0,birthday,edited_pic);
+
                     progressDialog.dismiss();
-                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
 
                 }
 

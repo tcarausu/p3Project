@@ -218,6 +218,28 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="please_picture">Please add a profile picture</string>
     <string name="wrong_date">The birthday is invalid</string>
 
+    <!--    special symbols-->
+    <string name="special_symbols">[-+.^:,%°C]</string>
+
+    <!--    Home Fragment errors-->
+    <string name="temperature_min_max_error">Temperature should be bigger then the current measurement and between -10 and 40°C!</string>
+    <string name="sunlight_min_max_error">Sunlight should be bigger then the current measurement and between 0 and 100%!</string>
+    <string name="humidity_min_max_error">Humidity should be bigger then the current measurement and between 0 and 100%!</string>
+
+    <string name="plant_name_error">Please select a plant name</string>
+    <string name="birthday_error">Please select a birthday</string>
+
+    <!--    Emoticons-->
+    <string name="plant_is_cold">Your plant is too cold. Increase room temperature!</string>
+    <string name="plant_is_too_hot">Your plant is too hot. Decrease room temperature!</string>
+
+    <string name="plant_has_little_water">Water your plant!</string>
+    <string name="plant_has_too_much_water">There is too much water in your plant</string>
+
+    <string name="plant_needs_more_light">Your plant needs more light!</string>
+    <string name="plant_needs_less_light">Your plant needs less light!</string>
+
+
 
 
 </resources>
