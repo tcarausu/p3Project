@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -71,7 +72,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     // widgets
     private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton;
-    private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current;
+    private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current,
+            humidity_min_value_text, humidity_current_value_text, humidity_max_value_text,
+            temperature_min_value_text, temperature_current_value_text, temperature_max_value_text,
+            light_min_value_text, light_current_value_text, light_max_value_text;
     private SeekBar humiditySeekBar, temperatureSeekBar, lightSeekBar;
     private ImageView mood_pic;
     private RelativeLayout home_Layout;
@@ -90,14 +94,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private Document plantProfileDoc;
 
-    private Document getPlantProfileDoc() {
-        return plantProfileDoc;
-    }
-
-    private void setPlantProfileDoc(Document plantProfileDoc) {
-        this.plantProfileDoc = plantProfileDoc;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
@@ -113,7 +109,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         initLayout(v);
         buttonListeners();
         checkPermissions();
-
         disableEditText();
 
         fetchedDoc();
@@ -144,8 +139,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void setupPlantProfile(Document profile) {
-
-
         String profile_id = profile.getString("profile_id");
         String user_id = profile.getString("user_id");
         String name = profile.getString("name");
@@ -170,8 +163,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         int max_temp = (int) temperatureArray.get(1);
         int min_sun = (int) sunlightArray.get(0);
         int max_sun = (int) sunlightArray.get(1);
-        Log.d(TAG, "profile" + user_id);
-
 
         profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
                 pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature, measured_sunlight);
@@ -183,19 +174,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         temperatureSeekBar.setProgress(profileForUser.getMeasured_temperature());
         lightSeekBar.setProgress(profileForUser.getMeasured_sunlight());
 
-        hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()) + "%");
-        temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()) + "°C");
-        light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()) + "%");
+        hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
+        temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
+        light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
+        hum_min.setText(String.valueOf(profileForUser.getMinHumid()));
+        hum_max.setText(String.valueOf(profileForUser.getMaxHumid()));
 
-        hum_min.setText(profileForUser.getMinHumid() + "%");
-        hum_max.setText(profileForUser.getMaxHumid() + "%");
+        temp_min.setText(String.valueOf(profileForUser.getMinTemp()));
+        temp_max.setText(String.valueOf(profileForUser.getMaxTemp()));
 
-        temp_min.setText(profileForUser.getMinTemp() + "°C");
-        temp_max.setText(profileForUser.getMaxTemp() + "°C");
-
-        light_min.setText(profileForUser.getMinSun() + "%");
-        light_max.setText(profileForUser.getMaxSun() + "%");
+        light_min.setText(String.valueOf(profileForUser.getMinSun()));
+        light_max.setText(String.valueOf(profileForUser.getMaxSun()));
 
         if (has_changed_profile_image) {
             Glide.with(getActivity()).load(bitmap).centerCrop().into(profileImage);
@@ -251,6 +241,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light_current = v.findViewById(R.id.light_current_value);
         light_max = v.findViewById(R.id.light_max_value);
 
+        humidity_min_value_text = v.findViewById(R.id.humidity_min_value_text);
+        humidity_current_value_text = v.findViewById(R.id.humidity_current_value_text);
+        humidity_max_value_text = v.findViewById(R.id.humidity_max_value_text);
+
+        temperature_min_value_text = v.findViewById(R.id.temperature_min_value_text);
+        temperature_current_value_text = v.findViewById(R.id.temperature_current_value_text);
+        temperature_max_value_text = v.findViewById(R.id.temperature_max_value_text);
+
+        light_min_value_text = v.findViewById(R.id.light_min_value_text);
+        light_current_value_text = v.findViewById(R.id.light_current_value_text);
+        light_max_value_text = v.findViewById(R.id.light_max_value_text);
+
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
         temperatureSeekBar = v.findViewById(R.id.temperature_slider);
         lightSeekBar = v.findViewById(R.id.sunlight_slider);
@@ -258,8 +260,108 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         mood_pic.setImageResource(R.drawable.mood_happy);
     }
 
-    private void disableEditText() {
+    private void buttonListeners() {
 
+        adjustNameAndDateButton.setOnClickListener(this);
+        saveNameAndDateButton.setOnClickListener(this);
+
+        humiditySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
+                if (progress <= profileForUser.getMinHumid()) {
+                    Toast toast = Toast.makeText(mContext, "Water your plant!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_medium);
+                } else if (progress >= profileForUser.getMaxHumid()) {
+                    Toast toast = Toast.makeText(mContext, "There is too much water in your plant", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_medium);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        temperatureSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
+
+                if (progress <= profileForUser.getMinTemp()) {
+                    Toast toast = Toast.makeText(mContext, "Your plant is too cold. Increase room temperatureSeekBar!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_cold);
+                } else if (progress >= profileForUser.getMaxTemp()) {
+                    Toast toast = Toast.makeText(mContext, "Your plant is too hot. Decrease room temperatureSeekBar!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_hot);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
+
+                if (progress <= profileForUser.getMinSun()) {
+                    Toast toast = Toast.makeText(mContext, "Your plant needs more lightSeekBar!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_medium);
+                } else if (progress >= profileForUser.getMaxSun()) {
+                    Toast toast = Toast.makeText(mContext, "Your plant needs less lightSeekBar!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    mood_pic.setImageResource(mood_medium);
+                } else {
+                    mood_pic.setImageResource(R.drawable.mood_happy);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        adjustConditionsButton.setOnClickListener(this);
+
+        saveChangesButton.setOnClickListener(this);
+
+        profileImage.setOnClickListener(this);
+        change_picture.setOnClickListener(this);
+    }
+
+    private void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            requestPermissions(permissions, REQUEST_GALLERY | REQUEST_CAMERA);
+        }
+    }
+
+    private void disableEditText() {
         //name and date
         flowerNameEditText.setEnabled(false);
         flowerTimeEditText.setEnabled(false);
@@ -277,14 +379,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     }
 
-    private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPermissions(permissions, REQUEST_GALLERY | REQUEST_CAMERA);
-        }
-    }
-
     private void alertDialog() {
-
         Intent chooseImageIntent = ImagePicker.getPickImageIntent(mContext);
         startActivityForResult(chooseImageIntent, REQUEST_CODE);
         checkPermissions();
@@ -316,16 +411,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             editor.apply();
             fetchedDoc();
         }
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-        Log.d(TAG, "request code: " + requestCode);
-        Log.d(TAG, "result code: " + resultCode);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE) {
                 Bitmap bitmap = null;
@@ -348,14 +439,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             Log.d(TAG, "Error on camera/Gallery");
     }
 
-    private void adjustNameAndDate() {
-        flowerNameEditText.setEnabled(true);
-        flowerTimeEditText.setEnabled(true);
-        saveNameAndDateButton.setVisibility(View.VISIBLE);
-    }
-
     private void saveNameAndTime() {
-
         RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plant_profiles));
 
         plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
@@ -364,174 +448,45 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
             if (task.isSuccessful()) {
 
-                if (getBitmap() != null) {
+                if (getBitmap() != null
+                        && !plantName.equals("") && !plantDate.equals("")) {
                     bitmap = getBitmap();
                     byte[] pwr = mBitmapToArray(bitmap);
                     bsonBinary = new BsonBinary(pwr);
 
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
                     plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
 
                     changedProfileImage();
 
-                    saveNameAndDateButton.setVisibility(View.INVISIBLE);
+                    reloadHome();
+                } else if (getBitmap() != null && !plantName.equals("")) {
+                    bitmap = getBitmap();
+                    byte[] pwr = mBitmapToArray(bitmap);
+                    bsonBinary = new BsonBinary(pwr);
+
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
+                    changedProfileImage();
+
+                    reloadHome();
+                } else if (getBitmap() != null && !plantDate.equals("")) {
+                    bitmap = getBitmap();
+                    byte[] pwr = mBitmapToArray(bitmap);
+                    bsonBinary = new BsonBinary(pwr);
+
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
+                    changedProfileImage();
+
                     reloadHome();
                 }
-
-                if (!plantName.equals("") && !plantDate.equals("")) {
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
-
-                    saveNameAndDateButton.setVisibility(View.INVISIBLE);
-                    reloadHome();
-                } else if (!plantName.equals("")) {
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-
-                    saveNameAndDateButton.setVisibility(View.INVISIBLE);
-                    reloadHome();
-                } else if (!plantDate.equals("")) {
-                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
-
-                    saveNameAndDateButton.setVisibility(View.INVISIBLE);
-                    reloadHome();
-                } else {
-                    flowerNameEditText.requestFocus();
-                    flowerNameEditText.setError(getString(R.string.birthday_error));
-
-                    flowerTimeEditText.requestFocus();
-                    flowerTimeEditText.setError(getString(R.string.plant_name_error));
-
-                    saveNameAndDateButton.setVisibility(View.VISIBLE);
-                    reloadHome();
-                }
-
             }
 
             return null;
-        }).addOnFailureListener(e -> {
-            saveNameAndDateButton.setVisibility(View.INVISIBLE);
-            Log.d(TAG, "onFailure: Error: " + e.getCause());
-        });
+        }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
 
-
-        flowerNameEditText.setEnabled(false);
-        flowerTimeEditText.setEnabled(false);
-        saveNameAndDateButton.setVisibility(View.GONE);
-
-    }
-
-    private void reloadHome() {
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .detach(this)
-                .commit();
-
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .attach(this)
-                .commit();
-
-    }
-
-    private void buttonListeners() {
-
-        adjustNameAndDateButton.setOnClickListener(this);
-        saveNameAndDateButton.setOnClickListener(this);
-
-        humiditySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                hum_current.setText(profileForUser.getMeasured_humidity() + "%");
-                if (progress <= profileForUser.getMinHumid()) {
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_has_little_water), getString(R.string.plant_has_little_water));
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxHumid()) {
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_has_too_much_water), getString(R.string.plant_has_too_much_water));
-                    mood_pic.setImageResource(mood_medium);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        temperatureSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                temp_current.setText(profileForUser.getMeasured_temperature() + "°C");
-
-                if (progress <= profileForUser.getMinTemp()) {
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_is_cold), getString(R.string.plant_is_cold));
-                        mood_pic.setImageResource(mood_cold);
-
-                } else if (progress >= profileForUser.getMaxTemp()) {
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_is_too_hot), getString(R.string.plant_is_too_hot));
-                    mood_pic.setImageResource(mood_hot);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                light_current.setText(profileForUser.getMeasured_sunlight() + "lux");
-
-                if (progress <= profileForUser.getMinSun()) {
-
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light));
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxSun()) {
-                    NotificationService.createNotification(getActivity(),
-                            getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light));
-                    mood_pic.setImageResource(mood_medium);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        adjustConditionsButton.setOnClickListener(v -> {
-            hum_min.setEnabled(true);
-            hum_max.setEnabled(true);
-            temp_min.setEnabled(true);
-            temp_max.setEnabled(true);
-            light_min.setEnabled(true);
-            light_max.setEnabled(true);
-            saveChangesButton.setVisibility(View.VISIBLE);
-        });
-
-        saveChangesButton.setOnClickListener(this);
-
-        change_picture.setOnClickListener(this);
-        profileImage.setOnClickListener(this);
     }
 
     private void saveChanges() {
@@ -546,7 +501,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 {
                     /// TODO: 11/29/2019  code for updating conditions in the database
                     RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName("plant_profiles");
-
                     plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
                         if (task.isSuccessful()) {
                             ArrayList<Integer> humidityValues = new ArrayList<>();
@@ -626,15 +580,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                             .addOnFailureListener(e ->
                                     Log.d(TAG, "onFailure: Error: " + e.getCause()));
 
-
-                    hum_min.setEnabled(false);
-                    hum_max.setEnabled(false);
-                    temp_min.setEnabled(false);
-                    temp_max.setEnabled(false);
-                    light_min.setEnabled(false);
-                    light_max.setEnabled(false);
-                    saveChangesButton.setVisibility(View.GONE);
-
                     dialog.cancel();
                 });
 
@@ -653,13 +598,51 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         alert11.show();
     }
 
+    private void reloadHome() {
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .remove(this)
+                .commit();
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.useThisFragmentID, new HomeFragment())
+                .commit();
+    }
+
+    private void adjustNameAndDate() {
+        flowerNameEditText.setEnabled(true);
+        flowerTimeEditText.setEnabled(true);
+        saveNameAndDateButton.setVisibility(View.VISIBLE);
+    }
+
+    private void adjustConditions() {
+        hum_min.setEnabled(true);
+        hum_max.setEnabled(true);
+        temp_min.setEnabled(true);
+        temp_max.setEnabled(true);
+        light_min.setEnabled(true);
+        light_max.setEnabled(true);
+        saveChangesButton.setVisibility(View.VISIBLE);
+    }
+
+    private Document getPlantProfileDoc() {
+        return plantProfileDoc;
+    }
+
+    private void setPlantProfileDoc(Document plantProfileDoc) {
+        this.plantProfileDoc = plantProfileDoc;
+    }
+
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
 
             case R.id.adjust_name_and_date:
                 adjustNameAndDate();
+                break;
+
+            case R.id.adjust_conditions:
+                adjustConditions();
                 break;
 
             case R.id.save_name_and_date:
@@ -673,6 +656,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             case R.id.profileImage:
             case R.id.change_picture:
                 alertDialog();
+                adjustNameAndDate();
                 break;
         }
     }
