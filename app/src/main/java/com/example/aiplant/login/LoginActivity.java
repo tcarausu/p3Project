@@ -178,9 +178,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         mStitchAuth.logout();
                         throw task.getException();
 
-
-                    }
-                    else {
+                    } else {
                         mStitchUser = task.getResult();
                         String id = mStitchUser.getId();
                         String displayName = task.getResult().getProfile().getFirstName()
@@ -188,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         String email = task.getResult().getProfile().getEmail();
                         String photoURL = task.getResult().getProfile().getPictureUrl();
                         String birthday = task.getResult().getProfile().getBirthday();
-                        byte[] data =  new byte[]{};
+                        byte[] data = new byte[]{};
                         BsonBinary edited_pic = new BsonBinary(data);
 
                         if (birthday == null) {
@@ -200,22 +198,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
                                 + "\n" + "PictureURL: " + photoURL);
 
-                        googleUserUpdateDoc = new Document(
-                                "logged_user_id", mStitchUser.getId())
-                                .append(getResources().getString(R.string.name_for_db), displayName)
-                                .append(getResources().getString(R.string.email_for_db), email)
-                                .append(getResources().getString(R.string.picture_for_db), photoURL)
-                                .append(getResources().getString(R.string.number_of_plants_for_db), 0)
-                                .append(getResources().getString(R.string.birthday_for_db), birthday)
-                                .append( "edited_pic",edited_pic);
+                        googleUserUpdateDoc = new Document("logged_user_id", mStitchUser.getId()).append(getResources().getString(R.string.name_for_db), displayName)
+                                .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
+                                .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
 
-                        googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"),
-                                googleUserUpdateDoc.getString("name"),
-                                googleUserUpdateDoc.getString("email"),
-                                googleUserUpdateDoc.getString("picture"),
-                                googleUserUpdateDoc.getInteger("number_of_plants"),
-                                googleUserUpdateDoc.getString("birthday"),
-                                googleUserUpdateDoc.get("edited_pic",BsonBinary.class));
+                        googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
+                                googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
+                                googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
+                                googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
 
                         mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
 
@@ -287,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     mail = mStitchUser.getProfile().getEmail();
                     birthday = mStitchUser.getProfile().getBirthday();
                     photo = mStitchUser.getProfile().getPictureUrl();
-                    byte[] data =  new byte[]{};
+                    byte[] data = new byte[]{};
                     BsonBinary edited_pic = new BsonBinary(data);
 
                     if (firstName == null) {
@@ -304,27 +294,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
 
 
-                    updateDoc = new Document(
-                            "logged_user_id", client_id)
-                            .append("name", firstName + lastName)
-                            .append("email", mail)
-                            .append("picture", photo)
-                            .append("number_of_plants", 0)
-                            .append("birthday", birthday)
-                            .append( "edited_pic",edited_pic);
+                    updateDoc = new Document("logged_user_id", client_id).append("name", firstName + lastName).append("email", mail)
+                            .append("picture", photo).append("number_of_plants", 0).append("birthday", birthday)
+                            .append("edited_pic", edited_pic);
 
                     Toast.makeText(mContext, "Logged in succesfully", Toast.LENGTH_SHORT).show();
 
                     mongoDbSetup.checkIfExists(user_coll, updateDoc);
-                    emailPassUser = new User(updateDoc.getString("logged_user_id"),
-                            updateDoc.getString("name"),
-                            updateDoc.getString("email"),
-                            updateDoc.getString("picture"),
-                            updateDoc.getInteger("number_of_plants"),
-                            updateDoc.getString("birthday"),
-                            updateDoc.get("edited_pic",BsonBinary.class));
+                    emailPassUser = new User(updateDoc.getString("logged_user_id"), updateDoc.getString("name"),
+                            updateDoc.getString("email"), updateDoc.getString("picture"),
+                            updateDoc.getInteger("number_of_plants"), updateDoc.getString("birthday"),
+                            updateDoc.get("edited_pic", BsonBinary.class));
 
-                    mongoDbSetup.createUserDocument(client_id,firstName + lastName,mail,photo,0,birthday,edited_pic);
+                    mongoDbSetup.createUserDocument(client_id, firstName + lastName, mail, photo, 0, birthday, edited_pic);
 
                     progressDialog.dismiss();
 
@@ -400,8 +382,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        if (mStitchAuth.isLoggedIn()){
-            mongoDbSetup.goToWhereverWithFlags(mContext,mContext,HomeActivity.class);
+        if (mStitchAuth.isLoggedIn()) {
+            mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
         }
     }
 

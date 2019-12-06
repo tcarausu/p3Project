@@ -68,7 +68,7 @@
                 android:layout_marginBottom="5dp"
                 android:background="@color/com_facebook_button_background_color_focused"
                 android:elevation="5dp"
-                android:hint="@string/chose_a_user_name"
+                android:hint="@string/choose_a_user_name"
                 android:padding="10dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"

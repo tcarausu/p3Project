@@ -68,7 +68,8 @@
     <string name="slide_4_desc">Here you can see all your plant profiles nicely displayed in a tree-like shape. You can modify any detail about the plants you own or about your own info.</string>
 
     <string name="click_on_image_to_edit_profile_picture">Click on image to edit profile picture</string>
-    <string name="chose_a_user_name">Chose a user name</string>
+    <string name="choose_a_user_name">Choose a user name</string>
+    <string name="choose_a_birthday">Choose a birthday</string>
     <string name="no_username">No name</string>
     <string name="user876543">User876543</string>
     <string name="edit">Edit</string>
@@ -238,8 +239,6 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <string name="plant_needs_more_light">Your plant needs more light!</string>
     <string name="plant_needs_less_light">Your plant needs less light!</string>
-
-
 
 
 </resources>

@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/useThisFragmentID"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/dark_green_transparent">-->
-
         <RelativeLayout
             android:id="@+id/home_activity"
             android:layout_width="match_parent"
@@ -38,7 +32,5 @@
             </RelativeLayout>
 
         </RelativeLayout>
-
-<!--    </FrameLayout>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

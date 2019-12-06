@@ -123,7 +123,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             signUp_email.setError("Required");
             Toast.makeText(getContext(), "Please type in a valid email", Toast.LENGTH_SHORT).show();
 
-        } else if (TextUtils.isEmpty(user_name)) {
+        }
+        else if (TextUtils.isEmpty(user_name)) {
             name_last_name.setError("Required");
             Toast.makeText(getContext(), "Please fill in with Name and Last Name", Toast.LENGTH_SHORT).show();
 
@@ -131,7 +132,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             pass_field.setError("Required");
             Toast.makeText(getContext(), "Please choose a password", Toast.LENGTH_SHORT).show();
 
-        } else if (TextUtils.isEmpty(confPass)) {
+        }
+        else if (TextUtils.isEmpty(confPass)) {
             confirm_pass.setError("Required");
             Toast.makeText(getContext(), "Please confirm password", Toast.LENGTH_SHORT).show();
 
@@ -150,13 +152,6 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             loadingBar.setIcon(R.drawable.ai_plant);
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(false);
-//            try {
-//                loadingBar.wait(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            //if all are fine, then try to create a user
-
             registerToMongoDbWithEmail(signUp_email, pass_field);
         }
 
@@ -174,7 +169,8 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Log.d("stitch", "Successfully sent account confirmation email");
-                                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getActivity(),
+                                        getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
                                 Toast.makeText(getContext(), "Registration complete please verify: ", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
 

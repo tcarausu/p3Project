@@ -96,6 +96,7 @@
                             android:layout_height="20dp"
                             android:layout_weight="1.5"
                             android:background="@null"
+                            android:inputType="number"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -115,6 +116,7 @@
                             android:id="@+id/humidity_current_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
+                            android:inputType="number"
                             android:layout_weight="1.5"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
@@ -138,6 +140,7 @@
                             android:layout_weight="1.5"
                             android:background="@null"
                             android:textAlignment="textEnd"
+                            android:inputType="number"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
@@ -221,6 +224,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1.5"
+                            android:inputType="number"
                             android:background="@null"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
@@ -242,6 +246,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1.5"
+                            android:inputType="number"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -262,6 +267,7 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1.5"
+                            android:inputType="number"
                             android:background="@null"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
@@ -339,6 +345,7 @@
                         android:layout_width="0dp"
                         android:layout_height="20dp"
                         android:layout_weight="1.5"
+                        android:inputType="number"
                         android:background="@null"
                         android:textAlignment="textEnd"
                         android:textColor="@color/black"
@@ -359,6 +366,7 @@
                     <TextView
                         android:id="@+id/light_current_value"
                         android:layout_width="0dp"
+                        android:inputType="number"
                         android:layout_height="20dp"
                         android:layout_weight="1.5"
                         android:textAlignment="textEnd"
@@ -383,6 +391,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="end"
                         android:layout_weight="1.5"
+                        android:inputType="number"
                         android:background="@null"
                         android:textAlignment="textEnd"
                         android:textColor="@color/black"

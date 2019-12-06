@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +23,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.create_profile.PlantProfileActivity;
 import com.example.aiplant.model.PlantProfile;
-import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -270,11 +271,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
                 if (progress <= profileForUser.getMinHumid()) {
-                    Toast toast = Toast.makeText(mContext, "Water your plant!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_has_little_water), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxHumid()) {
-                    Toast toast = Toast.makeText(mContext, "There is too much water in your plant", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_has_too_much_water), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_medium);
                 }
@@ -297,11 +298,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
 
                 if (progress <= profileForUser.getMinTemp()) {
-                    Toast toast = Toast.makeText(mContext, "Your plant is too cold. Increase room temperatureSeekBar!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_is_cold), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_cold);
                 } else if (progress >= profileForUser.getMaxTemp()) {
-                    Toast toast = Toast.makeText(mContext, "Your plant is too hot. Decrease room temperatureSeekBar!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_is_too_hot), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_hot);
                 }
@@ -324,15 +325,13 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
                 if (progress <= profileForUser.getMinSun()) {
-                    Toast toast = Toast.makeText(mContext, "Your plant needs more lightSeekBar!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_needs_less_light), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxSun()) {
-                    Toast toast = Toast.makeText(mContext, "Your plant needs less lightSeekBar!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_needs_more_light), Toast.LENGTH_SHORT);
                     toast.show();
                     mood_pic.setImageResource(mood_medium);
-                } else {
-                    mood_pic.setImageResource(R.drawable.mood_happy);
                 }
             }
 
@@ -448,40 +447,33 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
             if (task.isSuccessful()) {
 
-                if (getBitmap() != null
-                        && !plantName.equals("") && !plantDate.equals("")) {
+                if (getBitmap() != null) {
                     bitmap = getBitmap();
                     byte[] pwr = mBitmapToArray(bitmap);
                     bsonBinary = new BsonBinary(pwr);
 
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
                     plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
 
-                    changedProfileImage();
-
-                    reloadHome();
-                } else if (getBitmap() != null && !plantName.equals("")) {
-                    bitmap = getBitmap();
-                    byte[] pwr = mBitmapToArray(bitmap);
-                    bsonBinary = new BsonBinary(pwr);
-
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
-                    changedProfileImage();
-
-                    reloadHome();
-                } else if (getBitmap() != null && !plantDate.equals("")) {
-                    bitmap = getBitmap();
-                    byte[] pwr = mBitmapToArray(bitmap);
-                    bsonBinary = new BsonBinary(pwr);
-
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
                     changedProfileImage();
 
                     reloadHome();
                 }
+                if (!TextUtils.isEmpty(flowerNameEditText.getText().toString()) && !TextUtils.isEmpty(flowerTimeEditText.getText().toString())) {
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
+
+                    reloadHome();
+                }
+                if (TextUtils.isEmpty(flowerNameEditText.getText())) {
+                    flowerNameEditText.setError(getString(R.string.choose_a_user_name));
+
+                    adjustNameAndDate();
+                }
+                if (TextUtils.isEmpty(flowerTimeEditText.getText())) {
+                    flowerTimeEditText.setError(getString(R.string.choose_a_birthday));
+                    adjustNameAndDate();
+                }
+
             }
 
             return null;
@@ -505,73 +497,36 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                         if (task.isSuccessful()) {
                             ArrayList<Integer> humidityValues = new ArrayList<>();
 
-                            int minH = Integer.valueOf(hum_min.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
-                            int maxH = Integer.valueOf(hum_max.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
+                            String minH = hum_min.getText().toString();
+                            String maxH = hum_max.getText().toString();
 
                             ArrayList<Integer> temperatureValues = new ArrayList<>();
 
-                            int minT = Integer.valueOf(temp_min.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
-                            int maxT = Integer.valueOf(temp_max.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
+                            String minT = temp_min.getText().toString();
+                            String maxT = temp_max.getText().toString();
 
                             ArrayList<Integer> sunlightValues = new ArrayList<>();
 
-                            int minS = Integer.valueOf(light_min.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
-                            int maxS = Integer.valueOf(light_max.getText().toString().replaceAll(getString(R.string.special_symbols), ""));
+                            String minS = light_min.getText().toString();
+                            String maxS = light_max.getText().toString();
 
-                            //check if the inserted values are correct
-                            if ((minH <= humiditySeekBar.getProgress()) && (hum_min.getText() != null) && (minH >= 0)) {
-                                humidityValues.add(minH);
-                                humidityValues.add(maxH);
-                            } else {
-                                hum_min.requestFocus();
-                                hum_min.setError(getString(R.string.humidity_min_max_error));
-                            }
-                            if ((maxH >= humiditySeekBar.getProgress()) && (hum_max.getText() != null) && (maxH <= 100)) {
-                                humidityValues.set(0, minH);
-                                humidityValues.set(1, maxH);
-                                plantProfileColl.updateOne(null, set("humidity", humidityValues), new RemoteUpdateOptions());
-                            } else {
-                                hum_max.requestFocus();
-                                hum_max.setError(getString(R.string.humidity_min_max_error));
-                            }
-                            if ((minT <= temperatureSeekBar.getProgress()) && (temp_min.getText() != null) && (minT >= -10)) {
-                                temperatureValues.add(minT);
-                                temperatureValues.add(maxT);
-                            } else {
-                                temp_min.requestFocus();
-                                temp_min.setError(getString(R.string.temperature_min_max_error));
+                            if (checkEmptyInput(minH, maxH, minT, maxT, minS, maxS)) {
+                                if (checkValueInput(minH, maxH, minT, maxT, minS, maxS)) {
+                                    humidityValues.add(Integer.valueOf(minH));
+                                    humidityValues.add(Integer.valueOf(maxH));
 
-                                NotificationService.createNotification(getActivity(),
-                                        "Temperature Min", "It's cold for plant");
-                            }
+                                    temperatureValues.add(Integer.valueOf(minT));
+                                    temperatureValues.add(Integer.valueOf(maxT));
 
-                            if ((maxT >= temperatureSeekBar.getProgress()) && (temp_max.getText() != null) && (maxT <= 40)) {
-                                temperatureValues.set(0, minT);
-                                temperatureValues.set(1, maxT);
-                                plantProfileColl.updateOne(null, set("temperature", temperatureValues), new RemoteUpdateOptions());
+                                    sunlightValues.add(Integer.valueOf(minS));
+                                    sunlightValues.add(Integer.valueOf(maxS));
 
-                            } else {
-                                temp_max.requestFocus();
-                                temp_max.setError(getString(R.string.temperature_min_max_error));
-                            }
-
-                            if ((minS <= lightSeekBar.getProgress()) && (light_min.getText() != null) && (minS >= 0)) {
-                                sunlightValues.add(minS);
-                                sunlightValues.add(maxS);
-                            } else {
-                                light_min.requestFocus();
-                                light_min.setError(getString(R.string.sunlight_min_max_error));
-
-                            }
-
-                            if ((maxS >= lightSeekBar.getProgress()) && (light_max.getText() != null) && (maxS <= 100)) {
-                                sunlightValues.set(0, minS);
-                                sunlightValues.set(1, maxS);
-                                plantProfileColl.updateOne(null, set("sunlight", sunlightValues), new RemoteUpdateOptions());
-                            } else {
-                                light_max.requestFocus();
-                                light_max.setError(getString(R.string.sunlight_min_max_error));
-                            }
+                                    plantProfileColl.updateOne(null, set("humidity", humidityValues), new RemoteUpdateOptions());
+                                    plantProfileColl.updateOne(null, set("temperature", temperatureValues), new RemoteUpdateOptions());
+                                    plantProfileColl.updateOne(null, set("sunlight", sunlightValues), new RemoteUpdateOptions());
+                                    reloadHome();
+                                } else adjustConditions();
+                            } else adjustConditions();
 
                         } else
                             Log.e(TAG, "error");
@@ -598,11 +553,58 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         alert11.show();
     }
 
+    private boolean checkEmptyInput(String minH, String maxH, String minT, String maxT, String minS, String maxS) {
+        boolean minH_empty = TextUtils.isEmpty(minH);
+        boolean maxH_empty = TextUtils.isEmpty(maxH);
+
+        boolean minT_empty = TextUtils.isEmpty(minT);
+        boolean maxT_empty = TextUtils.isEmpty(maxT);
+
+        boolean minS_empty = TextUtils.isEmpty(minS);
+        boolean maxS_empty = TextUtils.isEmpty(maxS);
+
+        if (minH_empty || maxH_empty) {
+            hum_max.setError(getString(R.string.humidity_min_max_error));
+            return false;
+        } else if (minT_empty || maxT_empty) {
+            temp_max.setError(getString(R.string.temperature_min_max_error));
+            return false;
+        } else if (minS_empty || maxS_empty) {
+            light_max.setError(getString(R.string.sunlight_min_max_error));
+            return false;
+        } else return true;
+    }
+
+    private boolean checkValueInput(String minH, String maxH, String minT, String maxT, String minS, String maxS) {
+        boolean m = Integer.valueOf(minH) <= 0 || Integer.valueOf(maxH) >= 100;
+        boolean t = Integer.valueOf(minT) <= 0 || Integer.valueOf(maxT) >= 40;
+        boolean s = Integer.valueOf(minS) <= 0 || Integer.valueOf(maxS) >= 100;
+
+        if (m && t && s) {
+            hum_max.setError(getString(R.string.humidity_min_max_error));
+            temp_max.setError(getString(R.string.temperature_min_max_error));
+            light_max.setError(getString(R.string.sunlight_min_max_error));
+            return false;
+        } else if (m || t || s) {
+            if (m) {
+                hum_max.setError(getString(R.string.humidity_min_max_error));
+            }
+            if (t) {
+                temp_max.setError(getString(R.string.temperature_min_max_error));
+            }
+            if (s) {
+                light_max.setError(getString(R.string.sunlight_min_max_error));
+            }
+            return false;
+        } else return true;
+    }
+
     private void reloadHome() {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .remove(this)
                 .commit();
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.useThisFragmentID, new HomeFragment())
@@ -656,7 +658,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             case R.id.profileImage:
             case R.id.change_picture:
                 alertDialog();
-                adjustNameAndDate();
                 break;
         }
     }
