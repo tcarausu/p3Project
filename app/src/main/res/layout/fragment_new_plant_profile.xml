@@ -7,9 +7,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:layout_gravity="center">
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                         android:layout_weight="2"
                         android:hint="@string/bd_day"
                         android:inputType="number"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" />
 
                     <EditText
                         android:id="@+id/bd_month"
@@ -78,7 +78,7 @@
                         android:layout_weight="2"
                         android:hint="@string/bd_month"
                         android:inputType="number"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" />
 
                     <EditText
                         android:id="@+id/bd_year"
@@ -87,7 +87,7 @@
                         android:layout_weight="2"
                         android:hint="@string/bd_year"
                         android:inputType="number"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" />
                 </LinearLayout>
 
 
@@ -100,15 +100,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="6"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="6">
 
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
-                        android:src="@drawable/drop"
-                        />
+                        android:src="@drawable/drop" />
 
                     <EditText
                         android:id="@+id/minHumidity_editText"
@@ -116,7 +115,8 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/minimum_humidity"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                     <EditText
                         android:id="@+id/maxHumidity_editText"
@@ -124,15 +124,15 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/maximum_humidity"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/temperature"
-                    />
+                    android:text="@string/temperature" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -152,7 +152,8 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/minimum_temperature"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                     <EditText
                         android:id="@+id/maxTemperature_editText"
@@ -160,7 +161,8 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/maximum_temperature"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
 
@@ -173,8 +175,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_weight="6">
+                    android:layout_weight="6"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -188,7 +190,8 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/minimum_sunlight"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                     <EditText
                         android:id="@+id/maxSunlight_editText"
@@ -196,10 +199,10 @@
                         android:layout_height="40dp"
                         android:layout_weight="2"
                         android:hint="@string/maximum_sunlight"
-                        android:textAlignment="center"/>
+                        android:inputType="number"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
-
 
 
             </LinearLayout>

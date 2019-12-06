@@ -162,42 +162,42 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 } else if (minHumidity.getText().toString().length() == 0) {
                     minHumidity.requestFocus();
                     minHumidity.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(minHumidity.getText().toString()) < 0 ||
+                } else if (Integer.parseInt(minHumidity.getText().toString()) <= 0 ||
                         Integer.parseInt(minHumidity.getText().toString()) > Integer.parseInt(maxHumidity.getText().toString())) {
                     minHumidity.requestFocus();
-                    minHumidity.setError(getString(R.string.error_wrong_input));
+                    minHumidity.setError(getString(R.string.humidity_min_max_error));
                 } else if (maxHumidity.getText().toString().length() == 0) {
                     maxHumidity.requestFocus();
                     maxHumidity.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(maxHumidity.getText().toString()) > 100) {
+                } else if (Integer.parseInt(maxHumidity.getText().toString()) >= 100) {
                     maxHumidity.requestFocus();
-                    maxHumidity.setError(getString(R.string.error_wrong_input));
+                    maxHumidity.setError(getString(R.string.humidity_min_max_error));
                 } else if (minTemperature.getText().toString().length() == 0) {
                     minTemperature.requestFocus();
                     minTemperature.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(minTemperature.getText().toString()) < 0 ||
+                } else if (Integer.parseInt(minTemperature.getText().toString()) <= 0 ||
                         Integer.parseInt(minTemperature.getText().toString()) > Integer.parseInt(maxTemperature.getText().toString())) {
                     minTemperature.requestFocus();
-                    minTemperature.setError(getString(R.string.error_wrong_input));
+                    minTemperature.setError(getString(R.string.temperature_min_max_error));
                 } else if (maxTemperature.getText().toString().length() == 0) {
                     maxTemperature.requestFocus();
                     maxTemperature.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(maxTemperature.getText().toString()) > 30) {
+                } else if (Integer.parseInt(maxTemperature.getText().toString()) >= 40) {
                     maxTemperature.requestFocus();
-                    maxTemperature.setError(getString(R.string.error_wrong_input));
+                    maxTemperature.setError(getString(R.string.temperature_min_max_error));
                 } else if (minSunlight.getText().toString().length() == 0) {
                     minSunlight.requestFocus();
                     minSunlight.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(minSunlight.getText().toString()) < 25 ||
+                } else if (Integer.parseInt(minSunlight.getText().toString()) <= 0 ||
                         Integer.parseInt(minSunlight.getText().toString()) > Integer.parseInt(maxSunlight.getText().toString())) {
                     minSunlight.requestFocus();
-                    minSunlight.setError(getString(R.string.error_wrong_input));
+                    minSunlight.setError(getString(R.string.sunlight_min_max_error));
                 } else if (maxSunlight.getText().toString().length() == 0) {
                     maxSunlight.requestFocus();
                     maxSunlight.setError(getString(R.string.error_empty));
-                } else if (Integer.parseInt(maxSunlight.getText().toString()) > 75) {
+                } else if (Integer.parseInt(maxSunlight.getText().toString()) >= 100) {
                     maxSunlight.requestFocus();
-                    maxSunlight.setError(getString(R.string.error_wrong_input));
+                    maxSunlight.setError(getString(R.string.sunlight_min_max_error));
 
                 } else {
                     createProfile();

@@ -304,7 +304,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withHumid(int minHumid, int maxHumid) {
-            if (minHumid < 0 || minHumid > maxHumid || maxHumid > 101)
+            if (minHumid < 0 || minHumid > maxHumid || maxHumid >= 100)
                 throw new InputMismatchException("Wrong humidity parameters");
             sMinHumid = minHumid;
             sMaxHumid = maxHumid;
@@ -312,7 +312,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withTemp(int minTemp, int maxTemp) {
-            if (minTemp < 0 || minTemp > maxTemp || maxTemp > 30)
+            if (minTemp < 0 || minTemp > maxTemp || maxTemp >= 40)
                 throw new InputMismatchException("Wrong temperature parameters");
             sMinTemp = minTemp;
             sMaxTemp = maxTemp;

@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
@@ -127,7 +126,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 if (task.isSuccessful()) {
                     Document doc1 = task.getResult();
                     setPlantProfileDoc(doc1);
-                    setupPlantProfile(getPlantProfileDoc());
+                    if (doc1 != null) {
+                        setupPlantProfile(getPlantProfileDoc());
+                    } else {
+                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
+                    }
                 } else {
                     mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
                 }
