@@ -47,16 +47,6 @@ public class HomeActivity extends AppCompatActivity {
         mContext = this;
 
         connectMongoDb();
-//        FragmentManager fm = getSupportFragmentManager();
-//        Fragment fragment = fm.findFragmentById( id.useThisFragmentID );
-//
-//        if (fragment == null) {
-//            fragment = new HomeFragment();
-//            fm.beginTransaction( )
-//                    .add( id.useThisFragmentID, fragment )
-//                    .commit( );
-//        }
-
 
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.useThisFragmentID);
 
@@ -105,4 +95,9 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }

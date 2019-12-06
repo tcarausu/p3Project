@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.aiplant.R;
-import com.example.myapplication.utility_classes.SquareImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;

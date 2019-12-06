@@ -4,12 +4,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:background="@drawable/border_not_sharp"
         android:elevation="4dp"
-        android:gravity="center"
-        android:layout_margin="10dp"
-
-        >
+        android:gravity="center">
 
         <LinearLayout
             android:id="@+id/information_sliders"
@@ -17,120 +15,191 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="end">
 
                 <Button
                     android:id="@+id/adjust_conditions"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
+                    android:layout_margin="2dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/ic_option_button" />
+                    android:background="@drawable/ic_option_button"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClick" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:weightSum="10">
 
-                <TextView
-                    android:id="@+id/humidity_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:drawableStart="@drawable/humidity"
-                    android:text="@string/humidity"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:weightSum="10">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/humidity" />
+
+                    <TextView
+                        android:id="@+id/humidity_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="8"
+                        android:text="@string/humidity"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
 
                 <SeekBar
                     android:id="@+id/humidity_slider"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="6"
+                    android:layout_marginTop="2dp"
                     android:maxHeight="12dp"
                     android:progressDrawable="@drawable/seekbar_progress_humidity"
                     android:thumb="@drawable/custom_thumb_humidity" />
 
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="10">
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4" />
+                        android:weightSum="6">
 
-                    <EditText
-                        android:id="@+id/humidity_min_value"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_weight="2"
-                        android:background="@null"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        <!--Min Humidity-->
+                        <EditText
+                            android:id="@+id/humidity_min_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@null"
+                            android:inputType="number"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/humidity_current_value"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_weight="2"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/humidity_min_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/percent"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
-                    <EditText
-                        android:id="@+id/humidity_max_value"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_weight="2"
-                        android:background="@null"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        <!--Current Humidity-->
+                        <TextView
+                            android:id="@+id/humidity_current_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:inputType="number"
+                            android:layout_weight="1.5"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/humidity_current_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/percent"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <!--Max Humidity-->
+                        <EditText
+                            android:id="@+id/humidity_max_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1.5"
+                            android:background="@null"
+                            android:textAlignment="textEnd"
+                            android:inputType="number"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/humidity_max_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/percent"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:orientation="vertical"
                 android:weightSum="10">
 
-                <TextView
-                    android:id="@+id/temperature_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="4"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/temperature"
-                    android:text="@string/temperature"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:weightSum="10">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/temperature" />
+
+                    <TextView
+                        android:id="@+id/temperature_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="@string/temperature"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
                 <SeekBar
                     android:id="@+id/temperature_slider"
-                    android:layout_width="0dp"
-                    android:layout_weight="6"
-                    android:layout_height="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:max="40"
                     android:maxWidth="10dp"
@@ -138,78 +207,126 @@
                     android:progressDrawable="@drawable/seekbar_style"
                     android:thumb="@drawable/custom_thumb" />
 
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="10">
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="6">
 
-                <EditText
-                    android:id="@+id/temperature_min_value"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:layout_weight="2"
-                    android:background="@null"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                        <!--Min Temperature-->
+                        <EditText
+                            android:id="@+id/temperature_min_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1.5"
+                            android:inputType="number"
+                            android:background="@null"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/temperature_current_value"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:layout_weight="2"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/temperature_min_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/celsius"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
-                <EditText
-                    android:id="@+id/temperature_max_value"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:layout_weight="2"
-                    android:textAlignment="center"
-                    android:background="@null"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                        <!--Current Temperature-->
+                        <TextView
+                            android:id="@+id/temperature_current_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1.5"
+                            android:inputType="number"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/temperature_current_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/celsius"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <!--Max Temperature-->
+                        <EditText
+                            android:id="@+id/temperature_max_value"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1.5"
+                            android:inputType="number"
+                            android:background="@null"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/temperature_max_value_text"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".5"
+                            android:text="@string/celsius"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:orientation="vertical"
                 android:weightSum="10">
 
-                <TextView
-                    android:id="@+id/sunlight_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="4"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:drawableStart="@drawable/daylight"
-                    android:text="@string/sunlight"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:weightSum="10">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/daylight" />
+
+                    <TextView
+                        android:id="@+id/sunlight_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:text="@string/sunlight"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
                 <SeekBar
                     android:id="@+id/sunlight_slider"
-                    android:layout_width="0dp"
-                    android:layout_weight="6"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
                     android:max="100"
@@ -217,81 +334,107 @@
                     android:progressDrawable="@drawable/seekbar_progress_light"
                     android:thumb="@drawable/custom_thumb_light" />
 
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="10">
+                    android:weightSum="6">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4" />
-
+                    <!--Min Light-->
                     <EditText
                         android:id="@+id/light_min_value"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="20dp"
-                        android:textAlignment="center"
-                        android:layout_gravity="start"
+                        android:layout_weight="1.5"
+                        android:inputType="number"
                         android:background="@null"
+                        android:textAlignment="textEnd"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/light_current_value"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="20dp"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/light_min_value_text"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_weight=".5"
+                        android:text="@string/percent"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
+                    <!--Current Light-->
+                    <TextView
+                        android:id="@+id/light_current_value"
+                        android:layout_width="0dp"
+                        android:inputType="number"
+                        android:layout_height="20dp"
+                        android:layout_weight="1.5"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/light_current_value_text"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_weight=".5"
+                        android:text="@string/percent"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <!--Max Light-->
                     <EditText
                         android:id="@+id/light_max_value"
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_weight="2"
                         android:layout_gravity="end"
+                        android:layout_weight="1.5"
+                        android:inputType="number"
                         android:background="@null"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/light_max_value_text"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_weight=".5"
+                        android:text="@string/percent"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
 
-
                 </LinearLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/save_changes"
-                android:layout_marginTop="10dp"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
-                android:textColor="@color/white"
                 android:layout_gravity="center"
-                android:textSize="12sp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/button_green"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="onClick"
                 android:text="@string/save_changes"
+                android:textColor="@color/white"
+                android:textSize="12sp"
                 android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/mood_pic"
-            android:layout_width="70dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/mood"/>
+            <ImageView
+                android:id="@+id/mood_pic"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="@string/mood" />
 
         </LinearLayout>
 

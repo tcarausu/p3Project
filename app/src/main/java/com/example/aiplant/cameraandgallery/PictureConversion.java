@@ -10,12 +10,19 @@ import java.io.ByteArrayOutputStream;
  * Class that contains static method to transform Bitmaps to Byte arrays and vice versa.
  */
 public class PictureConversion {
+
+
+
+    public PictureConversion() {}
+
     /**
      * Method that transform a bitmap into a byte array.
      *
      * @param bmp bitmap
      * @return byte array transformed from the input bitmap.
      */
+
+
     public static byte[] bitmapToByteArray( Bitmap bmp ) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream( );
         bmp.compress( Bitmap.CompressFormat.PNG, 100, stream );

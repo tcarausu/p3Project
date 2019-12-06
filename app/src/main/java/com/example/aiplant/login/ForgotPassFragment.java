@@ -38,9 +38,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);
         mContext = getActivity();
-
         mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
-
         findWidgets(v);
 
         return v;
@@ -49,12 +47,9 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     private void findWidgets(View v) {
         forgot_password = v.findViewById(R.id.forgot_password);
         simply_enter = v.findViewById(R.id.simply_enter);
-
         forgot_email = v.findViewById(R.id.forgot_email);
         aiplant_icon = v.findViewById(R.id.aiplant_icon);
-
         send_forgot_instructions = v.findViewById(R.id.send_forgot_instructions);
-
         send_forgot_instructions.setOnClickListener(this);
     }
 
@@ -78,6 +73,8 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
                                 Log.e("stitch", "Error sending password reset email:", task.getException());
                             }
                         }
+
+
                 );
     }
 

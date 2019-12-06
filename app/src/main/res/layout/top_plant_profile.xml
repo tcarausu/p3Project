@@ -18,79 +18,91 @@
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_marginTop="10dp"
                 android:id="@+id/profileImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="onClick"
                 android:src="@drawable/daylight"
                 app:civ_border_color="@color/black"
                 app:civ_border_width="2dp" />
+
 
             <TextView
                 android:id="@+id/change_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="onClick"
                 android:text="@string/change_picture"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="50"
+                android:orientation="horizontal">
 
-                <RelativeLayout
+                <Button
+                    android:id="@+id/adjust_name_and_date"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignTop="@+id/flower_name"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_option_button"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClick" />
+
+
+                <EditText
+                    android:id="@+id/flower_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:background="@null"
+                    android:text="@string/flower_name"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
 
-                    <Button
-                        android:id="@+id/adjust_name_and_date"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignTop="@+id/flower_name"
-                        android:background="@drawable/ic_option_button" />
+                <EditText
+                    android:id="@+id/flower_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/flower_name"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:text="@string/time_period"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
 
+                <Button
+                    android:id="@+id/save_name_and_date"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/flower_time"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/button_green"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClick"
+                    android:text="@string/save_changes"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
-                    <EditText
-                        android:id="@+id/flower_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:text="@string/flower_name"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="25sp" />
+            </RelativeLayout>
 
-                    <EditText
-                        android:id="@+id/flower_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:background="@null"
-                        android:layout_below="@+id/flower_name"
-                        android:text="@string/time_period"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="25sp" />
-
-                    <Button
-                        android:id="@+id/save_name_and_date"
-                        android:layout_below="@+id/flower_time"
-                        android:layout_width="60dp"
-                        android:layout_height="40dp"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@color/white"
-                        android:layout_centerInParent="true"
-                        android:textSize="12sp"
-                        android:background="@drawable/button_green"
-                        android:text="@string/save_changes"
-                        android:visibility="gone" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

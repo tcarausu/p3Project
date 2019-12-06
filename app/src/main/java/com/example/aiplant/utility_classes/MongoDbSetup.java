@@ -27,8 +27,10 @@ import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoDatabase;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
+import org.bson.BsonBinary;
 import org.bson.Document;
 import org.bson.types.Binary;
 
@@ -77,19 +79,6 @@ public class MongoDbSetup {
 
     }
 
-    public static GoogleSignInClient getGoogleSignInClient() {
-        return mGoogleSignInClient;
-    }
-
-    public StitchAuth getStitchAuth() {
-        return stitchAuth = getAppClient().getAuth();
-
-    }
-
-    public StitchUser getStitchUser() {
-        return stitchUser = stitchAuth.getUser();
-    }
-
     public static MongoDbSetup getInstance(Context context) {
 
         return new MongoDbSetup(context);
@@ -104,11 +93,24 @@ public class MongoDbSetup {
 
     }
 
+    public static GoogleSignInClient getGoogleSignInClient() {
+        return mGoogleSignInClient;
+    }
+
+    public StitchAuth getStitchAuth() {
+        return stitchAuth = getAppClient().getAuth();
+
+    }
+
+    public StitchUser getStitchUser() {
+        return stitchUser = stitchAuth.getUser();
+    }
+
     public StitchAppClient getAppClient() {
         return appClient;
     }
 
-    public String getAppClientId() {
+    private String getAppClientId() {
         return Objects.requireNonNull(getStitchUser()).getId();
     }
 
@@ -117,21 +119,27 @@ public class MongoDbSetup {
         return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
     }
 
+    public RemoteMongoDatabase getDatabase() {
+        return getRemoteMongoDbClient().getDatabase("eye_plant");
+    }
+
     public RemoteMongoCollection<Document> getCollectionByName(String collectionName) {
         return
-                getRemoteMongoDbClient().getDatabase("eye_plant")
+                getDatabase()
                         .getCollection(collectionName);
     }
 
     public Document createUserDocument(String id, String displayName,
-                                       String userMail, String photoURL, int nrOfPlant, String birthday) {
+                                       String userMail, String photoURL, int nrOfPlant, String birthday, BsonBinary edited_pic
+    ) {
 
         return new Document("logged_user_id", id)
                 .append("name", displayName)
                 .append("email", userMail)
                 .append("picture", photoURL)
                 .append("number_of_plants", nrOfPlant)
-                .append("birthday", birthday);
+                .append("birthday", birthday)
+                .append("edited_pic", edited_pic);
     }
 
     public static byte[] mBitmapToArray(Bitmap bitmap) {
@@ -148,7 +156,7 @@ public class MongoDbSetup {
     public void createPlantProfileDocument(String collectionName, String profileId, String plantName, String birthday,
                                            int minHumidity, int maxHumidity, int minTemperature,
                                            int maxTemperature, int minSun,
-                                           int maxSun, byte[] picture) {
+                                           int maxSun, String url, byte[] picture) {
 
         List<Integer> humidity = new ArrayList<>();
         humidity.add(0, minHumidity);
@@ -168,10 +176,11 @@ public class MongoDbSetup {
                 .append("humidity", humidity)
                 .append("temperature", temperature)
                 .append("sunlight", sunlight)
-                .append("picture", picture)
+                .append("picture", url)
                 .append("measured_humidity", 0)
                 .append("measured_temperature", 0)
-                .append("measured_sunlight", 0);
+                .append("measured_sunlight", 0)
+                .append("edited_pic", picture);
 
         getCollectionByName(collectionName).insertOne(createdPlantProfile);
     }
@@ -268,7 +277,7 @@ public class MongoDbSetup {
                     .addOnCompleteListener(task -> {
                         Log.d(TAG, "doc" + docs.size());
 
-                        setupPlantProfileList(docs, flowerName, timeOfCreation, hum_current, temp_current, light_current,imageView);
+                        setupPlantProfileList(docs, flowerName, timeOfCreation, hum_current, temp_current, light_current, imageView);
 
                     });
         } catch (Throwable e) {
