@@ -1,9 +1,7 @@
 package com.example.aiplant.utility_classes;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
-import com.example.aiplant.create_profile.PlantProfileActivity;
 import com.example.aiplant.create_profile.PlantProfileFragment;
 import com.example.aiplant.model.RecyclerViewPlantItem;
 import com.example.aiplant.search.LivingConditionsFragment;
-import com.example.aiplant.search.SearchActivity;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.database.DatabaseReference;
@@ -35,9 +31,6 @@ import com.mongodb.stitch.android.core.auth.StitchUser;
 import org.bson.Document;
 
 import java.util.ArrayList;
-
-import static androidx.core.content.ContextCompat.startActivity;
-import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.CardViewHolder> {
     //database
@@ -65,7 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plant_card_from_database, parent, false);
-//        mContext = (Context)SearchActivity.class;
+
         return new CardViewHolder(view);
     }
 
@@ -81,10 +74,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.setMaxTemp(currentItem.getMaxTemp());
         holder.setMinHumidity(currentItem.getMinHumidity());
         holder.setMaxHumidity(currentItem.getMaxHumidity());
-
-//        mongoDbSetup.findPlantsList(holder.mPlantProfilePicture, holder.mPlantName, holder.mPlantDescription);
-
-//        holder.mPlantProfilePicture.set(currentItem.getPlantProfileUrl());
 
         Glide.with(mContext).load(currentItem.getPlantProfileUrl()).fitCenter().into(holder.mPlantProfilePicture);
 
@@ -173,40 +162,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 case R.id.add_plant_button_card:
 
-//
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     FragmentManager fragmentManager1 = activity.getSupportFragmentManager();
                     Fragment plantProfilePragment = fragmentManager1.findFragmentById(R.id.plant_list_fragment);
 
                     plantProfilePragment = new PlantProfileFragment();
                     bundleFunctionality(plantProfilePragment);
-//                     if (livingCondFragment == null) {
+
                     FragmentTransaction fragmentTransaction1 = fragmentManager1.beginTransaction();
                     fragmentTransaction1.addToBackStack(null);
                     fragmentTransaction1.replace(R.id.plant_list_fragment, plantProfilePragment).commit();
-//
-//                    view.getContext();
 
-//                    Intent intent = new Intent(view.getContext(),PlantProfileActivity.class);
-//                    startActivity(view.getContext(),intent,null);
-
-//                    mongoDbSetup.goToWhereverWithFlags(, view.getContext(), PlantProfileActivity.class);
                     break;
                 case R.id.click_for_living_conditions:
 
                     AppCompatActivity activity1 = (AppCompatActivity) view.getContext();
                     FragmentManager fragmentManager = activity1.getSupportFragmentManager();
-                    Fragment livingCondFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
+                    Fragment livingCondFragment = new LivingConditionsFragment();
 
-                    livingCondFragment = new LivingConditionsFragment();
+//                    livingCondFragment = new LivingConditionsFragment();
                     bundleFunctionality(livingCondFragment);
-//                     if (livingCondFragment == null) {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.plant_list_fragment, livingCondFragment).commit();
                     break;
 
-//                     }
             }
         }
 

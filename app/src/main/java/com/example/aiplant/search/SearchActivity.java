@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aiplant.R;
+import com.example.aiplant.create_profile.PlantProfileFragment;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,10 +27,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
-
-import org.bson.Document;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -85,7 +82,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mStitchUser = mongoDbSetup.getStitchUser();
         appClient = mongoDbSetup.getAppClient();
 
-        }
+    }
 
 
     public void setMongoDbForLaterUse(MongoDbSetup mongoDbSetup) {
@@ -119,7 +116,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (v.getId()) {
             case R.id.create_new_plant_button:
+                Fragment createPlantProfileFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
+                if (createPlantProfileFragment == null) {
+                    createPlantProfileFragment = new PlantProfileFragment();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.replace(R.id.plant_list_fragment, createPlantProfileFragment).commit();
+                }
 
+                Log.d(TAG, "onClick: do something");
                 break;
             case R.id.library_button:
                 Fragment searchListFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
@@ -129,7 +134,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.plant_list_fragment, searchListFragment).commit();
                 }
-                Log.d(TAG, "onClick: do something");
+
                 break;
         }
     }

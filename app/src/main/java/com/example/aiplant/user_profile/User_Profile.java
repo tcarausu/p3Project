@@ -52,11 +52,8 @@ import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchAuthListener;
 import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.mongodb.stitch.android.core.auth.internal.StitchAuthImpl;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
-import com.mongodb.stitch.core.StitchAppClientConfiguration;
-import com.mongodb.stitch.core.internal.net.StitchAuthRequest;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
@@ -99,7 +96,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private StitchAuth mStitchAuth;
     private StitchUser mStitchUser;
-    private StitchAuthListener mStitchAuthListener ;
+    private StitchAuthListener mStitchAuthListener;
 
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private ArrayList<Document> docs;
@@ -258,9 +255,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
-        Log.d(TAG, "connectDb: isLoggedIn: " + mStitchAuth.isLoggedIn());
-        Log.d(TAG, "connectMongoDb: auth: " + mStitchUser);
-        Log.d(TAG, "connectDb: isLoggedIn: " + mStitchUser.getId());
+
         fetchUserData();
     }
 
@@ -471,7 +466,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             Bitmap bitmap1 = null;
 
             try {
-                bitmap1 = ImagePicker.getImageFromResult(this,resultCode,data);
+                bitmap1 = ImagePicker.getImageFromResult(this, resultCode, data);
                 setBitmap(bitmap1);
                 Glide.with(mContext).load(bitmap1).fitCenter().into(profilePic);
                 Log.d(TAG, "onActivityResult: error getting bitmap: " + bitmap.getDensity());
