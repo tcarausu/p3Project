@@ -42,7 +42,6 @@
         <activity
             android:name=".user_profile.User_Profile"
             android:theme="@style/Theme.Design.NoActionBar"
-            android:windowSoftInputMode="adjustResize|adjustPan"
             android:screenOrientation="portrait" >
 
         </activity>

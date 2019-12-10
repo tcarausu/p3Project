@@ -62,6 +62,12 @@ public class RecyclerViewPlantItem {
         mPlantDescription = plantDescription;
     }
 
+    public RecyclerViewPlantItem(String picture_url, String plant_name, String description) {
+        plantProfileUrl = picture_url;
+        mPlantName = plant_name;
+        mPlantDescription = description;
+    }
+
     public RecyclerViewPlantItem(String plantProfilePic, String plantName, String plantDescription, String minSun,String maxSun,String minTemp,String maxTemp,String minHumidity,String maxHumidity) {
         plantProfileUrl = plantProfilePic;
         mPlantName = plantName;

@@ -63,6 +63,7 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
@@ -501,7 +502,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             hideKeyboard();
             String id = mStitchUser.getId();
             mStitchAuth.logoutUserWithId(id);
-            mStitchAuth.logout();
+//            mStitchAuth.logout();
             new Handler().postDelayed(() ->
                     mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class), 500);
         }
@@ -614,8 +615,9 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     }
 
     private void hideKeyboard() {
-        View v = getCurrentFocus().getRootView().findFocus();//.keyboardNavigationClusterSearch(getCurrentFocus(), Path.Direction.CW.);
-        mInputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (Build.VERSION.SDK_INT<=23) {
+            mInputManager.hideSoftInputFromWindow((this.getCurrentFocus()).getWindowToken(), 0);
+        }
     }
 
     public interface OnGridImageSelectedListener {
