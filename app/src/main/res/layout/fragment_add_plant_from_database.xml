@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/grey">
 
     <LinearLayout
         android:id="@+id/top_bar_layout"
@@ -23,12 +24,11 @@
         android:layout_below="@+id/top_bar_layout"
         android:padding="5dp"
         android:elevation="5dp"
-        android:layout_marginBottom="?attr/actionBarSize"
 
         android:id="@+id/recyclerView">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <include layout="@layout/layout_bottom_navigation" />
+<!--    <include layout="@layout/layout_bottom_navigation" />-->
 
 </RelativeLayout>

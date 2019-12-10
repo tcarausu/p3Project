@@ -1,118 +1,215 @@
 package com.example.aiplant.search;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aiplant.R;
+import com.example.aiplant.model.RecyclerViewPlantItem;
+import com.example.aiplant.utility_classes.MongoDbSetup;
+import com.example.aiplant.utility_classes.RecyclerViewAdapter;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoIterable;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class SearchListFragment extends Fragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
+    private String TAG = "SearchListFragment";
 
+    //recycler view
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ImageButton searchButton;
+    private EditText search_bar;
 
-    private OnFragmentInteractionListener mListener;
+    private MongoDbSetup mongoDbSetup;
 
-    public SearchListFragment() {
-        // Required empty public constructor
-    }
+    private ArrayList<RecyclerViewPlantItem> listOfPlants = new ArrayList<>();
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchListFragment newInstance(String param1, String param2) {
-        SearchListFragment fragment = new SearchListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private List<Document> docsToUse = new ArrayList<>();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private String plant_name;
+    private String picture_url;
+    private String description;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_plant_from_database, container, false);
+        View v = inflater.inflate(R.layout.fragment_add_plant_from_database, container, false);
+
+        mongoDbSetup = ((SearchActivity) getActivity()).getMongoDbForLaterUse();
+
+        findPlantsList();
+
+        findWidgets(v);
+
+        return v;
+
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+    private void findWidgets(View v) {
+        mRecyclerView = v.findViewById(R.id.recyclerView);
+        searchButton = v.findViewById(R.id.search_button_id);
+        search_bar = v.findViewById(R.id.search_bar_id);
+
+        searchButton.setOnClickListener(this);
+    }
+
+    private void findPlantsList() {
+        try {
+
+            RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plants));
+            RemoteMongoIterable<Document> plantIterator = plants.find();
+
+            final ArrayList<Document> docsToUser = new ArrayList<>();
+
+            plantIterator
+                    .forEach(document -> {
+                        docsToUser.add(document);
+                        setPlantList(docsToUser);
+                    })
+                    .addOnFailureListener(e -> Log.e(TAG, "Error" + e.getCause()))
+
+                    .addOnCompleteListener(task -> {
+
+                        if (getPlantList().size() == docsToUser.size() && getPlantList().size() != 0) {
+                            setUpRecyclerView();
+                        }
+                    });
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    private void searchList() {
+        String keyword = search_bar.getText().toString();
+        try {
+            if (!TextUtils.isEmpty(keyword)) {
+                RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName("plants");
+                RemoteMongoIterable<Document> plantIterator = plants.find();
+
+                docsToUse.clear();
+                listOfPlants.clear();
+                mRecyclerView.removeAllViews();
+
+                final ArrayList<Document> docs = new ArrayList<>();
+
+                plantIterator
+                        .forEach(document -> {
+                            plant_name = document.getString("plant_name");
+                            picture_url = document.getString("picture_url");
+                            description = document.getString("description");
+
+                            if (plant_name.toLowerCase().contains(keyword.toLowerCase())) {
+
+                                docs.add(document);
+                                setPlantList(docs);
+                                listOfPlants.add(new RecyclerViewPlantItem(picture_url, plant_name, description));
+
+                            }
+                        })
+
+                        .addOnCompleteListener(task -> {
+                            if (listOfPlants.size() == 0) {
+                                search_bar.requestFocus();
+                                search_bar.setError("No match found");
+
+                                listOfPlants.clear();
+                            }
+                            mRecyclerView.setHasFixedSize(true);
+                            mLayoutManager = new LinearLayoutManager(getActivity());
+                            mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
+                            mAdapter.notifyDataSetChanged();
+
+                            mRecyclerView.setLayoutManager(mLayoutManager);
+                            mRecyclerView.setAdapter(mAdapter);
+                        })
+                        .addOnFailureListener(e -> Log.e(TAG, "error " + e.getMessage()));
+
+            } else if (searchButton.isPressed() && TextUtils.isEmpty(keyword)) {
+                search_bar.setError("Please type a keyword");
+                listOfPlants.clear();
+                findPlantsList();
+            }
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    private void setUpRecyclerView() {
+
+        for (Document doc : getPlantList()) {
+            String picture = doc.getString("picture_url");
+            String name = doc.getString("plant_name");
+            String description = doc.getString("description");
+            ArrayList sunlightArray = doc.get("sunlight", ArrayList.class);
+            String min_sun = sunlightArray.get(0).toString();
+            String max_sun = sunlightArray.get(1).toString();
+            ArrayList temperatureArray = doc.get("temperature", ArrayList.class);
+            String min_temp = temperatureArray.get(0).toString();
+            String max_temp = temperatureArray.get(1).toString();
+            ArrayList humidityArray = doc.get("humidity", ArrayList.class);
+            String min_humidity = humidityArray.get(0).toString();
+            String max_humidity = humidityArray.get(1).toString();
+
+            listOfPlants.add(new RecyclerViewPlantItem(picture, name, description, min_sun, max_sun, min_temp, max_temp, min_humidity, max_humidity));
+
+        }
+
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
+
 
     @Override
     public void onClick(View view) {
-
+        if (view.getId() == R.id.search_button_id) {
+            searchList();
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private ArrayList<Document> getPlantList() {
+        return plantList;
     }
+
+    private void setPlantList(ArrayList<Document> plantList) {
+        this.plantList = plantList;
+    }
+
+    public void setPlantList(Document document) {
+        this.plantList.add(document);
+    }
+
+    private ArrayList<Document> plantList = new ArrayList<>();
+
+    public List<Document> getDocsToUse() {
+        return docsToUse;
+    }
+
+    public void setDocsToUse(List<Document> docsToUse) {
+        this.docsToUse = docsToUse;
+    }
+
 }

@@ -42,7 +42,6 @@
         <activity
             android:name=".user_profile.User_Profile"
             android:theme="@style/Theme.Design.NoActionBar"
-            android:windowSoftInputMode="adjustResize|adjustPan"
             android:screenOrientation="portrait" >
 
         </activity>
@@ -69,13 +68,6 @@
         <activity android:name=".create_profile.PlantProfileActivity"
             android:windowSoftInputMode="adjustResize|adjustPan"
             android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".search.AuxActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan">
-
         </activity>
 
         <service

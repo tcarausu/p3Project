@@ -166,7 +166,9 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="click_for_adding_from_database">Click button to find your plant living conditions</string>
     <string name="click_to_add_plant_yourself">Click button to start adding your plant</string>
     <string name="add_button">Add</string>
-    <string name="click_for_living_conditions"><u>Click here to see living conditions</u>.</string>
+    <string name="click_for_living_conditions"><u>Click for more information</u>.</string>
+    <string name="minimum_value">Min.</string>
+    <string name="maximum_value">Max.</string>
 
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
@@ -206,7 +208,6 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <string name="username">Username</string>
     <string name="change_profile_image">Change profile image</string>
-
 
 
     <string name="data_lake_unique_id">b49511f7-1c3e-4ebe-8174-0dbcb46d1699</string>
