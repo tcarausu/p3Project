@@ -27,13 +27,9 @@
 
     <string name="name_plant">Name of the plant</string>
     <string name="hint_name_plant">Name your plant</string>
-    <string name="birthday_plant">plant Birthday</string>
-    <string name="minimum_humidity">Min %</string>
-    <string name="maximum_humidity">Max %</string>
-    <string name="minimum_sunlight">Min lux</string>
-    <string name="maximum_sunlight">Max lux</string>
-    <string name="minimum_temperature">Min °C</string>
-    <string name="maximum_temperature">Max °C</string>
+    <string name="birthday_plant">Your plant\'s birthday</string>
+    <string name="minimum">Min</string>
+    <string name="maximum">Max</string>
     <string name="create_profile">Create Profile</string>
 
     <string name="select_date">Select Date</string>
@@ -195,12 +191,19 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="change_username">Edit username</string>
 
     <!-- Strings for connecting the device -->
-    <string name="connect_device_title">Connect your device</string>
     <string name="turn_on_device">Turn on the device</string>
-    <string name="place_the_device">Place the device</string>
-    <string name="step_one">1. Turn the device on by pressing the button on it. A blue light will flash on the device when it\'s on.</string>
-    <string name="step_two">2. Press the "connect device" button on the screen. This may take a few moments, so wait for the confirmation that the device has been successfully connected. </string>
-    <string name="step_three">3. Put the device in the soil.</string>
+    <string name="place_device">Place the device</string>
+    <string name="check_led">Check out the LED</string>
+    <string name="step_one">1. Turn the device on by pressing the button on it. A white light will flash on the device when it\'s on.</string>
+    <string name="step_two">2. Put the sensor with two legs in the soil and make sure that the rest of the sensors do not have any contact with water.</string>
+    <string name="step_three">3. Pay attention to the LED light on the device, as each colour means something.\n\n
+    WHITE - means the device in on\n
+    PURPLE - the device is connected to WiFi\n\n\n
+        However, if there is no wifi, the device will let you know if there is a problem through the following colours.\n\n
+        BLUE - there is something wrong with the humidity\n
+    RED - there is something wrong with the temperature in the room\n
+        YELLOW - there is something wrong with he amount of sunlight
+    </string>
 
     <string name="button_connect">Connect device</string>
     <string name="device_connected">Connection successful</string>

@@ -42,59 +42,17 @@
         android:text="@string/next"
         android:textColor="#008000" />
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_skip"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:background="@null"-->
-<!--        android:text="@string/skip"-->
-<!--        android:textColor="@android:color/white" />-->
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_above="@+id/layoutDots"
-        android:gravity="center_horizontal"
-        android:layout_centerInParent="true">
-
-
     <Button
+        android:id="@+id/btn_skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/button_connect"
-        android:id="@+id/connect_device_btn"
-        />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@null"
+        android:text="@string/skip"
+        android:textColor="#008000" />
 
-    <ProgressBar
-        android:id="@+id/loading_circle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:layout_marginTop="30dp"
-        android:visibility="visible"/>
 
-    <LinearLayout
-        android:id="@+id/check_sign_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="30dp">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/check_sign"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/device_connected"/>
-
-    </LinearLayout>
-    </LinearLayout>
 
 
 </RelativeLayout>

@@ -26,15 +26,19 @@
 
         <activity
             android:name=".home.HomeActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".device_connection.DeviceConnectionActivity">
 
         </activity>
 
         <activity
 
             android:name=".search.SearchActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
 
         </activity>
@@ -42,6 +46,7 @@
         <activity
             android:name=".user_profile.User_Profile"
             android:theme="@style/Theme.Design.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" >
 
         </activity>
@@ -59,15 +64,10 @@
 
         <activity
             android:name=".login.LoginActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
 
 
-        </activity>
-
-        <activity android:name=".create_profile.PlantProfileActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan"
-            android:screenOrientation="portrait">
         </activity>
 
         <service

@@ -27,8 +27,9 @@ import androidx.appcompat.app.AlertDialog;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
-import com.example.aiplant.create_profile.PlantProfileActivity;
 import com.example.aiplant.model.PlantProfile;
+import com.example.aiplant.search.SearchActivity;
+import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -41,6 +42,7 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,7 +66,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private static final String LAST_TEXT_NAME = "", LAST_TEXT_DATE = "";
 
     private Bundle savedInstanceState;
-
+    private AtomicInteger requestCode = new AtomicInteger();
     //data
     private MongoDbSetup mongoDbSetup;
     private static StitchUser mStitchUser;
@@ -129,10 +131,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     if (doc1 != null) {
                         setupPlantProfile(getPlantProfileDoc());
                     } else {
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
+                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
                     }
                 } else {
-                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
+                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
                 }
 
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
@@ -274,12 +276,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
                 if (progress <= profileForUser.getMinHumid()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_has_little_water), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxHumid()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_has_too_much_water), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+
                     mood_pic.setImageResource(mood_medium);
                 }
             }
@@ -301,12 +303,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
 
                 if (progress <= profileForUser.getMinTemp()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_is_cold), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+
                     mood_pic.setImageResource(mood_cold);
                 } else if (progress >= profileForUser.getMaxTemp()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_is_too_hot), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+
                     mood_pic.setImageResource(mood_hot);
                 }
             }
@@ -328,12 +330,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
                 if (progress <= profileForUser.getMinSun()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_needs_less_light), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
+
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxSun()) {
-                    Toast toast = Toast.makeText(mContext, getString(R.string.plant_needs_more_light), Toast.LENGTH_SHORT);
-                    toast.show();
+                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
+
                     mood_pic.setImageResource(mood_medium);
                 }
             }

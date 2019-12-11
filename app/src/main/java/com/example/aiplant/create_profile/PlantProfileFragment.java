@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,31 +19,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
+import com.example.aiplant.device_connection.DeviceConnectionActivity;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
-import com.example.aiplant.search.SearchListFragment;
 import com.example.aiplant.utility_classes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
 public class PlantProfileFragment extends Fragment implements View.OnClickListener {
 
-    private String TAG = "PlantProfileFragment";
+    private static final int REQUEST_CODE = 123;
 
-    static final int REQUEST_CODE = 123;
-
-    private Button mCloseButton;
     private ImageView profilePicture;
     private EditText namePlant;
     private EditText bd_day;
@@ -56,10 +53,9 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     private EditText minTemperature;
     private EditText maxTemperature;
     private Bitmap picture;
-    private Button createProfileBtn;
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private MongoDbSetup mongoDbSetup;
-    DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
+    private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
 
     @Nullable
     @Override
@@ -70,7 +66,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
         Bundle bundle = this.getArguments();
 
-        mongoDbSetup = ((SearchActivity) getActivity()).getMongoDbForLaterUse();
+        mongoDbSetup = ((SearchActivity) Objects.requireNonNull(getActivity())).getMongoDbForLaterUse();
 
         profilePicture = view.findViewById(R.id.profilePicPlant_imgView);
         namePlant = view.findViewById(R.id.namePlant_editText);
@@ -83,25 +79,25 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         maxSunlight = view.findViewById(R.id.maxSunlight_editText);
         minTemperature = view.findViewById(R.id.minTemperature_editText);
         maxTemperature = view.findViewById(R.id.maxTemperature_editText);
-        createProfileBtn = view.findViewById(R.id.createProfile_btn);
-        mCloseButton = view.findViewById(R.id.close_button_2);
+        Button createProfileBtn = view.findViewById(R.id.createProfile_btn);
+        Button mCloseButton = view.findViewById(R.id.close_button_2);
 
 
         if (bundle != null){
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            minHumidity.setText(stringBuilder.append(bundle.getString("minHumidity")).append("%").toString());
+            minHumidity.setText(stringBuilder.append(bundle.getString("minHumidity")).toString());
             stringBuilder.delete(0,stringBuilder.capacity());
-            maxHumidity.setText(stringBuilder.append(bundle.getString("maxHumidity")).append("%").toString());
+            maxHumidity.setText(stringBuilder.append(bundle.getString("maxHumidity")).toString());
             stringBuilder.delete(0,stringBuilder.capacity());
-            minSunlight.setText(stringBuilder.append(bundle.getString("minSun")).append("lx"));
+            minSunlight.setText(stringBuilder.append(bundle.getString("minSun")));
             stringBuilder.delete(0,stringBuilder.capacity());
-            maxSunlight.setText(stringBuilder.append(bundle.getString("maxSun")).append("lx"));
+            maxSunlight.setText(stringBuilder.append(bundle.getString("maxSun")));
             stringBuilder.delete(0,stringBuilder.capacity());
-            minTemperature.setText(stringBuilder.append(bundle.getString("minTemp")).append("\u00B0").append("C"));
+            minTemperature.setText(stringBuilder.append(bundle.getString("minTemp")));
             stringBuilder.delete(0,stringBuilder.capacity());
-            maxTemperature.setText(stringBuilder.append(bundle.getString("maxTemp")).append("\u00B0").append("C"));
+            maxTemperature.setText(stringBuilder.append(bundle.getString("maxTemp")));
             stringBuilder.delete(0,stringBuilder.capacity());
 
         }
@@ -127,15 +123,15 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         if (Build.VERSION.SDK_INT >= 23) {
             int REQUEST_CAMERA = 1;
             int REQUEST_GALLERY = 2;
-            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_GALLERY | REQUEST_CAMERA);
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), permissions, REQUEST_GALLERY | REQUEST_CAMERA);
         }
     }
 
-    public String getBirthday() {
+    private String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    private void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -143,6 +139,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        String TAG = "PlantProfileFragment";
         Log.d(TAG, "request code: " + requestCode);
         Log.d(TAG, "result code: " + resultCode);
         if (resultCode == RESULT_OK) {
@@ -155,7 +152,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 }
 
                 setPicture(bitmap);
-                Glide.with(getContext()).load(getPicture()).into(profilePicture);
+                Glide.with(Objects.requireNonNull(getContext())).load(getPicture()).into(profilePicture);
                 profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
@@ -230,7 +227,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
                 } else {
                     createProfile();
-                    mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), HomeActivity.class);
+                    mongoDbSetup.goToWhereverWithFlags(Objects.requireNonNull(getActivity()), getActivity(), DeviceConnectionActivity.class);
                 }
                 break;
 
@@ -241,15 +238,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 break;
 
             case R.id.close_button_2:
-
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment searchListFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
-//            if (searchListFragment == null) {
-                searchListFragment = new SearchListFragment();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.plant_list_fragment, searchListFragment).commit();
-
+                startActivity(new Intent(getContext(), SearchActivity.class));
                 break;
         }
     }
