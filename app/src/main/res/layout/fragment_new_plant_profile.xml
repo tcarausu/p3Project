@@ -104,6 +104,7 @@
                         android:id="@+id/bd_year"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
+
                         android:layout_weight="2"
                         android:hint="@string/bd_year"
                         android:inputType="number"
@@ -121,30 +122,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="6">
+                    android:weightSum="10">
 
                     <ImageView
                         style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:layout_weight="2"
-                        android:src="@drawable/drop" />
+                        android:layout_weight="4"
+                        android:src="@drawable/humidity" />
 
                     <EditText
                         android:id="@+id/minHumidity_editText"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:hint="@string/minimum_humidity"
+                        android:hint="@string/minimum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/percent"
+                        android:textSize="20sp"/>
 
                     <EditText
                         android:id="@+id/maxHumidity_editText"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:hint="@string/maximum_humidity"
+                        android:hint="@string/maximum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/percent"
+                        android:textSize="20sp"/>
+
 
                 </LinearLayout>
 
@@ -157,29 +174,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="6">
+                    android:weightSum="10">
 
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:layout_weight="2"
-                        android:src="@drawable/thermometer_pic" />
+                        android:layout_weight="4"
+                        android:src="@drawable/temperature" />
 
                     <EditText
                         android:id="@+id/minTemperature_editText"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
-                        android:hint="@string/minimum_temperature"
+                        android:hint="@string/minimum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/celsius"
+                        android:textSize="20sp"
+                         />
 
                     <EditText
                         android:id="@+id/maxTemperature_editText"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
-                        android:hint="@string/maximum_temperature"
+                        android:hint="@string/maximum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:text="@string/celsius" />
 
                 </LinearLayout>
 
@@ -192,43 +224,68 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="10"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:layout_weight="2"
-                        android:src="@drawable/sun" />
+                        android:layout_weight="4"
+                        android:src="@drawable/daylight" />
 
                     <EditText
                         android:id="@+id/minSunlight_editText"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
-                        android:hint="@string/minimum_sunlight"
+                        android:hint="@string/minimum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/percent"
+                        android:textSize="20sp"/>
 
                     <EditText
                         android:id="@+id/maxSunlight_editText"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
-                        android:hint="@string/maximum_sunlight"
+                        android:hint="@string/maximum"
+                        android:inputType="number"
                         android:textAlignment="center" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/percent"
+                        android:textSize="20sp"/>
 
                 </LinearLayout>
 
 
             </LinearLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/createProfile_btn"
-                android:layout_width="wrap_content"
+                style="@style/AppTheme.RoundedCornerMaterialButton"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/input_fields_with_shadow"
+                android:elevation="5dp"
+                android:padding="10dp"
+                android:shadowColor="@color/black"
+                android:text="@string/create_profile"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/create_profile" />
+                android:layout_marginBottom="20dp"/>
+
 
         </LinearLayout>
 

@@ -29,24 +29,13 @@ public class DeviceConnectionActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private LinearLayout dotsLayout;
     private int[] layouts;
-    private Button  btnNext;
-    private Button connectDevice;
-    private LinearLayout connectionSuccessful;
-    private ProgressBar loadingCircle;
-    private PrefManager prefManager;
+    private Button  btnNext, btnSkip;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Checking for first time launch - before calling setContentView()
-        prefManager = new PrefManager(this);
-        if (!prefManager.isFirstTimeLaunch()) {
-            launchHomeScreen();
-            finish();
-        }
 
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -58,14 +47,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
         viewPager =  findViewById(R.id.view_pager);
         dotsLayout = findViewById(R.id.layoutDots);
         btnNext = findViewById(R.id.btn_next);
-        connectDevice = findViewById(R.id.connect_device_btn);
-        connectionSuccessful = findViewById(R.id.check_sign_layout);
-        loadingCircle = findViewById(R.id.loading_circle);
-
-        connectionSuccessful.setVisibility(View.GONE);
-        loadingCircle.setVisibility(View.INVISIBLE);
-        connectDevice.setVisibility(View.INVISIBLE);
-
+        btnSkip = findViewById(R.id.btn_skip);
 
 
 
@@ -86,7 +68,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-      //  btnSkip.setOnClickListener(v -> launchHomeScreen());
+        btnSkip.setOnClickListener(v -> launchHomeScreen());
 
         btnNext.setOnClickListener(v -> {
             // checking for last page
@@ -125,7 +107,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen() {
-        prefManager.setFirstTimeLaunch(false);
+       // prefManager.setFirstTimeLaunch(false);
         startActivity(new Intent(DeviceConnectionActivity.this, HomeActivity.class));
         finish();
     }
@@ -141,27 +123,11 @@ public class DeviceConnectionActivity extends AppCompatActivity {
             if (position == layouts.length - 1) {
                 // last page. make button text to GOT IT
                 btnNext.setText(getString(R.string.start));
-              //  btnSkip.setVisibility(View.GONE);
+                btnSkip.setVisibility(View.GONE);
             } else {
                 // still pages are left
                 btnNext.setText(getString(R.string.next));
-//                btnSkip.setVisibility(View.VISIBLE);
-            }
-            if(layouts[position]==R.layout.fragment_two_connect){
-                connectDevice.setVisibility(View.VISIBLE);
-
-                connectDevice.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        loadingCircle.setVisibility(View.VISIBLE);
-
-                    }
-                });
-            }
-            else{
-                connectDevice.setVisibility(View.GONE);
-                loadingCircle.setVisibility(View.INVISIBLE);
-                connectionSuccessful.setVisibility(View.GONE);
+                btnSkip.setVisibility(View.VISIBLE);
             }
         }
 

@@ -27,8 +27,8 @@ import androidx.appcompat.app.AlertDialog;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
-import com.example.aiplant.create_profile.PlantProfileActivity;
 import com.example.aiplant.model.PlantProfile;
+import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -129,10 +129,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     if (doc1 != null) {
                         setupPlantProfile(getPlantProfileDoc());
                     } else {
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
+                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
                     }
                 } else {
-                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, PlantProfileActivity.class);
+                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
                 }
 
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));

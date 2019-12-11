@@ -23,6 +23,8 @@
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:layout_marginTop="50dp"
+
+
         android:orientation="vertical"
         android:layout_below="@id/top_bar_eyePlant">
 
@@ -32,8 +34,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/slide_title"
             android:textStyle="bold"
-            android:text="@string/connect_device_title"
-
+            android:text="@string/place_device"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -44,16 +45,20 @@
             android:layout_marginTop="20dp"/>
 
         <ImageView
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:src="@drawable/connect_device"
+            android:layout_width="320dp"
+            android:layout_height="300dp"
+            android:src="@drawable/place_device"
             android:layout_marginTop="50dp"
             />
 
 
 
 
+
+
+
+
     </LinearLayout>
 
-</RelativeLayout>
 
+</RelativeLayout>
