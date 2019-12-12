@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
-import com.example.aiplant.login.ForgotPassFragment;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,7 +23,6 @@ import com.mongodb.stitch.android.core.auth.StitchUser;
 
 import static com.example.aiplant.R.id;
 import static com.example.aiplant.R.layout;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -99,5 +98,32 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         super.onBackPressed();
+    }
+
+      @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }

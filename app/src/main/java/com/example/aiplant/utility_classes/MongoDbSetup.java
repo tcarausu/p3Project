@@ -5,16 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -367,15 +368,19 @@ public class MongoDbSetup {
                             documentToCheck.getString("name"),
                             documentToCheck.getString("email"), documentToCheck.getString("picture"),
                             number_of_plants, documentToCheck.getString("birthday"));
-
-                    goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-                } else goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                }
             } catch (Throwable throwable) {
                 Log.d(TAG, "checkIfExists:Error throwable: " + throwable);
             }
 
             return null;
         });
+    }
+
+    public boolean checkInternetConnection(@NonNull Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isAvailable() && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public void updateOne() {

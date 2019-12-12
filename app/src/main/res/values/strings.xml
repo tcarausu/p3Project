@@ -27,9 +27,16 @@
 
     <string name="name_plant">Name of the plant</string>
     <string name="hint_name_plant">Name your plant</string>
-    <string name="birthday_plant">Your plant\'s birthday</string>
+    <string name="birthday_plant">plant Birthday</string>
     <string name="minimum">Min</string>
     <string name="maximum">Max</string>
+    <string name="minimum_humidity">Min %</string>
+    <string name="maximum_humidity">Max %</string>
+    <string name="minimum_sunlight">Min lux</string>
+    <string name="maximum_sunlight">Max lux</string>
+    <string name="minimum_temperature">Min °C</string>
+    <string name="maximum_temperature">Max °C</string>
+    <string name="measured">Measured</string>
     <string name="create_profile">Create Profile</string>
 
     <string name="select_date">Select Date</string>
@@ -169,7 +176,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
 
-<!--    database-->
+    <!--    database-->
     <string name="eye_plant">eye_plant</string>
     <string name="service_name">mongodb-atlas</string>
     <string name="eye_plant_plants">plants</string>
@@ -191,6 +198,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="change_username">Edit username</string>
 
     <!-- Strings for connecting the device -->
+    <string name="connect_device_title">Connect your device</string>
     <string name="turn_on_device">Turn on the device</string>
     <string name="place_device">Place the device</string>
     <string name="check_led">Check out the LED</string>
@@ -198,7 +206,8 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="step_two">2. Put the sensor with two legs in the soil and make sure that the rest of the sensors do not have any contact with water.</string>
     <string name="step_three">3. Pay attention to the LED light on the device, as each colour means something.\n\n
     WHITE - means the device in on\n
-    PURPLE - the device is connected to WiFi\n
+    PURPLE - the device is connected to WiFi\n\n\n
+        However, if there is no wifi, the device will let you know if there is a problem through the following colours.\n\n
         BLUE - there is something wrong with the humidity\n
     RED - there is something wrong with the temperature in the room\n
         YELLOW - there is something wrong with he amount of sunlight
@@ -245,6 +254,7 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <!-- Home Fragment -->
     <string name="go_create">Click here to create a profile</string>
+    <string name="choose_a_birthday_properly">Date format is not correct!</string>
 
 
 </resources>

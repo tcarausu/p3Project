@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -29,13 +30,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
+import com.mongodb.stitch.android.core.auth.StitchAuthListener;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
@@ -56,14 +56,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //database
     private MongoDbSetup mongoDbSetup;
-    private DatabaseReference user_ref;
-    private DatabaseReference myRef;
+
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager;
     private StitchAuth mStitchAuth;
     private StitchUser mStitchUser;
     private Document updateDoc, fetchedDOc;
-
 
     // widgets
     private MaterialButton loginButton;
@@ -79,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private User emailPassUser;
     private User googleUser;
     private Document googleUserUpdateDoc;
+    private StitchAuthListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,14 +146,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
-//                firebaseAuthWithGoogle(account);
+
                 handleGoogleSignInResult(task);
-//                instantUserDb(task);
+
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Google_Tag, "Google sign in failed", e.getCause());
             }
         }
+    }
+
+    private void addListener() {
+        listener = new StitchAuthListener() {
+            @Override
+            public void onUserLoggedIn(StitchAuth auth, StitchUser loggedInUser) {
+                auth.addAuthListener(listener);
+                Log.d(TAG, "onUserLoggedIn: auth.isLoggedIn: " + auth.isLoggedIn() + "user_id " + loggedInUser.getId());
+                Log.d(TAG, "onUserLoggedIn: listener: " + listener.toString());
+
+            }
+        };
     }
 
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -169,66 +181,54 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         GoogleCredential googleCredential = new GoogleCredential(account.getServerAuthCode());
         final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
 
-        mStitchAuth.loginWithCredential(googleCredential).continueWithTask(
-                task -> {
-                    if (!task.isSuccessful()) {
-                        Log.e("STITCH", "Login failed!");
-                        Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                        mStitchAuth.logout();
-                        throw task.getException();
-
-                    } else {
-                        mStitchUser = task.getResult();
-                        String id = mStitchUser.getId();
-                        String displayName = task.getResult().getProfile().getFirstName()
-                                + " " + task.getResult().getProfile().getLastName();
-                        String email = task.getResult().getProfile().getEmail();
-                        String photoURL = task.getResult().getProfile().getPictureUrl();
-                        String birthday = task.getResult().getProfile().getBirthday();
-                        byte[] data = new byte[]{};
-                        BsonBinary edited_pic = new BsonBinary(data);
-
-                        if (birthday == null) {
-                            birthday = "01/01/1919";
-                        }
-                        if (photoURL == null) {
-                            photoURL = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
-                        }
-                        Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
-                                + "\n" + "PictureURL: " + photoURL);
-
-                        googleUserUpdateDoc = new Document("logged_user_id", mStitchUser.getId()).append(getResources().getString(R.string.name_for_db), displayName)
-                                .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
-                                .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
-
-                        googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
-                                googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
-                                googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
-                                googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
-
-                        mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
-
-                        return null;
-
-                    }
-                }
-
-        ).addOnCompleteListener(task -> {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Signing in");
+        progressDialog.setMessage("Signing in, please wait...");
+        mStitchAuth.loginWithCredential(googleCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("STITCH", "Found docs: " + task.getResult().toString());
 
-                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(),
-                        getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
-                return;
+                Log.e("STITCH", "Login failed!");
+
+                mStitchUser = task.getResult();
+                String id = mStitchUser.getId();
+                String displayName = task.getResult().getProfile().getFirstName()
+                        + " " + task.getResult().getProfile().getLastName();
+                String email = task.getResult().getProfile().getEmail();
+                String photoURL = task.getResult().getProfile().getPictureUrl();
+                String birthday = task.getResult().getProfile().getBirthday();
+                byte[] data = new byte[]{};
+                BsonBinary edited_pic = new BsonBinary(data);
+
+                if (birthday == null) {
+                    birthday = "01/01/1919";
+                }
+                if (photoURL == null) {
+                    photoURL = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+                }
+                Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
+                        + "\n" + "PictureURL: " + photoURL);
+
+                googleUserUpdateDoc = new Document("logged_user_id", mStitchUser.getId()).append(getResources().getString(R.string.name_for_db), displayName)
+                        .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
+                        .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
+                googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
+                        googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
+                        googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
+                        googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
+                addListener();
+                mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
+
+                new Handler().postDelayed(() -> {
+                    progressDialog.dismiss();
+                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                }, 0);
             }
-            Log.e("STITCH", "Error: " + task.getException().toString());
-            task.getException().printStackTrace();
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "signInResult:failed code=" + e.getCause());
-            }
+        }).addOnFailureListener(e -> {
+            Log.d(TAG, "signInWithCredential:failure" + e.getMessage());
+            progressDialog.dismiss();
+            Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+            mStitchAuth.logout();
+            Log.d(TAG, "signInResult:failed code=" + e.getCause());
         });
 
     }
@@ -237,6 +237,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String emailToUse = mEmailField.getText().toString();
         String passToUse = mPasswordField.getText().toString();
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Signing in");
+        progressDialog.setMessage("Signing in, please wait...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setIcon(R.drawable.ai_plant);
 
         // first check if our textFields aren't empty
         if (TextUtils.isEmpty(emailToUse) && TextUtils.isEmpty(passToUse)) {
@@ -253,12 +259,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mPasswordField.setError("Required.");
             Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
 
+        } else if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+
         } else {
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Signing in");
-            progressDialog.setMessage("Signing in, please wait...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setIcon(R.drawable.ai_plant);
             progressDialog.show();
 
             SecureRandom random = new SecureRandom();
@@ -269,7 +273,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             mStitchAuth.loginWithCredential(credential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-
                     mStitchUser = task.getResult();
                     client_id = mStitchUser.getId();
                     firstName = mStitchUser.getProfile().getFirstName();
@@ -293,20 +296,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         photo = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
                     }
 
-
                     updateDoc = new Document("logged_user_id", client_id).append("name", firstName + lastName).append("email", mail)
                             .append("picture", photo).append("number_of_plants", 0).append("birthday", birthday)
                             .append("edited_pic", edited_pic);
 
-                    Toast.makeText(mContext, "Logged in succesfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Logged in successfully", Toast.LENGTH_SHORT).show();
 
-                    mongoDbSetup.checkIfExists(user_coll, updateDoc);
                     emailPassUser = new User(updateDoc.getString("logged_user_id"), updateDoc.getString("name"),
                             updateDoc.getString("email"), updateDoc.getString("picture"),
                             updateDoc.getInteger("number_of_plants"), updateDoc.getString("birthday"),
                             updateDoc.get("edited_pic", BsonBinary.class));
 
-                    mongoDbSetup.createUserDocument(client_id, firstName + lastName, mail, photo, 0, birthday, edited_pic);
+                    addListener();
+                    mongoDbSetup.checkIfExists(user_coll, updateDoc);
+
+                    new Handler().postDelayed(() -> {
+                        progressDialog.dismiss();
+                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                    }, 0);
 
                     progressDialog.dismiss();
 
@@ -321,7 +328,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-
     private boolean fieldChecker(String email, String pass) {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
@@ -332,8 +338,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        if (mongoDbSetup.checkInternetConnection(mContext)) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        } else
+            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+
+
     }
 
     @Override
@@ -343,6 +354,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.button_id_log_in:
                 loginEmailMongoDb();
+//                new LoginWithCredentials().execute((Void[]) null);
+
                 break;
 
             case R.id.googleSignInButton:
@@ -403,4 +416,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStop();
 
     }
+
+    private class LoginWithCredentials extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... param) {
+            Looper.prepare();
+            loginEmailMongoDb();
+            return null;
+        }
+
+        protected void onPostExecute(Void param) {
+
+            Toast.makeText(mContext, "Jobs Done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

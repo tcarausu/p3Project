@@ -30,11 +30,15 @@ import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
+import com.example.aiplant.utility_classes.DateValidator;
+import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.BsonBinary;
 import org.bson.Document;
@@ -42,6 +46,8 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -54,7 +60,6 @@ import static com.example.aiplant.R.drawable.mood_medium;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-
 public class HomeFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeFragment";
@@ -63,17 +68,20 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private static final int REQUEST_GALLERY = 33;
     private static final int REQUEST_CODE = 11;
 
+    //ValuesToUse
+    private AtomicInteger requestCode = new AtomicInteger();
+    private String currentDay = "Day_Of_The_week";
     private static final String LAST_TEXT_NAME = "", LAST_TEXT_DATE = "";
 
     private Bundle savedInstanceState;
-    private AtomicInteger requestCode = new AtomicInteger();
+
     //data
     private MongoDbSetup mongoDbSetup;
     private static StitchUser mStitchUser;
     private PlantProfile profileForUser;
 
     // widgets
-    private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton;
+    private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton, showWeeklyFeed;
     private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current,
             humidity_min_value_text, humidity_current_value_text, humidity_max_value_text,
             temperature_min_value_text, temperature_current_value_text, temperature_max_value_text,
@@ -98,6 +106,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private RelativeLayout topLayout, bottomLayout, textLayout;
     private TextView textBtn;
+
+    //validators
+    private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
+    private boolean moodH, moodS, moodT;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,7 +161,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     bottomLayout.setVisibility(View.GONE);
                     textLayout.setVisibility(View.VISIBLE);
                 }
-
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
 
         } catch (Exception e) {
@@ -176,6 +187,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         ArrayList temperatureArray = profile.get("temperature", ArrayList.class);
         ArrayList sunlightArray = profile.get("sunlight", ArrayList.class);
 
+        //Min ; max ( measured)
+
+        //water and light smaller  (we dont know)
+
         int min_hum = (int) humidityArray.get(0);
         int max_hum = (int) humidityArray.get(1);
         int min_temp = (int) temperatureArray.get(0);
@@ -184,7 +199,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         int max_sun = (int) sunlightArray.get(1);
 
         profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
-                pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature, measured_sunlight);
+                pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature,
+                measured_sunlight);
 
         flowerNameEditText.setText(profileForUser.getName());
         flowerTimeEditText.setText(profileForUser.getBirthday());
@@ -219,6 +235,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             }
         }
 
+        if(isMoodT()&&isMoodS()&&isMoodH()){
+            mood_pic.setImageResource(R.drawable.mood_happy);
+        }else mood_pic.setImageResource(mood_medium);
+
     }
 
     private void initLayout(View v) {
@@ -243,13 +263,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         humidity_text = v.findViewById(R.id.humidity_text);
         sunlight_text = v.findViewById(R.id.sunlight_text);
 
-        mood_pic = v.findViewById(R.id.mood_pic);
-
         //Buttons
         adjustNameAndDateButton = v.findViewById(R.id.adjust_name_and_date);
         saveNameAndDateButton = v.findViewById(R.id.save_name_and_date);
         adjustConditionsButton = v.findViewById(R.id.adjust_conditions);
         saveChangesButton = v.findViewById(R.id.save_changes);
+//        showWeeklyFeed = v.findViewById(R.id.show_weekly_feed);
 
         //Sliders
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
@@ -267,22 +286,23 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light_current = v.findViewById(R.id.light_current_value);
         light_max = v.findViewById(R.id.light_max_value);
 
-        humidity_min_value_text = v.findViewById(R.id.humidity_min_value_text);
-        humidity_current_value_text = v.findViewById(R.id.humidity_current_value_text);
-        humidity_max_value_text = v.findViewById(R.id.humidity_max_value_text);
+        humidity_min_value_text = v.findViewById(R.id.hum_min_text);
+        humidity_current_value_text = v.findViewById(R.id.hum_current_text);
+        humidity_max_value_text = v.findViewById(R.id.hum_max_text);
 
-        temperature_min_value_text = v.findViewById(R.id.temperature_min_value_text);
-        temperature_current_value_text = v.findViewById(R.id.temperature_current_value_text);
-        temperature_max_value_text = v.findViewById(R.id.temperature_max_value_text);
+        temperature_min_value_text = v.findViewById(R.id.temp_min_text);
+        temperature_current_value_text = v.findViewById(R.id.temp_current_text);
+        temperature_max_value_text = v.findViewById(R.id.temp_max_text);
 
-        light_min_value_text = v.findViewById(R.id.light_min_value_text);
-        light_current_value_text = v.findViewById(R.id.light_current_value_text);
-        light_max_value_text = v.findViewById(R.id.light_max_value_text);
+        light_min_value_text = v.findViewById(R.id.light_min_text);
+        light_current_value_text = v.findViewById(R.id.light_current_text);
+        light_max_value_text = v.findViewById(R.id.light_max_text);
 
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
         temperatureSeekBar = v.findViewById(R.id.temperature_slider);
         lightSeekBar = v.findViewById(R.id.sunlight_slider);
 
+        mood_pic = v.findViewById(R.id.mood_pic);
         mood_pic.setImageResource(R.drawable.mood_happy);
     }
 
@@ -296,15 +316,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
-                if (progress <= profileForUser.getMinHumid()) {
+                if (progress < profileForUser.getMinHumid()) {
                     NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxHumid()) {
+                    //  mood_pic.setImageResource(mood_medium);
+                    setMoodH(false);
+                } else if (progress > profileForUser.getMaxHumid()) {
                     NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
+                    // mood_pic.setImageResource(mood_medium);
+                    setMoodH(false);
                 }
+                else setMoodH(true);
             }
 
             @Override
@@ -323,15 +346,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
 
-                if (progress <= profileForUser.getMinTemp()) {
+                if (progress < profileForUser.getMinTemp()) {
                     NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_cold);
-                } else if (progress >= profileForUser.getMaxTemp()) {
+                    //  mood_pic.setImageResource(mood_cold);
+                    setMoodT(false);
+                } else if (progress > profileForUser.getMaxTemp()) {
                     NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_hot);
+                    //    mood_pic.setImageResource(mood_hot);
+                    setMoodT(false);
                 }
+                else setMoodT(true);
             }
 
             @Override
@@ -350,15 +376,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
-                if (progress <= profileForUser.getMinSun()) {
+                if (progress < profileForUser.getMinSun()) {
                     NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxSun()) {
+                    //mood_pic.setImageResource(mood_medium);
+                    setMoodS(false);
+                } else if (progress > profileForUser.getMaxSun()) {
                     NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
+                    //mood_pic.setImageResource(mood_medium);
+                    setMoodS(false);
                 }
+                else setMoodS(true);
             }
 
             @Override
@@ -373,6 +402,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         });
 
         adjustConditionsButton.setOnClickListener(this);
+
+//        showWeeklyFeed.setOnClickListener(this);
 
         saveChangesButton.setOnClickListener(this);
 
@@ -484,12 +515,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                     reloadHome();
                 }
-                if (!TextUtils.isEmpty(flowerNameEditText.getText().toString()) && !TextUtils.isEmpty(flowerTimeEditText.getText().toString())) {
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
-
-                    reloadHome();
-                }
                 if (TextUtils.isEmpty(flowerNameEditText.getText())) {
                     flowerNameEditText.setError(getString(R.string.choose_a_user_name));
 
@@ -498,8 +523,19 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 if (TextUtils.isEmpty(flowerTimeEditText.getText())) {
                     flowerTimeEditText.setError(getString(R.string.choose_a_birthday));
                     adjustNameAndDate();
+                    flowerTimeEditText.requestFocus();
                 }
+                if (!validator.isValid(flowerTimeEditText.getText().toString())) {
+                    flowerTimeEditText.setError(getString(R.string.choose_a_birthday_properly));
+                    adjustNameAndDate();
+                    flowerTimeEditText.requestFocus();
+                } else if (!TextUtils.isEmpty(flowerNameEditText.getText().toString())
+                        && !TextUtils.isEmpty(flowerTimeEditText.getText().toString()) && validator.isValid(flowerTimeEditText.getText().toString())) {
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
 
+                    reloadHome();
+                }
             }
 
             return null;
@@ -639,12 +675,14 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void adjustNameAndDate() {
         flowerNameEditText.setEnabled(true);
+        flowerNameEditText.requestFocus();
         flowerTimeEditText.setEnabled(true);
         saveNameAndDateButton.setVisibility(View.VISIBLE);
     }
 
     private void adjustConditions() {
         hum_min.setEnabled(true);
+        hum_min.requestFocus();
         hum_max.setEnabled(true);
         temp_min.setEnabled(true);
         temp_max.setEnabled(true);
@@ -659,6 +697,30 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void setPlantProfileDoc(Document plantProfileDoc) {
         this.plantProfileDoc = plantProfileDoc;
+    }
+
+    private boolean isMoodH() {
+        return moodH;
+    }
+
+    private void setMoodH(boolean moodH) {
+        this.moodH = moodH;
+    }
+
+    private boolean isMoodS() {
+        return moodS;
+    }
+
+    private void setMoodS(boolean moodS) {
+        this.moodS = moodS;
+    }
+
+    private boolean isMoodT() {
+        return moodT;
+    }
+
+    private void setMoodT(boolean moodT) {
+        this.moodT = moodT;
     }
 
     @Override
@@ -686,7 +748,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 alertDialog();
                 break;
             case R.id.create_textbtn:
-                startActivity(new Intent(getContext(),SearchActivity.class));
+                startActivity(new Intent(getContext(), SearchActivity.class));
         }
     }
 

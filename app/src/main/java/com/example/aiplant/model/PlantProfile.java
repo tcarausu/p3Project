@@ -38,7 +38,6 @@ public class PlantProfile implements Serializable, Parcelable {
     private int measured_temperature;
     private int measured_sunlight;
 
-
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -105,6 +104,7 @@ public class PlantProfile implements Serializable, Parcelable {
         this.measured_temperature = measured_temperature;
         this.measured_sunlight = measured_sunlight;
     }
+
     public PlantProfile(String name, String user_id, String profile_id, String birthday,
                         String picture, byte[] pic_bytes, int min_hum, int max_hum, int min_temp,
                         int max_temp, int min_sun, int max_sun, int measured_humidity, int measured_temperature, int measured_sunlight) {
@@ -320,7 +320,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withSun(int minSun, int maxSun) {
-            if (minSun <= 0 || minSun > maxSun || maxSun >=100)
+            if (minSun <= 0 || minSun > maxSun || maxSun >= 100)
                 throw new InputMismatchException("Wrong sunlight parameters");
             sMinSun = minSun;
             sMaxSun = maxSun;
