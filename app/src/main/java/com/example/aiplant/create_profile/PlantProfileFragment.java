@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.device_connection.DeviceConnectionActivity;
-import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.utility_classes.DateValidator;
@@ -83,22 +81,22 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         Button mCloseButton = view.findViewById(R.id.close_button_2);
 
 
-        if (bundle != null){
+        if (bundle != null) {
 
             StringBuilder stringBuilder = new StringBuilder();
 
             minHumidity.setText(stringBuilder.append(bundle.getString("minHumidity")).toString());
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
             maxHumidity.setText(stringBuilder.append(bundle.getString("maxHumidity")).toString());
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
             minSunlight.setText(stringBuilder.append(bundle.getString("minSun")));
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
             maxSunlight.setText(stringBuilder.append(bundle.getString("maxSun")));
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
             minTemperature.setText(stringBuilder.append(bundle.getString("minTemp")));
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
             maxTemperature.setText(stringBuilder.append(bundle.getString("maxTemp")));
-            stringBuilder.delete(0,stringBuilder.capacity());
+            stringBuilder.delete(0, stringBuilder.capacity());
 
         }
 
@@ -226,8 +224,12 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                     maxSunlight.setError(getString(R.string.sunlight_min_max_error));
 
                 } else {
-                    createProfile();
-                    mongoDbSetup.goToWhereverWithFlags(Objects.requireNonNull(getActivity()), getActivity(), DeviceConnectionActivity.class);
+                    if (!mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
+                        Toast.makeText(getActivity(), getString(R.string.check_internet_connection_create_profile), Toast.LENGTH_LONG).show();
+                    } else {
+                        createProfile();
+                        mongoDbSetup.goToWhereverWithFlags(Objects.requireNonNull(getActivity()), getActivity(), DeviceConnectionActivity.class);
+                    }
                 }
                 break;
 

@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -113,7 +113,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         }
     }

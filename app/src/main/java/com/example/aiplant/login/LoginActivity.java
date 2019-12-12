@@ -184,6 +184,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Signing in");
         progressDialog.setMessage("Signing in, please wait...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setIcon(R.drawable.ai_plant);
+        progressDialog.show();
+
         mStitchAuth.loginWithCredential(googleCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
@@ -260,7 +264,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
 
         } else if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         } else {
             progressDialog.show();
@@ -342,8 +346,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         } else
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -354,7 +357,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.button_id_log_in:
                 loginEmailMongoDb();
-//                new LoginWithCredentials().execute((Void[]) null);
 
                 break;
 
