@@ -130,8 +130,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         fetchedDoc();
 
-//        getActivity().startService(new Intent(getActivity(), TimerService.class)); //start service which is MyService.java
-
         return v;
     }
 

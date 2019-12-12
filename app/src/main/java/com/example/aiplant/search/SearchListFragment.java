@@ -156,6 +156,19 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
 
     private void setUpRecyclerView() {
 
+        if (listOfPlants.size() == 0) {
+            populatePlantList();
+        }
+
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void populatePlantList() {
         for (Document doc : getPlantList()) {
             String picture = doc.getString("picture_url");
             String name = doc.getString("plant_name");
@@ -173,15 +186,7 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
             listOfPlants.add(new RecyclerViewPlantItem(picture, name, description, min_sun, max_sun, min_temp, max_temp, min_humidity, max_humidity));
 
         }
-
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
     }
-
 
     @Override
     public void onClick(View view) {
