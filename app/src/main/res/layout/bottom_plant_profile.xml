@@ -94,22 +94,13 @@
                             android:id="@+id/humidity_min_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:layout_weight="1.5"
+                            android:layout_weight="2"
                             android:background="@null"
                             android:inputType="number"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/humidity_min_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/percent"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
+
 
                         <!--Current Humidity-->
                         <TextView
@@ -117,44 +108,65 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:inputType="number"
-                            android:layout_weight="1.5"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/humidity_current_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/percent"
+                            android:layout_weight="2"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
+
 
                         <!--Max Humidity-->
                         <EditText
                             android:id="@+id/humidity_max_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:layout_weight="1.5"
+                            android:layout_weight="2"
                             android:background="@null"
-                            android:textAlignment="textEnd"
+                            android:textAlignment="center"
                             android:inputType="number"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
-                        <TextView
-                            android:id="@+id/humidity_max_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/percent"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6"
+                    android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/hum_min_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"
+                    android:layout_weight="2"
+                    android:text="@string/minimum_humidity" />
+
+                    <TextView
+                        android:id="@+id/hum_current_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/measured" />
+
+                    <TextView
+                        android:id="@+id/hum_max_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/maximum_humidity" />
 
                 </LinearLayout>
 
@@ -223,19 +235,9 @@
                             android:id="@+id/temperature_min_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:layout_weight="1.5"
+                            android:layout_weight="2"
                             android:inputType="number"
                             android:background="@null"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/temperature_min_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/celsius"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -245,45 +247,64 @@
                             android:id="@+id/temperature_current_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:layout_weight="1.5"
-                            android:inputType="number"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/temperature_current_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/celsius"
+                            android:layout_weight="2"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
+
 
                         <!--Max Temperature-->
                         <EditText
                             android:id="@+id/temperature_max_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:layout_weight="1.5"
+                            android:layout_weight="2"
                             android:inputType="number"
                             android:background="@null"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/temperature_max_value_text"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_weight=".5"
-                            android:text="@string/celsius"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/temp_min_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/minimum_temperature" />
+
+                    <TextView
+                        android:id="@+id/temp_current_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/measured" />
+
+                    <TextView
+                        android:id="@+id/temp_max_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/maximum_temperature" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -344,42 +365,20 @@
                         android:id="@+id/light_min_value"
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_weight="1.5"
+                        android:layout_weight="2"
                         android:inputType="number"
                         android:background="@null"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/light_min_value_text"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
-                        android:text="@string/percent"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
+
 
                     <!--Current Light-->
                     <TextView
                         android:id="@+id/light_current_value"
                         android:layout_width="0dp"
-                        android:inputType="number"
                         android:layout_height="20dp"
-                        android:layout_weight="1.5"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/light_current_value_text"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
-                        android:text="@string/percent"
+                        android:layout_weight="2"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
@@ -390,23 +389,52 @@
                         android:layout_width="0dp"
                         android:layout_height="20dp"
                         android:layout_gravity="end"
-                        android:layout_weight="1.5"
+                        android:layout_weight="2"
                         android:inputType="number"
                         android:background="@null"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/light_max_value_text"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
-                        android:text="@string/percent"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/light_min_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/minimum_humidity" />
+
+                    <TextView
+                        android:id="@+id/light_current_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/measured" />
+
+                    <TextView
+                        android:id="@+id/light_max_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:textAlignment="center"
+                        android:layout_weight="2"
+                        android:text="@string/maximum_humidity" />
 
                 </LinearLayout>
 

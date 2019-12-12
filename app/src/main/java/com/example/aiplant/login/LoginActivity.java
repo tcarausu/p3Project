@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -29,11 +30,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -56,8 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //database
     private MongoDbSetup mongoDbSetup;
-    private DatabaseReference user_ref;
-    private DatabaseReference myRef;
+
     private GoogleSignInClient mGoogleSignInClient;
     private CallbackManager mCallbackManager;
     private StitchAuth mStitchAuth;
@@ -147,9 +145,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
-//                firebaseAuthWithGoogle(account);
                 handleGoogleSignInResult(task);
-//                instantUserDb(task);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(Google_Tag, "Google sign in failed", e.getCause());
@@ -224,12 +220,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             Log.e("STITCH", "Error: " + task.getException().toString());
             task.getException().printStackTrace();
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "signInResult:failed code=" + e.getCause());
-            }
-        });
+        }).addOnFailureListener(e -> Log.d(TAG, "signInResult:failed code=" + e.getCause()));
 
     }
 
@@ -342,7 +333,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
 
             case R.id.button_id_log_in:
-                loginEmailMongoDb();
+                new LoginWithCredentials().execute((Void[]) null);
+
                 break;
 
             case R.id.googleSignInButton:
@@ -403,4 +395,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStop();
 
     }
+
+    private class LoginWithCredentials extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... param) {
+            Looper.prepare();
+            loginEmailMongoDb();
+            return null;
+        }
+
+        protected void onPostExecute(Void param) {
+
+            Toast.makeText(mContext, "Jobs Done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

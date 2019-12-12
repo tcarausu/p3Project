@@ -32,9 +32,11 @@ import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.BsonBinary;
 import org.bson.Document;
@@ -42,6 +44,8 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -54,7 +58,6 @@ import static com.example.aiplant.R.drawable.mood_medium;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-
 public class HomeFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "HomeFragment";
@@ -63,17 +66,20 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private static final int REQUEST_GALLERY = 33;
     private static final int REQUEST_CODE = 11;
 
+    //ValuesToUse
+    private AtomicInteger requestCode = new AtomicInteger();
+    private String currentDay = "Day_Of_The_week";
     private static final String LAST_TEXT_NAME = "", LAST_TEXT_DATE = "";
 
     private Bundle savedInstanceState;
-    private AtomicInteger requestCode = new AtomicInteger();
+
     //data
     private MongoDbSetup mongoDbSetup;
     private static StitchUser mStitchUser;
     private PlantProfile profileForUser;
 
     // widgets
-    private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton;
+    private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton, showWeeklyFeed;
     private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current,
             humidity_min_value_text, humidity_current_value_text, humidity_max_value_text,
             temperature_min_value_text, temperature_current_value_text, temperature_max_value_text,
@@ -118,6 +124,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         fetchedDoc();
 
+//        getActivity().startService(new Intent(getActivity(), TimerService.class)); //start service which is MyService.java
+
         return v;
     }
 
@@ -149,7 +157,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     bottomLayout.setVisibility(View.GONE);
                     textLayout.setVisibility(View.VISIBLE);
                 }
-
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
 
         } catch (Exception e) {
@@ -176,6 +183,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         ArrayList temperatureArray = profile.get("temperature", ArrayList.class);
         ArrayList sunlightArray = profile.get("sunlight", ArrayList.class);
 
+        //Min ; max ( measured)
+
+        //water and light smaller  (we dont know)
+
         int min_hum = (int) humidityArray.get(0);
         int max_hum = (int) humidityArray.get(1);
         int min_temp = (int) temperatureArray.get(0);
@@ -183,8 +194,66 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         int min_sun = (int) sunlightArray.get(0);
         int max_sun = (int) sunlightArray.get(1);
 
+        ArrayList currentTimeArray = profile.get("currentTime", ArrayList.class);
+        ArrayList<Date> dateValues = new ArrayList<>();
+
+        ArrayList averageHumidityArray = profile.get("averageHumidity", ArrayList.class);
+        ArrayList<Integer> averageHumidity = new ArrayList<>();
+        ArrayList averageTemperatureArray = profile.get("averageTemperature", ArrayList.class);
+        ArrayList<Integer> averageTemperature = new ArrayList<>();
+        ArrayList averageSunlightArray = profile.get("averageSunlight", ArrayList.class);
+        ArrayList<Integer> averageSunlight = new ArrayList<>();
+
+
+        if (currentTimeArray != null) {
+            int index = 0;
+
+            while (index < currentTimeArray.size()) {
+                Date valueOfDate = (Date) currentTimeArray.get(index);
+                dateValues.add(valueOfDate);
+                index++;
+            }
+        }
+        if (averageHumidityArray != null) {
+            int index = 0;
+
+            while (index < averageHumidityArray.size()) {
+                int averageHumidityValue = (int) averageHumidityArray.get(index);
+//                averageHumidity.add(measured_humidity);
+                averageHumidity.add(averageHumidityValue);
+                index++;
+            }
+        }
+//        if (currentTimeArray != null) {
+//            int index = 0;
+//
+//            while (index < currentTimeArray.size()) {
+//                Date valueOfDate = (Date) currentTimeArray.get(index);
+//                dateValues.add(valueOfDate);
+//                index++;
+//            }
+//        }
+//        if (currentTimeArray != null) {
+//            int index = 0;
+//
+//            while (index < currentTimeArray.size()) {
+//                Date valueOfDate = (Date) currentTimeArray.get(index);
+//                dateValues.add(valueOfDate);
+//                index++;
+//            }
+//        }
+//        if (currentTimeArray != null) {
+//            int index = 0;
+//
+//            while (index < currentTimeArray.size()) {
+//                Date valueOfDate = (Date) currentTimeArray.get(index);
+//                dateValues.add(valueOfDate);
+//                index++;
+//            }
+//        }
         profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
-                pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature, measured_sunlight);
+                pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature,
+                measured_sunlight, dateValues, averageHumidity);
 
         flowerNameEditText.setText(profileForUser.getName());
         flowerTimeEditText.setText(profileForUser.getBirthday());
@@ -250,6 +319,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         saveNameAndDateButton = v.findViewById(R.id.save_name_and_date);
         adjustConditionsButton = v.findViewById(R.id.adjust_conditions);
         saveChangesButton = v.findViewById(R.id.save_changes);
+//        showWeeklyFeed = v.findViewById(R.id.show_weekly_feed);
 
         //Sliders
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
@@ -267,17 +337,17 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light_current = v.findViewById(R.id.light_current_value);
         light_max = v.findViewById(R.id.light_max_value);
 
-        humidity_min_value_text = v.findViewById(R.id.humidity_min_value_text);
-        humidity_current_value_text = v.findViewById(R.id.humidity_current_value_text);
-        humidity_max_value_text = v.findViewById(R.id.humidity_max_value_text);
+        humidity_min_value_text = v.findViewById(R.id.hum_min_text);
+        humidity_current_value_text = v.findViewById(R.id.hum_current_text);
+        humidity_max_value_text = v.findViewById(R.id.hum_max_text);
 
-        temperature_min_value_text = v.findViewById(R.id.temperature_min_value_text);
-        temperature_current_value_text = v.findViewById(R.id.temperature_current_value_text);
-        temperature_max_value_text = v.findViewById(R.id.temperature_max_value_text);
+        temperature_min_value_text = v.findViewById(R.id.temp_min_text);
+        temperature_current_value_text = v.findViewById(R.id.temp_current_text);
+        temperature_max_value_text = v.findViewById(R.id.temp_max_text);
 
-        light_min_value_text = v.findViewById(R.id.light_min_value_text);
-        light_current_value_text = v.findViewById(R.id.light_current_value_text);
-        light_max_value_text = v.findViewById(R.id.light_max_value_text);
+        light_min_value_text = v.findViewById(R.id.light_min_text);
+        light_current_value_text = v.findViewById(R.id.light_current_text);
+        light_max_value_text = v.findViewById(R.id.light_max_text);
 
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
         temperatureSeekBar = v.findViewById(R.id.temperature_slider);
@@ -297,11 +367,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
                 if (progress <= profileForUser.getMinHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+                    NotificationService.createNotification(mContext, getString(R.string.plant_has_little_water), getString(R.string.plant_has_little_water), requestCode);
 
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+                    NotificationService.createNotification(mContext, getString(R.string.plant_has_too_much_water), getString(R.string.plant_has_too_much_water), requestCode);
 
                     mood_pic.setImageResource(mood_medium);
                 }
@@ -324,11 +394,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
 
                 if (progress <= profileForUser.getMinTemp()) {
-                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+
+                    NotificationService.createNotification(mContext, getString(R.string.plant_is_cold), getString(R.string.plant_is_cold), requestCode);
 
                     mood_pic.setImageResource(mood_cold);
                 } else if (progress >= profileForUser.getMaxTemp()) {
-                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+                    NotificationService.createNotification(mContext, getString(R.string.plant_is_too_hot), getString(R.string.plant_is_too_hot), requestCode);
 
                     mood_pic.setImageResource(mood_hot);
                 }
@@ -351,11 +422,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
                 if (progress <= profileForUser.getMinSun()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
+                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
 
                     mood_pic.setImageResource(mood_medium);
                 } else if (progress >= profileForUser.getMaxSun()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
+                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
 
                     mood_pic.setImageResource(mood_medium);
                 }
@@ -373,6 +444,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         });
 
         adjustConditionsButton.setOnClickListener(this);
+
+//        showWeeklyFeed.setOnClickListener(this);
 
         saveChangesButton.setOnClickListener(this);
 
@@ -669,6 +742,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 adjustNameAndDate();
                 break;
 
+//            case R.id.show_weekly_feed:
+//                weeklyTime();
+//
+//                break;
+
             case R.id.adjust_conditions:
                 adjustConditions();
                 break;
@@ -686,7 +764,99 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 alertDialog();
                 break;
             case R.id.create_textbtn:
-                startActivity(new Intent(getContext(),SearchActivity.class));
+                startActivity(new Intent(getContext(), SearchActivity.class));
+        }
+    }
+
+    private void weeklyTime() {
+        Calendar calendar = Calendar.getInstance();
+        Date currentTime = calendar.getTime();
+
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int firstDayOfWeek = calendar.getFirstDayOfWeek();
+        weekSwitch(dayOfWeek);
+
+        //after 7 days calculate an average and ad as value; after 30 do another average (reset)
+
+        RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plant_profiles));
+
+        plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation<RemoteUpdateResult, Task<Document>>) task -> {
+                    if (task.isSuccessful()) {
+
+                        ArrayList<Date> plantPDate = profileForUser.getCurrentTime();
+                        ArrayList<Integer> averageHumidity = profileForUser.getAverageHumidity();
+
+
+                        // daily 3 ->  next day and clear  starts
+                        // if one day its at 10 and resets it then
+
+                        // no measurements between 5 pm and 7 am
+                        if (plantPDate.size() == 0) {
+                            plantPDate.add(currentTime);
+                            averageHumidity.add(profileForUser.getMeasured_humidity());
+
+                            plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
+                            plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
+                            plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
+                        } else if (plantPDate.size() < 3) {
+                            plantPDate.add(currentTime);
+                            averageHumidity.add(profileForUser.getMeasured_humidity());
+
+                            plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
+                            plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
+                            plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
+                        } else if ((plantPDate.size() % 3 == 0) && averageHumidity.size() % 3 == 0) {
+                            if (currentDay.equals("WEDNESDAY") || currentDay.equals("THURSDAY")) {
+//                            if (dayOfWeek == firstDayOfWeek) {
+                                plantPDate.clear();
+                                int avg = getAvgForTheDay(averageHumidity);
+                                averageHumidity.clear();
+                                plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
+                                plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
+                                plantProfileColl.updateOne(null, set("averageHumidityForToday", avg), new RemoteUpdateOptions());
+                                plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
+//                                plantProfileColl.updateOne(null, set("averageTemperature", currentDay), new RemoteUpdateOptions());
+//                                plantProfileColl.updateOne(null, set("averageSunlight", currentDay), new RemoteUpdateOptions());
+                            }
+
+                            Toast.makeText(mContext, "Can't record more Measurements", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return null;
+                }
+        ).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
+    }
+
+    private int getAvgForTheDay(ArrayList<Integer> averageHumidity) {
+        int firstMeasurement = averageHumidity.get(0);
+        int secondMeasurement = averageHumidity.get(1);
+        int thirdMeasurement = averageHumidity.get(2);
+        return (firstMeasurement + secondMeasurement + thirdMeasurement) / 3;
+    }
+
+    private void weekSwitch(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case Calendar.SUNDAY:
+                currentDay = currentDay.replace(currentDay, "SUNDAY");
+                break;
+            case Calendar.MONDAY:
+                currentDay = currentDay.replace(currentDay, "MONDAY");
+                break;
+            case Calendar.TUESDAY:
+                currentDay = currentDay.replace(currentDay, "TUESDAY");
+                break;
+            case Calendar.WEDNESDAY:
+                currentDay = currentDay.replace(currentDay, "WEDNESDAY");
+                break;
+            case Calendar.THURSDAY:
+                currentDay = currentDay.replace(currentDay, "THURSDAY");
+                break;
+            case Calendar.FRIDAY:
+                currentDay = currentDay.replace(currentDay, "FRIDAY");
+                break;
+            case Calendar.SATURDAY:
+                currentDay = currentDay.replace(currentDay, "SATURDAY");
+                break;
         }
     }
 
