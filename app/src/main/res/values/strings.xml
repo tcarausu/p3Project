@@ -198,8 +198,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="step_two">2. Put the sensor with two legs in the soil and make sure that the rest of the sensors do not have any contact with water.</string>
     <string name="step_three">3. Pay attention to the LED light on the device, as each colour means something.\n\n
     WHITE - means the device in on\n
-    PURPLE - the device is connected to WiFi\n\n\n
-        However, if there is no wifi, the device will let you know if there is a problem through the following colours.\n\n
+    PURPLE - the device is connected to WiFi\n
         BLUE - there is something wrong with the humidity\n
     RED - there is something wrong with the temperature in the room\n
         YELLOW - there is something wrong with he amount of sunlight
@@ -243,6 +242,9 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <string name="plant_needs_more_light">Your plant needs more light!</string>
     <string name="plant_needs_less_light">Your plant needs less light!</string>
+
+    <!-- Home Fragment -->
+    <string name="go_create">Click here to create a profile</string>
 
 
 </resources>

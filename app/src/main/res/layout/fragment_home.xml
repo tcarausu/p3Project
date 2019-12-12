@@ -12,7 +12,7 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/top"
+                android:id="@+id/top_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
@@ -22,9 +22,25 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/text_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/create_textbtn"
+                android:layout_height="wrap_content"
+                android:text="@string/go_create"
+                android:clickable="true"
+                android:textColor="@color/black"
+                />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/bottom_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/top"
+                android:layout_below="@+id/top_layout"
                 android:gravity="center">
 
                 <include layout="@layout/bottom_plant_profile" />

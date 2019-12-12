@@ -248,9 +248,12 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
         PlantProfile profile = new PlantProfile.Builder()
                 .withName(namePlant.getText().toString())
                 .withAge(getBirthday())
-                .withHumid(Integer.parseInt(minHumidity.getText().toString()), Integer.parseInt(maxHumidity.getText().toString()))
-                .withTemp(Integer.parseInt(minTemperature.getText().toString()), Integer.parseInt(maxTemperature.getText().toString()))
-                .withSun(Integer.parseInt(minSunlight.getText().toString()), Integer.parseInt(maxSunlight.getText().toString()))
+                .withHumid(Integer.parseInt(minHumidity.getText().toString()),
+                        Integer.parseInt(maxHumidity.getText().toString()))
+                .withTemp(Integer.parseInt(minTemperature.getText().toString()),
+                        Integer.parseInt(maxTemperature.getText().toString()))
+                .withSun(Integer.parseInt(minSunlight.getText().toString()),
+                        Integer.parseInt(maxSunlight.getText().toString()))
                 .withUrl(null)
                 .build();
 
@@ -258,6 +261,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 getResources().getString(R.string.eye_plant_plant_profiles),
                 profile.getProfileId(), profile.getName(),
                 profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
-                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(), profile.getMaxSun(), profile.getUrl(), MongoDbSetup.mBitmapToArray(getPicture()));
+                profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(),
+                profile.getMaxSun(), profile.getUrl(), MongoDbSetup.mBitmapToArray(getPicture()));
     }
 }

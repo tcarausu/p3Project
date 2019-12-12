@@ -96,6 +96,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private Document plantProfileDoc;
 
+    private RelativeLayout topLayout, bottomLayout, textLayout;
+    private TextView textBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
@@ -128,13 +131,23 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 if (task.isSuccessful()) {
                     Document doc1 = task.getResult();
                     setPlantProfileDoc(doc1);
+                    topLayout.setVisibility(View.VISIBLE);
+                    bottomLayout.setVisibility(View.VISIBLE);
+                    textLayout.setVisibility(View.GONE);
                     if (doc1 != null) {
                         setupPlantProfile(getPlantProfileDoc());
+                        topLayout.setVisibility(View.VISIBLE);
+                        bottomLayout.setVisibility(View.VISIBLE);
+                        textLayout.setVisibility(View.GONE);
                     } else {
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
+                        topLayout.setVisibility(View.GONE);
+                        bottomLayout.setVisibility(View.GONE);
+                        textLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, SearchActivity.class);
+                    topLayout.setVisibility(View.GONE);
+                    bottomLayout.setVisibility(View.GONE);
+                    textLayout.setVisibility(View.VISIBLE);
                 }
 
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
@@ -209,6 +222,13 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void initLayout(View v) {
+        topLayout = v.findViewById(R.id.top_layout);
+        bottomLayout = v.findViewById(R.id.bottom_layout);
+        textLayout = v.findViewById(R.id.text_layout);
+        textBtn = v.findViewById(R.id.create_textbtn);
+        textLayout.setVisibility(View.GONE);
+
+
         home_Layout = v.findViewById(R.id.home_activity);
         profileImage = v.findViewById(R.id.profileImage);
 
@@ -270,6 +290,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         adjustNameAndDateButton.setOnClickListener(this);
         saveNameAndDateButton.setOnClickListener(this);
+        textBtn.setOnClickListener(this);
 
         humiditySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -664,6 +685,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             case R.id.change_picture:
                 alertDialog();
                 break;
+            case R.id.create_textbtn:
+                startActivity(new Intent(getContext(),SearchActivity.class));
         }
     }
 
