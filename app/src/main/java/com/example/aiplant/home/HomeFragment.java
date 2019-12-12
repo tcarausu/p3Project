@@ -200,66 +200,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         int min_sun = (int) sunlightArray.get(0);
         int max_sun = (int) sunlightArray.get(1);
 
-        ArrayList currentTimeArray = profile.get("currentTime", ArrayList.class);
-        ArrayList<Date> dateValues = new ArrayList<>();
-
-        ArrayList averageHumidityArray = profile.get("averageHumidity", ArrayList.class);
-        ArrayList<Integer> averageHumidity = new ArrayList<>();
-        ArrayList averageTemperatureArray = profile.get("averageTemperature", ArrayList.class);
-        ArrayList<Integer> averageTemperature = new ArrayList<>();
-        ArrayList averageSunlightArray = profile.get("averageSunlight", ArrayList.class);
-        ArrayList<Integer> averageSunlight = new ArrayList<>();
-
-
-        if (currentTimeArray != null) {
-            int index = 0;
-
-            while (index < currentTimeArray.size()) {
-                Date valueOfDate = (Date) currentTimeArray.get(index);
-                dateValues.add(valueOfDate);
-                index++;
-            }
-        }
-        if (averageHumidityArray != null) {
-            int index = 0;
-
-            while (index < averageHumidityArray.size()) {
-                int averageHumidityValue = (int) averageHumidityArray.get(index);
-//                averageHumidity.add(measured_humidity);
-                averageHumidity.add(averageHumidityValue);
-                index++;
-            }
-        }
-//        if (currentTimeArray != null) {
-//            int index = 0;
-//
-//            while (index < currentTimeArray.size()) {
-//                Date valueOfDate = (Date) currentTimeArray.get(index);
-//                dateValues.add(valueOfDate);
-//                index++;
-//            }
-//        }
-//        if (currentTimeArray != null) {
-//            int index = 0;
-//
-//            while (index < currentTimeArray.size()) {
-//                Date valueOfDate = (Date) currentTimeArray.get(index);
-//                dateValues.add(valueOfDate);
-//                index++;
-//            }
-//        }
-//        if (currentTimeArray != null) {
-//            int index = 0;
-//
-//            while (index < currentTimeArray.size()) {
-//                Date valueOfDate = (Date) currentTimeArray.get(index);
-//                dateValues.add(valueOfDate);
-//                index++;
-//            }
-//        }
         profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
                 pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature,
-                measured_sunlight, dateValues, averageHumidity);
+                measured_sunlight);
 
         flowerNameEditText.setText(profileForUser.getName());
         flowerTimeEditText.setText(profileForUser.getBirthday());
@@ -758,27 +701,27 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         this.plantProfileDoc = plantProfileDoc;
     }
 
-    public boolean isMoodH() {
+    private boolean isMoodH() {
         return moodH;
     }
 
-    public void setMoodH(boolean moodH) {
+    private void setMoodH(boolean moodH) {
         this.moodH = moodH;
     }
 
-    public boolean isMoodS() {
+    private boolean isMoodS() {
         return moodS;
     }
 
-    public void setMoodS(boolean moodS) {
+    private void setMoodS(boolean moodS) {
         this.moodS = moodS;
     }
 
-    public boolean isMoodT() {
+    private boolean isMoodT() {
         return moodT;
     }
 
-    public void setMoodT(boolean moodT) {
+    private void setMoodT(boolean moodT) {
         this.moodT = moodT;
     }
 
@@ -789,11 +732,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             case R.id.adjust_name_and_date:
                 adjustNameAndDate();
                 break;
-
-//            case R.id.show_weekly_feed:
-//                weeklyTime();
-//
-//                break;
 
             case R.id.adjust_conditions:
                 adjustConditions();
@@ -813,98 +751,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 break;
             case R.id.create_textbtn:
                 startActivity(new Intent(getContext(), SearchActivity.class));
-        }
-    }
-
-    private void weeklyTime() {
-        Calendar calendar = Calendar.getInstance();
-        Date currentTime = calendar.getTime();
-
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int firstDayOfWeek = calendar.getFirstDayOfWeek();
-        weekSwitch(dayOfWeek);
-
-        //after 7 days calculate an average and ad as value; after 30 do another average (reset)
-
-        RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plant_profiles));
-
-        plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation<RemoteUpdateResult, Task<Document>>) task -> {
-                    if (task.isSuccessful()) {
-
-                        ArrayList<Date> plantPDate = profileForUser.getCurrentTime();
-                        ArrayList<Integer> averageHumidity = profileForUser.getAverageHumidity();
-
-
-                        // daily 3 ->  next day and clear  starts
-                        // if one day its at 10 and resets it then
-
-                        // no measurements between 5 pm and 7 am
-                        if (plantPDate.size() == 0) {
-                            plantPDate.add(currentTime);
-                            averageHumidity.add(profileForUser.getMeasured_humidity());
-
-                            plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
-                            plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
-                            plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
-                        } else if (plantPDate.size() < 3) {
-                            plantPDate.add(currentTime);
-                            averageHumidity.add(profileForUser.getMeasured_humidity());
-
-                            plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
-                            plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
-                            plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
-                        } else if ((plantPDate.size() % 3 == 0) && averageHumidity.size() % 3 == 0) {
-                            if (currentDay.equals("WEDNESDAY") || currentDay.equals("THURSDAY")) {
-//                            if (dayOfWeek == firstDayOfWeek) {
-                                plantPDate.clear();
-                                int avg = getAvgForTheDay(averageHumidity);
-                                averageHumidity.clear();
-                                plantProfileColl.updateOne(null, set("currentTime", plantPDate), new RemoteUpdateOptions());
-                                plantProfileColl.updateOne(null, set("averageHumidity", averageHumidity), new RemoteUpdateOptions());
-                                plantProfileColl.updateOne(null, set("averageHumidityForToday", avg), new RemoteUpdateOptions());
-                                plantProfileColl.updateOne(null, set("dayOfTheWeek", currentDay), new RemoteUpdateOptions());
-//                                plantProfileColl.updateOne(null, set("averageTemperature", currentDay), new RemoteUpdateOptions());
-//                                plantProfileColl.updateOne(null, set("averageSunlight", currentDay), new RemoteUpdateOptions());
-                            }
-
-                            Toast.makeText(mContext, "Can't record more Measurements", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    return null;
-                }
-        ).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
-    }
-
-    private int getAvgForTheDay(ArrayList<Integer> averageHumidity) {
-        int firstMeasurement = averageHumidity.get(0);
-        int secondMeasurement = averageHumidity.get(1);
-        int thirdMeasurement = averageHumidity.get(2);
-        return (firstMeasurement + secondMeasurement + thirdMeasurement) / 3;
-    }
-
-    private void weekSwitch(int dayOfWeek) {
-        switch (dayOfWeek) {
-            case Calendar.SUNDAY:
-                currentDay = currentDay.replace(currentDay, "SUNDAY");
-                break;
-            case Calendar.MONDAY:
-                currentDay = currentDay.replace(currentDay, "MONDAY");
-                break;
-            case Calendar.TUESDAY:
-                currentDay = currentDay.replace(currentDay, "TUESDAY");
-                break;
-            case Calendar.WEDNESDAY:
-                currentDay = currentDay.replace(currentDay, "WEDNESDAY");
-                break;
-            case Calendar.THURSDAY:
-                currentDay = currentDay.replace(currentDay, "THURSDAY");
-                break;
-            case Calendar.FRIDAY:
-                currentDay = currentDay.replace(currentDay, "FRIDAY");
-                break;
-            case Calendar.SATURDAY:
-                currentDay = currentDay.replace(currentDay, "SATURDAY");
-                break;
         }
     }
 

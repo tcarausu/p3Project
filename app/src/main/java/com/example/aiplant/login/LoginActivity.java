@@ -184,71 +184,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Signing in");
         progressDialog.setMessage("Signing in, please wait...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setIcon(R.drawable.ai_plant);
-
-        progressDialog.show();
-        mStitchAuth.loginWithCredential(googleCredential).continueWithTask(
-                task -> {
-                    if (!task.isSuccessful()) {
-                        progressDialog.dismiss();
-                        Log.e("STITCH", "Login failed!");
-                        Log.w(Google_Tag, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                        mStitchAuth.logout();
-                        throw task.getException();
-
-                    } else {
-                        mStitchUser = task.getResult();
-                        String id = mStitchUser.getId();
-                        String displayName = task.getResult().getProfile().getFirstName()
-                                + " " + task.getResult().getProfile().getLastName();
-                        String email = task.getResult().getProfile().getEmail();
-                        String photoURL = task.getResult().getProfile().getPictureUrl();
-                        String birthday = task.getResult().getProfile().getBirthday();
-                        byte[] data = new byte[]{};
-                        BsonBinary edited_pic = new BsonBinary(data);
-
-                        if (birthday == null) {
-                            birthday = "01/01/1919";
-                        }
-                        if (photoURL == null) {
-                            photoURL = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
-                        }
-                        Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
-                                + "\n" + "PictureURL: " + photoURL);
-
-                        googleUserUpdateDoc = new Document("logged_user_id", mStitchUser.getId()).append(getResources().getString(R.string.name_for_db), displayName)
-                                .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
-                                .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
-                        googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
-                                googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
-                                googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
-                                googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
-                        addListener();
-                        mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
-
-                        new Handler().postDelayed(() -> {
-                            progressDialog.dismiss();
-                            mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-                        }, 0);
-
-                        return null;
-
-                    }
-                }
-
-        ).addOnCompleteListener(task -> {
+        mStitchAuth.loginWithCredential(googleCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("STITCH", "Found docs: " + task.getResult().toString());
 
-                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getApplicationContext(),
-                        getApplicationContext(), HomeActivity.class), Toast.LENGTH_SHORT);
-                return;
+                Log.e("STITCH", "Login failed!");
+
+                mStitchUser = task.getResult();
+                String id = mStitchUser.getId();
+                String displayName = task.getResult().getProfile().getFirstName()
+                        + " " + task.getResult().getProfile().getLastName();
+                String email = task.getResult().getProfile().getEmail();
+                String photoURL = task.getResult().getProfile().getPictureUrl();
+                String birthday = task.getResult().getProfile().getBirthday();
+                byte[] data = new byte[]{};
+                BsonBinary edited_pic = new BsonBinary(data);
+
+                if (birthday == null) {
+                    birthday = "01/01/1919";
+                }
+                if (photoURL == null) {
+                    photoURL = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+                }
+                Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
+                        + "\n" + "PictureURL: " + photoURL);
+
+                googleUserUpdateDoc = new Document("logged_user_id", mStitchUser.getId()).append(getResources().getString(R.string.name_for_db), displayName)
+                        .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
+                        .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
+                googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
+                        googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
+                        googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
+                        googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
+                addListener();
+                mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
+
+                new Handler().postDelayed(() -> {
+                    progressDialog.dismiss();
+                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                }, 0);
             }
-            Log.e("STITCH", "Error: " + task.getException().toString());
-            task.getException().printStackTrace();
-        }).addOnFailureListener(e -> Log.d(TAG, "signInResult:failed code=" + e.getCause()));
+        }).addOnFailureListener(e -> {
+            Log.d(TAG, "signInWithCredential:failure" + e.getMessage());
+            progressDialog.dismiss();
+            Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+            mStitchAuth.logout();
+            Log.d(TAG, "signInResult:failed code=" + e.getCause());
+        });
 
     }
 

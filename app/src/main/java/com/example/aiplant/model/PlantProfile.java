@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.UUID;
 
@@ -39,25 +37,6 @@ public class PlantProfile implements Serializable, Parcelable {
     private int measured_humidity;
     private int measured_temperature;
     private int measured_sunlight;
-
-    private ArrayList<Date> currentTime;
-    private ArrayList<Integer> averageHumidity;
-
-    public ArrayList<Date> getCurrentTime() {
-        return currentTime;
-    }
-
-    public ArrayList<Integer> getAverageHumidity() {
-        return averageHumidity;
-    }
-
-    public void setAverageHumidity(ArrayList<Integer> averageHumidity) {
-        this.averageHumidity = averageHumidity;
-    }
-
-    public void setCurrentTime(ArrayList<Date> currentTime) {
-        this.currentTime = currentTime;
-    }
 
     public void setUserID(String userID) {
         this.userID = userID;
@@ -128,10 +107,7 @@ public class PlantProfile implements Serializable, Parcelable {
 
     public PlantProfile(String name, String user_id, String profile_id, String birthday,
                         String picture, byte[] pic_bytes, int min_hum, int max_hum, int min_temp,
-                        int max_temp, int min_sun, int max_sun, int measured_humidity, int measured_temperature, int measured_sunlight,
-                        ArrayList<Date> currentTime, ArrayList<Integer> averageHumidity
-//            , ArrayList<Date> currentTime, ArrayList<Date> currentTime
-    ) {
+                        int max_temp, int min_sun, int max_sun, int measured_humidity, int measured_temperature, int measured_sunlight) {
         this.name = name;
         this.userID = user_id;
         this.profileId = profile_id;
@@ -147,8 +123,6 @@ public class PlantProfile implements Serializable, Parcelable {
         this.measured_humidity = measured_humidity;
         this.measured_temperature = measured_temperature;
         this.measured_sunlight = measured_sunlight;
-        this.currentTime = currentTime;
-        this.averageHumidity = averageHumidity;
     }
 
     public PlantProfile(String userID, String profileId, String name, String birthday,

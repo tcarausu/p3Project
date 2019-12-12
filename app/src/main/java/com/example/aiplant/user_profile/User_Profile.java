@@ -62,6 +62,7 @@ import org.bson.Document;
 import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -501,9 +502,18 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onUserRemoved(StitchAuth auth, StitchUser removedUser) {
                 auth.removeAuthListener(mStitchAuthListener);
+                try {
+                    auth.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
 
+            @Override
+            public void onUserAdded(StitchAuth auth, StitchUser addedUser) {
+                auth.addAuthListener(mStitchAuthListener);
+            }
         };
     }
 
@@ -515,6 +525,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         if (providerType.contains("google")) {
             hideKeyboard();
 //            mStitchAuth.removeAuthListener(mStitchAuthListener);
+
             mGoogleSignInClient.signOut();
             mStitchAuth.logout();
 
