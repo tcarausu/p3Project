@@ -254,6 +254,7 @@ All provisions of the Terms which by their nature should survive termination sha
 
     <!-- Home Fragment -->
     <string name="go_create">Click here to create a profile</string>
+    <string name="choose_a_birthday_properly">Date format is not correct!</string>
 
 
 </resources>

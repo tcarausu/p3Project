@@ -30,6 +30,8 @@ import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
+import com.example.aiplant.utility_classes.DateValidator;
+import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -104,6 +106,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private RelativeLayout topLayout, bottomLayout, textLayout;
     private TextView textBtn;
+
+    //validators
+    private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
+    private boolean moodH, moodS, moodT;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -288,6 +294,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             }
         }
 
+        if(isMoodT()&&isMoodS()&&isMoodH()){
+            mood_pic.setImageResource(R.drawable.mood_happy);
+        }else mood_pic.setImageResource(mood_medium);
+
     }
 
     private void initLayout(View v) {
@@ -311,8 +321,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         temperature_text = v.findViewById(R.id.temperature_text);
         humidity_text = v.findViewById(R.id.humidity_text);
         sunlight_text = v.findViewById(R.id.sunlight_text);
-
-        mood_pic = v.findViewById(R.id.mood_pic);
 
         //Buttons
         adjustNameAndDateButton = v.findViewById(R.id.adjust_name_and_date);
@@ -353,6 +361,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         temperatureSeekBar = v.findViewById(R.id.temperature_slider);
         lightSeekBar = v.findViewById(R.id.sunlight_slider);
 
+        mood_pic = v.findViewById(R.id.mood_pic);
         mood_pic.setImageResource(R.drawable.mood_happy);
     }
 
@@ -366,15 +375,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
-                if (progress <= profileForUser.getMinHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_has_little_water), getString(R.string.plant_has_little_water), requestCode);
+                if (progress < profileForUser.getMinHumid()) {
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_has_too_much_water), getString(R.string.plant_has_too_much_water), requestCode);
+                    //  mood_pic.setImageResource(mood_medium);
+                    setMoodH(false);
+                } else if (progress > profileForUser.getMaxHumid()) {
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
+                    // mood_pic.setImageResource(mood_medium);
+                    setMoodH(false);
                 }
+                else setMoodH(true);
             }
 
             @Override
@@ -393,16 +405,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
 
-                if (progress <= profileForUser.getMinTemp()) {
+                if (progress < profileForUser.getMinTemp()) {
+                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
 
-                    NotificationService.createNotification(mContext, getString(R.string.plant_is_cold), getString(R.string.plant_is_cold), requestCode);
+                    //  mood_pic.setImageResource(mood_cold);
+                    setMoodT(false);
+                } else if (progress > profileForUser.getMaxTemp()) {
+                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
 
-                    mood_pic.setImageResource(mood_cold);
-                } else if (progress >= profileForUser.getMaxTemp()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_is_too_hot), getString(R.string.plant_is_too_hot), requestCode);
-
-                    mood_pic.setImageResource(mood_hot);
+                    //    mood_pic.setImageResource(mood_hot);
+                    setMoodT(false);
                 }
+                else setMoodT(true);
             }
 
             @Override
@@ -421,15 +435,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
 
-                if (progress <= profileForUser.getMinSun()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
-
-                    mood_pic.setImageResource(mood_medium);
-                } else if (progress >= profileForUser.getMaxSun()) {
+                if (progress < profileForUser.getMinSun()) {
                     NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
 
-                    mood_pic.setImageResource(mood_medium);
+                    //mood_pic.setImageResource(mood_medium);
+                    setMoodS(false);
+                } else if (progress > profileForUser.getMaxSun()) {
+                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
+
+                    //mood_pic.setImageResource(mood_medium);
+                    setMoodS(false);
                 }
+                else setMoodS(true);
             }
 
             @Override
@@ -557,12 +574,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                     reloadHome();
                 }
-                if (!TextUtils.isEmpty(flowerNameEditText.getText().toString()) && !TextUtils.isEmpty(flowerTimeEditText.getText().toString())) {
-                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
-                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
-
-                    reloadHome();
-                }
                 if (TextUtils.isEmpty(flowerNameEditText.getText())) {
                     flowerNameEditText.setError(getString(R.string.choose_a_user_name));
 
@@ -571,8 +582,19 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 if (TextUtils.isEmpty(flowerTimeEditText.getText())) {
                     flowerTimeEditText.setError(getString(R.string.choose_a_birthday));
                     adjustNameAndDate();
+                    flowerTimeEditText.requestFocus();
                 }
+                if (!validator.isValid(flowerTimeEditText.getText().toString())) {
+                    flowerTimeEditText.setError(getString(R.string.choose_a_birthday_properly));
+                    adjustNameAndDate();
+                    flowerTimeEditText.requestFocus();
+                } else if (!TextUtils.isEmpty(flowerNameEditText.getText().toString())
+                        && !TextUtils.isEmpty(flowerTimeEditText.getText().toString()) && validator.isValid(flowerTimeEditText.getText().toString())) {
+                    plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
+                    plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
 
+                    reloadHome();
+                }
             }
 
             return null;
@@ -712,12 +734,14 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void adjustNameAndDate() {
         flowerNameEditText.setEnabled(true);
+        flowerNameEditText.requestFocus();
         flowerTimeEditText.setEnabled(true);
         saveNameAndDateButton.setVisibility(View.VISIBLE);
     }
 
     private void adjustConditions() {
         hum_min.setEnabled(true);
+        hum_min.requestFocus();
         hum_max.setEnabled(true);
         temp_min.setEnabled(true);
         temp_max.setEnabled(true);
@@ -732,6 +756,30 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void setPlantProfileDoc(Document plantProfileDoc) {
         this.plantProfileDoc = plantProfileDoc;
+    }
+
+    public boolean isMoodH() {
+        return moodH;
+    }
+
+    public void setMoodH(boolean moodH) {
+        this.moodH = moodH;
+    }
+
+    public boolean isMoodS() {
+        return moodS;
+    }
+
+    public void setMoodS(boolean moodS) {
+        this.moodS = moodS;
+    }
+
+    public boolean isMoodT() {
+        return moodT;
+    }
+
+    public void setMoodT(boolean moodT) {
+        this.moodT = moodT;
     }
 
     @Override

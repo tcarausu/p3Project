@@ -175,6 +175,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         throw task.getException();
 
                     } else {
+                        ProgressDialog progressDialog = new ProgressDialog(this);
+                        progressDialog.setTitle("Signing in");
+                        progressDialog.setMessage("Signing in, please wait...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setIcon(R.drawable.ai_plant);
+                        progressDialog.show();
+
                         mStitchUser = task.getResult();
                         String id = mStitchUser.getId();
                         String displayName = task.getResult().getProfile().getFirstName()
@@ -198,12 +205,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 .append(getResources().getString(R.string.email_for_db), email).append(getResources().getString(R.string.picture_for_db), photoURL)
                                 .append(getResources().getString(R.string.number_of_plants_for_db), 0).append(getResources().getString(R.string.birthday_for_db), birthday).append("edited_pic", edited_pic);
 
+                        mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
+
                         googleUser = new User(googleUserUpdateDoc.getString("logged_user_id"), googleUserUpdateDoc.getString("name"),
                                 googleUserUpdateDoc.getString("email"), googleUserUpdateDoc.getString("picture"),
                                 googleUserUpdateDoc.getInteger("number_of_plants"), googleUserUpdateDoc.getString("birthday"),
                                 googleUserUpdateDoc.get("edited_pic", BsonBinary.class));
 
-                        mongoDbSetup.checkIfExists(user_coll, googleUserUpdateDoc);
+                        progressDialog.dismiss();
 
                         return null;
 
