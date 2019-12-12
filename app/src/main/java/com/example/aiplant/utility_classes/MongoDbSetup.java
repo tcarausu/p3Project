@@ -367,9 +367,7 @@ public class MongoDbSetup {
                             documentToCheck.getString("name"),
                             documentToCheck.getString("email"), documentToCheck.getString("picture"),
                             number_of_plants, documentToCheck.getString("birthday"));
-
-                    goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-                } else goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                }
             } catch (Throwable throwable) {
                 Log.d(TAG, "checkIfExists:Error throwable: " + throwable);
             }

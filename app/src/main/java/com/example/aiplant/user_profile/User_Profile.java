@@ -63,7 +63,6 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
@@ -486,20 +485,46 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         checkPermissions();
     }
 
+    private void authListenerData() {
+        mStitchAuthListener = new StitchAuthListener() {
+
+            @Override
+            public void onListenerRegistered(StitchAuth auth) {
+                auth.addAuthListener(mStitchAuthListener);
+            }
+
+            @Override
+            public void onUserLoggedIn(StitchAuth auth, StitchUser loggedInUser) {
+                auth.addAuthListener(mStitchAuthListener);
+            }
+
+            @Override
+            public void onUserRemoved(StitchAuth auth, StitchUser removedUser) {
+                auth.removeAuthListener(mStitchAuthListener);
+
+            }
+
+        };
+    }
+
     private void signOut() {
+        authListenerData();
 
         String providerType = mStitchUser.getLoggedInProviderName();
         Log.d(TAG, "signOut: providerType: " + providerType);
         if (providerType.contains("google")) {
             hideKeyboard();
+//            mStitchAuth.removeAuthListener(mStitchAuthListener);
             mGoogleSignInClient.signOut();
             mStitchAuth.logout();
+
             Log.d(TAG, "signOut: " + mStitchAuth.isLoggedIn());
             new Handler().postDelayed(() ->
                     mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class), 500);
 
         } else {
             hideKeyboard();
+//            mStitchAuth.removeAuthListener(mStitchAuthListener);
             String id = mStitchUser.getId();
             mStitchAuth.logoutUserWithId(id);
 //            mStitchAuth.logout();
@@ -511,51 +536,15 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void setupGridView() {
         Log.d(TAG, "setupGridView: Setting up GridView");
 
-//        try {
         final ArrayList<Plant> posts = new ArrayList<>();
 
-
-//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//
-//            Query query = reference
-//                    .child(getString(R.string.dbname_posts))
-//                    .child(mAuth.getCurrentUser().getUid());
-//
-//            query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//                        Plant post = new Plant();
-//                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-//                        post.setmDescription(objectMap.get(getString(R.string.field_description)).toString());
-//                        post.setmFoodImgUrl(objectMap.get(getString(R.string.field_food_photo)).toString());
-//                        post.setUserId(objectMap.get(getString(R.string.field_user_id)).toString());
-//                        post.setmRecipe(objectMap.get(getString(R.string.field_recipe)).toString());
-//                        post.setmIngredients(objectMap.get(getString(R.string.field_ingredients)).toString());
-//                        post.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-//                        post.setPostId(objectMap.get(getString(R.string.field_post_id)).toString());
-//
-//                        List<Like> likeList = new ArrayList<>();
-//                        for (DataSnapshot ds : singleSnapshot
-//                                .child(getString(R.string.field_likes)).getChildren()) {
-//                            Like like = new Like();
-//                            like.setUser_id(ds.getValue(Like.class).getUser_id());
-//                            likeList.add(like);
-//                        }
-//                        post.setLikeList(likeList);
-//                        posts.add(post);
-//                    }
-
-        //setup  our grid image
         int gridWidth = getResources().getDisplayMetrics().widthPixels;
         int imageWidth = gridWidth / NUM_GRID_COLUMNS;
 
         gridView.setColumnWidth(imageWidth);
 
         ArrayList<String> imgURLs = new ArrayList<>();
-//                    for (int i = 0; i < posts.size(); i++) {
-//                        imgURLs.add(posts.get(i).getmFoodImgUrl());
-//                    }
+
         String testURL1 = "https://images.homedepot-static.com/productImages/a0592d4a-af16-41a7-969d-d96ee38bc57a/svn/dark-brown-sunnydaze-decor-plant-pots-dg-844-64_1000.jpg";
         String testURL2 = "https://homebnc.com/homeimg/2017/02/02-front-door-flower-pots-ideas-homebnc.jpg";
         String testURL3 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
@@ -581,20 +570,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         gridView.setOnItemClickListener((parent, view, position, id) ->
                 onGridImageSelectedListener.onGridImageSelected(posts.get(position), ACTIVITY_NUM));
 
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    Log.d(TAG, "onCancelled: Query Cancelled");
-//
-//                }
-//            });
-//        } catch (Exception e) {
-//            Toast.makeText(getActivity(), "Error: Nothing to display", Toast.LENGTH_SHORT).show();
-//
-//            firebaseMethods.goToWhereverWithFlags(getActivity(), getActivity(), AddPostActivity.class);
-//        }
     }
 
     /**
@@ -615,7 +590,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     }
 
     private void hideKeyboard() {
-        if (Build.VERSION.SDK_INT<=23) {
+        if (Build.VERSION.SDK_INT <= 23) {
             mInputManager.hideSoftInputFromWindow((this.getCurrentFocus()).getWindowToken(), 0);
         }
     }
@@ -623,286 +598,5 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     public interface OnGridImageSelectedListener {
         void onGridImageSelected(Plant plant, int activityNr);
     }
-    //    public void updateOne() {
-//        RemoteMongoCollection user_coll = mongoDbSetup.getUsers_collection();
-//        Document seek = new Document("plant_id", "5dcd80de1e36d318eb99fe8c");
-//        String new_user_name = usernameEditText.getText().toString();
-//
-//        user_coll.updateOne(eq("logged_user_id", client_id), set("name", new_user_name)).continueWith(new Continuation() {
-//            @Override
-//            public Object then(@NonNull Task task) throws Exception {
-//                if (!task.isSuccessful()) {
-//
-//                } else
-//                    Toast.makeText(mContext, "name updated", Toast.LENGTH_SHORT).show();
-//                return null;
-//            }
-//        });
-//
-//    }
-//    private void profileDialog() {
-//        View dialogLayout = getLayoutInflater().inflate(R.layout.customized_alert_dialog, null);
-//        ImageButton cameraButton = dialogLayout.findViewById(R.id.cameraButtonDialog);
-//        ImageButton galleryButton = dialogLayout.findViewById(R.id.galleryButtonDialog);
-//        ImageButton cancelButton = dialogLayout.findViewById(R.id.cancelButtonDialog);
-//
-//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-//        dialogBuilder.setUpUserInfo(dialogLayout);
-//        dialogBuilder.setTitle("Chose an action");
-//
-//        final AlertDialog alertDialog = dialogBuilder.create();
-//        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
-//
-//        wlp.windowAnimations = R.anim.slide_down_anim;
-//        wlp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        alertDialog.getWindow().setAttributes(wlp);
-//        alertDialog.setCanceledOnTouchOutside(true);
-//        // Setting transparent the background (layout) of alert dialog
-//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        alertDialog.show();
-//
-//        cameraButton.setOnClickListener(v -> {
-//            takePicture();
-//            alertDialog.dismiss();
-//        });
-//
-//        galleryButton.setOnClickListener(v -> {
-//            selectPicture();
-//            alertDialog.dismiss();
-//        });
-//
-//        cancelButton.setOnClickListener(v -> {
-//            alertDialog.dismiss();
-//        });
-//    }
-//    private void topBarDialog() {
-//        View dialogLayout = getLayoutInflater().inflate(R.layout.top_bar_dialog_layout, null);
-//
-//        TextView accountSettingsTextView = dialogLayout.findViewById(R.id.accountSettingsTextView);
-//        TextView signOutTextView = dialogLayout.findViewById(R.id.signOutTextView);
-//        TextView cancelTextView = dialogLayout.findViewById(R.id.cancelTextView);
-//
-//
-//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-//        dialogBuilder.setUpUserInfo(dialogLayout);
-//
-//        final AlertDialog alertDialog = dialogBuilder.create();
-//        WindowManager.LayoutParams wlp = alertDialog.getWindow().getAttributes();
-//
-//        //wlp.windowAnimations = R.style.AlertDialogAnimation;
-//        wlp.gravity =  Gravity.RIGHT|Gravity.TOP;
-//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        alertDialog.getWindow().setAttributes(wlp);
-//        alertDialog.setCanceledOnTouchOutside(true);
-//        // Setting transparent the background (layout) of alert dialog
-//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        alertDialog.show();
-//
-//
-//        accountSettingsTextView.setOnClickListener(v -> {
-//
-////            Fragment AccountSettingFragment = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-//////
-////                    if (AccountSettingFragment == null)
-////                        AccountSettingFragment = new AccountSettingsFragment();
-////                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-////                        fragmentTransaction.addToBackStack(null);
-////                        fragmentTransaction.add(R.id.useThisFragmentID, AccountSettingFragment).commit();
-//            alertDialog.dismiss();
-//        });
-//
-//        signOutTextView.setOnClickListener(v -> {
-//            signOut();
-//            alertDialog.dismiss();
-//        });
-//
-//        cancelTextView.setOnClickListener(v -> {
-//            Toast.makeText(mContext,"Cancel button clicked",Toast.LENGTH_SHORT).show();
-//            alertDialog.dismiss();
-//        });
-//    }
-//    private void openChoiceDialog() {
-//
-//        CharSequence[] options = {"Camera", "Gallery", "Cancel"};
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Select image source:");
-//        builder.setCancelable(true);
-//        builder.setIcon(R.mipmap.eye_logo);
-//        builder.setItems(options, (dialog, which) -> {
-//
-//            if (options[which].equals("Camera")) {
-//                takePicture();
-//            } else if (options[which].equals("Gallery")) {
-//                selectPicture();
-//
-//            } else if (options[which].equals("Cancel")) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        builder.create();
-//        builder.show();
-//
-//    }
-//    private void customizeddialog(String s1, String s2, String s3) {
-//
-//        CharSequence[] options = {s1, s2, s3};
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Profile menu:");
-//        builder.setIcon(R.mipmap.eye_logo);
-//        builder.setItems(options, (dialog, which) -> {
-//
-//            if (options[which].equals("Account settings")) {
-//                //Todo: continue with fragment
-//                Toast.makeText(mContext,"account settings pressed",Toast.LENGTH_SHORT).show();
-//
-//            } else if (options[which].equals("Sign out")) {
-//                signOut();
-//
-//            } else if (options[which].equals("Cancel")) {
-//                dialog.dismiss();
-//            }
-//        });
-//        builder.create();
-//        builder.show();
-//
-//        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.logo_eye_plant);
-//        setBackgroundResource(R.drawable.logo_eye_plant);
-
-
-//How to get a drawable
-//        drawable1 = ContextCompat.getDrawable(mContext, R.drawable.african_violet);
-//        drawable2 = ContextCompat.getDrawable(mContext, R.drawable.poisettia_indoors);
-//        drawable3 = ContextCompat.getDrawable(mContext, R.drawable.begonia);
-//        drawable4 = ContextCompat.getDrawable(mContext, R.drawable.bromeliads);
-//}
-//    Fragment fragmentForgotPass = fragmentManager.findFragmentById(R.id.useThisFragmentID);
-//
-//                    if (fragmentForgotPass == null) {
-//                        fragmentForgotPass = new ForgotPassFragment();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        fragmentTransaction.addToBackStack(null);
-//                        fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
-//                    }
-//    private void takePicture() {
-//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
-//            startActivityForResult(cameraIntent, REQUEST_CAMERA);
-//        } else Toast.makeText(mContext, "Nothing selected..", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    private void selectPicture() {
-//        Intent galleryIntent = new Intent();
-//        galleryIntent.setType("image/*");
-//        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), REQUEST_GALLERY);
-//    }
-//}
-    //    private void fetchPlantsData() {
-//        Document plantDOc = new Document("plant_id", "");
-//
-//        try {
-//            RemoteMongoCollection plants_coll = mongoDbSetup.getPlants_Collection();
-//            plants_coll.find(Document.class).iterator().continueWith(new Continuation() {
-//                @Override
-//                public Object then(@NonNull Task task) throws Exception {
-//                    if (!task.isSuccessful()) {
-//                        Log.d(TAG, "then: TaskErrror: " + task.getException());
-//                    } else
-//
-//                        docs = new ArrayList<>();
-//                    Document document = docs.get(0);
-//
-//                    Log.d(TAG, "then: document: " + document.getString("plant_id"));
-//                    Log.d(TAG, "then: document: " + document.getString("plant_name"));
-//                    Log.d(TAG, "then: document: " + document.getString("description"));
-//
-//                    return plants_coll.find().into(docs);
-//                }
-//            });
-//
-//            Document document1 = docs.get(0);
-//            Log.d(TAG, "then: document: " + document1.getString("plant_id"));
-//            Log.d(TAG, "then: document: " + document1.getString("plant_name"));
-//            Log.d(TAG, "then: document: " + document1.getString("description"));
-//        } catch (Exception e) {
-//            Log.d(TAG, "fetchPlantsData: Error: " + e.getMessage());
-//        }
-//    }
-    //    private void uploadImageToGridFs(Uri uri) {
-//// Get the input stream
-//        try {
-//            InputStream streamToUploadFrom = new FileInputStream(uri.getPath());
-//            // Create some custom options
-//            GridFSUploadOptions options = new GridFSUploadOptions()
-//                    .chunkSizeBytes(358400)
-//                    .metadata(new Document(mStitchUser.getId(), streamToUploadFrom));
-//
-//            ObjectId fileId = users_profileBucket.uploadFromStream("users_profilePictures", streamToUploadFrom, options);
-//        } catch (FileNotFoundException | NullPointerException e) {
-//            // handle exception
-//            Log.d(TAG, "uploadImageToGridFs: Error: " + e.getCause());
-//        }
-//    }
-//private void readFromGridsFs() {
-//    users_profileBucket.find().forEach(
-//            new Block<GridFSFile>() {
-//                public void apply(final GridFSFile gridFSFile) {
-//                    Log.d(TAG, "apply: fileName: " + gridFSFile.getFilename());
-//                }
-//            });
-//}
-    //    private void uploadProifleImage(Uri uri) {
-//        //
-//        if (uri == null) {
-//            Glide.with(this).load(user.getPicture()).centerInside().into(profilePic);
-//        } else {
-//
-//            Glide.with(this).load(uri).centerInside().into(profilePic);
-//            final ProgressDialog progressDialog = new ProgressDialog(this, "Uploading...", R.color.green_dark);
-//            progressDialog.setCanceledOnTouchOutside(false);
-//            progressDialog.show();
-//            FirebaseStorage storage = FirebaseStorage.getInstance();
-//            StorageReference profile_pic_Ref = storage.getReference().child("/users_profiles/").child(mStitchUser.getId()).child("profile picture");
-//
-////            profilePicStorage = storage.getReference().child("/users_profiles/").child(mStitchUser.getId()).child("profile picture");
-//
-//            profile_pic_Ref.putFile(uri).addOnCompleteListener(task -> {
-//                if (task.isSuccessful()) {
-//                    profile_pic_Ref.getDownloadUrl().addOnCompleteListener(task1 -> {
-//                        if (task1.isSuccessful()) {
-//
-//                            String uploadedImageURL = task1.getResult().toString();
-//
-//                            Log.d(TAG, "UploadProfilePic: URL= " + uploadedImageURL);
-////                            editUserPicture(uploadedImageURL);
-//                            progressDialog.dismiss();
-//                            saveProfile_piceButton.setVisibility(View.INVISIBLE);
-//                            fetchUserData();
-//                        }
-//                    }).addOnFailureListener(e -> {
-//                        progressDialog.dismiss();
-//                        Toast.makeText(this, "Failed, " + e.getCause(), Toast.LENGTH_SHORT).show();
-//                        saveProfile_piceButton.setVisibility(View.INVISIBLE);
-//                    });
-//                }
-//
-//            }).addOnFailureListener(e -> {
-//                progressDialog.dismiss();
-//                Toast.makeText(this, "Upload failed, " + e.getCause(), Toast.LENGTH_SHORT).show();
-//                saveProfile_piceButton.setVisibility(View.INVISIBLE);
-//
-//            }).addOnCanceledListener(() -> {
-//                Toast.makeText(this, "Canceled by user, ", Toast.LENGTH_SHORT).show();
-//                saveProfile_piceButton.setVisibility(View.INVISIBLE);
-//
-//            }).addOnProgressListener(taskSnapshot -> {
-//                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                progressDialog.setTitle(" " + (int) progress + "%");
-//
-//            });
-//        }
-//    }
 
 }
