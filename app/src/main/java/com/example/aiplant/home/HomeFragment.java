@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,9 +28,11 @@ import androidx.appcompat.app.AlertDialog;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
+import com.example.aiplant.cameraandgallery.PictureConversion;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
+import com.example.aiplant.services.ScheduledFetch;
 import com.example.aiplant.utility_classes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
@@ -42,9 +45,10 @@ import org.bson.BsonBinary;
 import org.bson.Document;
 import org.bson.types.Binary;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -90,6 +94,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private Bitmap picture;
     private boolean has_changed_profile_image;
     private SharedPreferences prefer;
+    private Document plantProfileDoc;
 
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private Bitmap bitmap;
@@ -97,14 +102,19 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private String user_id;
 
-    private Document plantProfileDoc;
-
     private RelativeLayout topLayout, bottomLayout, textLayout;
     private TextView textBtn;
 
     //validators
     private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
     private boolean moodH, moodS, moodT;
+
+    //Fetch
+    private NotificationService mNotificationService;
+    private PictureConversion pictureConverter;
+
+    private ExecutorService executors = Executors.newFixedThreadPool(2);
+    private Thread t1, t2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,15 +127,60 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         user_id = mStitchUser.getId();
         prefer = getActivity().getSharedPreferences("prefer", MODE_PRIVATE);
         has_changed_profile_image = prefer.getBoolean("prefer", false);
+        mNotificationService = new NotificationService();
 
         initLayout(v);
-        buttonListeners();
         checkPermissions();
         disableEditText();
 
-        fetchedDoc();
+        t1 = new Thread() {
+            @Override
+            public void run() {
+                getActivity().startService(new Intent(mContext, ScheduledFetch.class));
+            }
+        };
+
+        t2 = new Thread() {
+            @Override
+            public void run() {
+                fetchedDoc();
+                refreshDrawableState();
+            }
+        };
+
+
+        ClientServer();
+        fetchingData();
+        buttonListeners();
 
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ClientServer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    private void ClientServer() {
+        executors.execute(t1);
+    }
+
+    private void fetchingData() {
+        executors.execute(t2);
     }
 
     private void fetchedDoc() {
@@ -198,7 +253,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         int min_sun = (int) sunlightArray.get(0);
         int max_sun = (int) sunlightArray.get(1);
 
-        profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
+        PlantProfile profileForUser = new PlantProfile(name, user_id, profile_id, birthday, picture,
                 pic_bytes, min_hum, max_hum, min_temp, max_temp, min_sun, max_sun, measured_humidity, measured_temperature,
                 measured_sunlight);
 
@@ -221,6 +276,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         light_min.setText(String.valueOf(profileForUser.getMinSun()));
         light_max.setText(String.valueOf(profileForUser.getMaxSun()));
+        SeekBarRefresher(profileForUser);
 
         if (has_changed_profile_image) {
             Glide.with(getActivity()).load(bitmap).centerCrop().into(profileImage);
@@ -306,25 +362,32 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void buttonListeners() {
-
         adjustNameAndDateButton.setOnClickListener(this);
         saveNameAndDateButton.setOnClickListener(this);
+        adjustConditionsButton.setOnClickListener(this);
+        saveChangesButton.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
+        change_picture.setOnClickListener(this);
         textBtn.setOnClickListener(this);
+    }
+
+    private void SeekBarRefresher(PlantProfile profileForUser) {
 
         humiditySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
                 if (progress < profileForUser.getMinHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
-
-                    //  mood_pic.setImageResource(mood_medium);
+                    seekBar.setProgress(profileForUser.getMinHumid());
                     setMoodH(false);
-                } else if (progress > profileForUser.getMaxHumid()) {
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
 
-                    // mood_pic.setImageResource(mood_medium);
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+                }
+                if (progress > profileForUser.getMaxHumid()) {
+                    seekBar.setProgress(profileForUser.getMaxHumid());
                     setMoodH(false);
+
+                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
                 } else setMoodH(true);
             }
 
@@ -397,19 +460,40 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             }
         });
 
-        adjustConditionsButton.setOnClickListener(this);
-
-        saveChangesButton.setOnClickListener(this);
-
-        profileImage.setOnClickListener(this);
-        change_picture.setOnClickListener(this);
     }
+
 
     private void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPermissions(permissions, REQUEST_GALLERY | REQUEST_CAMERA);
-        }
+        new Handler().post(() -> {
+            if (Build.VERSION.SDK_INT >= 23) {
+                requestPermissions(permissions, REQUEST_GALLERY | REQUEST_CAMERA);
+            }
+        });
     }
+
+    private void refreshDrawableState() {
+        change_picture.refreshDrawableState();
+        temperature_text.refreshDrawableState();
+        humidity_text.refreshDrawableState();
+        sunlight_text.refreshDrawableState();
+        hum_current.refreshDrawableState();
+        temp_current.refreshDrawableState();
+        light_current.refreshDrawableState();
+        humidity_min_value_text.refreshDrawableState();
+        humidity_current_value_text.refreshDrawableState();
+        humidity_max_value_text.refreshDrawableState();
+        temperature_min_value_text.refreshDrawableState();
+        temperature_current_value_text.refreshDrawableState();
+        temperature_max_value_text.refreshDrawableState();
+        light_min_value_text.refreshDrawableState();
+        light_current_value_text.refreshDrawableState();
+        light_max_value_text.refreshDrawableState();
+        humiditySeekBar.refreshDrawableState();
+        temperatureSeekBar.refreshDrawableState();
+        lightSeekBar.refreshDrawableState();
+
+    }
+
 
     private void disableEditText() {
         //name and date
@@ -441,17 +525,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void setBitmap(Bitmap bitmap) {
         this.picture = bitmap;
-    }
-
-    private byte[] mBitmapToArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        return stream.toByteArray();
-    }
-
-    private Bitmap arrayToBitmap(byte[] array) {
-        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(array, 0, array.length);
-        return compressedBitmap;
     }
 
     private void changedProfileImage() {
@@ -500,19 +573,20 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                 if (getBitmap() != null) {
                     bitmap = getBitmap();
-                    byte[] pwr = mBitmapToArray(bitmap);
+                    byte[] pwr = pictureConverter.bitmapToByteArray(bitmap);
                     bsonBinary = new BsonBinary(pwr);
 
                     plantProfileColl.updateOne(null, set("edited_pic", bsonBinary), new RemoteUpdateOptions());
 
                     changedProfileImage();
 
-                    reloadHome();
+                    refreshDrawableState();
                 }
                 if (TextUtils.isEmpty(flowerNameEditText.getText())) {
                     flowerNameEditText.setError(getString(R.string.choose_a_user_name));
 
                     adjustNameAndDate();
+                    refreshDrawableState();
                 }
                 if (TextUtils.isEmpty(flowerTimeEditText.getText())) {
                     flowerTimeEditText.setError(getString(R.string.choose_a_birthday));
@@ -528,7 +602,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
                     plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
 
-                    reloadHome();
                 }
             }
 
@@ -580,7 +653,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                                     plantProfileColl.updateOne(null, set("humidity", humidityValues), new RemoteUpdateOptions());
                                     plantProfileColl.updateOne(null, set("temperature", temperatureValues), new RemoteUpdateOptions());
                                     plantProfileColl.updateOne(null, set("sunlight", sunlightValues), new RemoteUpdateOptions());
-                                    reloadHome();
+                                    refreshDrawableState();
                                 } else adjustConditions();
                             } else adjustConditions();
 
@@ -653,18 +726,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             }
             return false;
         } else return true;
-    }
-
-    private void reloadHome() {
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .remove(this)
-                .commit();
-
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.useThisFragmentID, new HomeFragment())
-                .commit();
     }
 
     private void adjustNameAndDate() {

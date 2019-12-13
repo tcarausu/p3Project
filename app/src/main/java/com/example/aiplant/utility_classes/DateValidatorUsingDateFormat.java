@@ -13,7 +13,7 @@ public class DateValidatorUsingDateFormat implements DateValidator {
 
     @Override
     public boolean isValid(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat(this.dateFormat);
+        DateFormat sdf = new SimpleDateFormat(dateFormat);
         sdf.setLenient(false);
         try {
             sdf.parse(dateStr);

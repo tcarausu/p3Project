@@ -7,12 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.aiplant.R;
+import com.example.aiplant.services.ScheduledFetch;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,12 +33,18 @@ public class HomeActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     //database
-    private MongoDbSetup mongoDbSetup;
+    private static MongoDbSetup mongoDbSetup;
     private GoogleSignInClient mGoogleSignInClient;
     private StitchAuth mStitchAuth;
     private StitchUser mStitchUser;
     private Context mContext;
     private StitchAppClient appClient;
+
+    private ScheduledFetch scheduledFetch;
+
+    public static MongoDbSetup getMongoDbSetup() {
+        return mongoDbSetup;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +71,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mongoDbSetup.runAppClientInit();
-        mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
-        setMongoDbForLaterUse(mongoDbSetup);
+        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+
         appClient = mongoDbSetup.getAppClient();
 
         mStitchAuth = mongoDbSetup.getStitchAuth();
@@ -73,11 +80,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void setMongoDbForLaterUse(MongoDbSetup mongoDbSetup) {
-        this.mongoDbSetup = mongoDbSetup;
-    }
-
-    public MongoDbSetup getMongoDbForLaterUse() {
+    public synchronized MongoDbSetup getMongoDbForLaterUse() {
         return mongoDbSetup;
     }
 
@@ -85,9 +88,11 @@ public class HomeActivity extends AppCompatActivity {
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
+
+        BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
         BottomNavigationView bottomNavigationViewEx = findViewById(id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
+        bnh.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
@@ -100,20 +105,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-      @Override
+    @Override
     protected void onStart() {
         super.onStart();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -122,8 +118,18 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

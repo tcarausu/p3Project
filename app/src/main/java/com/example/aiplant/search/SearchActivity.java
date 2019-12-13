@@ -23,8 +23,8 @@ import com.example.aiplant.create_profile.PlantProfileFragment;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -76,24 +76,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mongoDbSetup.runAppClientInit();
-        mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
+//        mongoDbSetup.runAppClientInit();
+        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
 
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mongoDbSetup.getStitchUser();
         appClient = mongoDbSetup.getAppClient();
 
     }
-
-
-    public void setMongoDbForLaterUse(MongoDbSetup mongoDbSetup) {
-        this.mongoDbSetup = mongoDbSetup;
-    }
-
-    public MongoDbSetup getMongoDbForLaterUse() {
-        return mongoDbSetup;
-    }
-
 
     public void initLayout() {
         mSearchParam = findViewById(R.id.search_bar_id);
@@ -144,26 +134,19 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+        BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
+        BottomNavigationView bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
+        bnh.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
 
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 

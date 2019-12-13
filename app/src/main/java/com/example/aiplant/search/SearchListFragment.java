@@ -56,7 +56,7 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_plant_from_database, container, false);
 
-        mongoDbSetup = ((SearchActivity) getActivity()).getMongoDbForLaterUse();
+        mongoDbSetup =  MongoDbSetup.getInstance(getActivity());
 
         findPlantsList();
 

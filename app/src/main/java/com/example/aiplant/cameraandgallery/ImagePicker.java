@@ -59,7 +59,7 @@ public class ImagePicker {
         }
         Intent chooserIntent = null;
         List<Intent> intentList = new ArrayList<>();
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePhotoIntent.putExtra("return-data", true);
         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(context)));
@@ -90,7 +90,7 @@ public class ImagePicker {
     /**
      * This method gets the picture from the chosen intent
      *
-     * @param context             gets the context of the application
+     * @param context             gets the context of the activity
      * @param resultCode          is the standard result of the operation
      * @param imageReturnedIntent this is the intent from which the method will get the picture
      * @return returns the bitmap format of the picture
@@ -114,15 +114,18 @@ public class ImagePicker {
             Log.d(TAG, "selectedImage: " + selectedImage);
 
             bm = getImageResized(context, selectedImage);
-            int rotation = getRotation(context, selectedImage, isCamera);
-            if (bm.getHeight() >= bm.getWidth()) {
-                if (isCamera) {
-                    bm = rotate(bm, rotation);
-                } else bm = rotate(bm, rotation);
-            } else {
+            if (Build.VERSION.SDK_INT>=23) {
+                int rotation = getRotation(context, selectedImage, isCamera);
+                if (bm.getHeight() >= bm.getWidth()) {
+                    if (isCamera) {
+                        bm = rotate(bm, rotation);
+                    } else bm = rotate(bm, rotation);
+                } else {
 
-                bm = rotate(bm, rotation);
+                    bm = rotate(bm, rotation);
+                }
             }
+            else bm = getImageResized(context, selectedImage);
 
         }
         return bm;

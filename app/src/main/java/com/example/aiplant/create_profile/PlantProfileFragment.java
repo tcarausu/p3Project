@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
+import com.example.aiplant.cameraandgallery.PictureConversion;
 import com.example.aiplant.device_connection.DeviceConnectionActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
@@ -54,6 +55,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private MongoDbSetup mongoDbSetup;
     private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
+    private PictureConversion converter;
 
     @Nullable
     @Override
@@ -64,7 +66,8 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
         Bundle bundle = this.getArguments();
 
-        mongoDbSetup = ((SearchActivity) Objects.requireNonNull(getActivity())).getMongoDbForLaterUse();
+        mongoDbSetup =  MongoDbSetup.getInstance(getActivity());
+        converter = new PictureConversion();
 
         profilePicture = view.findViewById(R.id.profilePicPlant_imgView);
         namePlant = view.findViewById(R.id.namePlant_editText);
@@ -264,6 +267,6 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 profile.getProfileId(), profile.getName(),
                 profile.getBirthday(), profile.getMinHumid(), profile.getMaxHumid(),
                 profile.getMinTemp(), profile.getMaxTemp(), profile.getMinSun(),
-                profile.getMaxSun(), profile.getUrl(), MongoDbSetup.mBitmapToArray(getPicture()));
+                profile.getMaxSun(), profile.getUrl(), converter.bitmapToByteArray(getPicture()));
     }
 }

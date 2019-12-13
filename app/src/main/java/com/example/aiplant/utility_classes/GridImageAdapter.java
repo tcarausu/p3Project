@@ -2,6 +2,8 @@ package com.example.aiplant.utility_classes;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,32 +13,32 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
  * File created by tcarau18
  **/
-public class GridImageAdapter extends ArrayAdapter<String> {
+public class GridImageAdapter extends ArrayAdapter<Bitmap> {
 
     private Context mContext;
     private LayoutInflater mInflater;
     private int layoutResource;
-    private String mAppend;
-    private ArrayList<String> imgURLs;
+    private ArrayList<Bitmap> imgURLs;
 
 
-    public GridImageAdapter(Context mContext, int layoutResource, String mAppend, ArrayList<String> imgURLs) {
+    public GridImageAdapter(Context mContext, int layoutResource, ArrayList<Bitmap> imgURLs) {
         super(mContext, layoutResource, imgURLs);
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mContext = mContext;
         this.layoutResource = layoutResource;
-        this.mAppend = mAppend;
         this.imgURLs = imgURLs;
     }
 
@@ -65,49 +67,55 @@ public class GridImageAdapter extends ArrayAdapter<String> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String imgURL = getItem(position);
+        Bitmap bitmap = imgURLs.get(position);
+        Glide.with(convertView).load(bitmap).centerCrop().into(holder.image);
 
-        //MyModifications
-        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(configuration);
-
-        imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                if (holder.mProgressBar != null) {
-                    //TODO make drawable !!!
-                    holder.mProgressBar.setBackgroundResource(R.mipmap.eye_logo);
-                    view.refreshDrawableState();
-                    holder.mProgressBar.setVisibility(View.VISIBLE);
-
-                }
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                if (holder.mProgressBar != null) {
-                    Toast.makeText(getContext(), "Error loading: " + failReason.getCause().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    holder.mProgressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (holder.mProgressBar != null) {
-                    holder.mProgressBar.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                if (holder.mProgressBar != null) {
-                    holder.mProgressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
+//        MyModifications
+//        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
+//        ImageLoader imageLoader = ImageLoader.getInstance();
+//        imageLoader.init(configuration);
+//        Uri uri = getImageUri(mContext,bitmap);
+//        imageLoader.loadImage(String.valueOf(uri), new ImageLoadingListener() {
+//            @Override
+//            public void onLoadingStarted(String imageUri, View view) {
+//                if (holder.mProgressBar != null) {
+////                    //TODO make drawable !!!
+//                    holder.mProgressBar.setBackgroundResource(R.mipmap.eye_logo);
+//                    holder.mProgressBar.setVisibility(View.VISIBLE);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                if (holder.mProgressBar != null) {
+//                    Toast.makeText(getContext(), "Error loading: " + failReason.getCause().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//                    holder.mProgressBar.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                if (holder.mProgressBar != null) {
+//                    holder.mProgressBar.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingCancelled(String imageUri, View view) {
+//                if (holder.mProgressBar != null) {
+//                    holder.mProgressBar.setVisibility(View.GONE);
+//                }
+//            }
+//        });
         return convertView;
+    }
+
+
+    private Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 }
