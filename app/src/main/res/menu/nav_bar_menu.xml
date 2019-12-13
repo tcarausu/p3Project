@@ -12,12 +12,6 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:title=""/>
-
-<!--        <item android:title="" />-->
-
-
-        <item
             android:id="@+id/chengeUserNameItem"
             android:icon="@drawable/pen"
             android:title="@string/change_username" />
@@ -28,34 +22,23 @@
             android:title="@string/change_profile_image" />
 
         <item
-            android:id="@+id/reset_deviceItem"
-            android:icon="@drawable/device"
-            android:title="@string/reset_device" />
+            android:id="@+id/resetPassItem"
+            android:icon="@drawable/reset"
+            android:title="@string/reset_password" />
 
         <item
             android:id="@+id/signOutItem"
             android:icon="@drawable/log_out"
             android:title="@string/sign_out" />
 
-        <item
-            android:id="@+id/resetPassItem"
-            android:icon="@drawable/reset"
-            android:title="@string/reset_password" />
-
         <item android:title="" />
-        <item
-            android:title=""/>
+
 
         <item
             android:id="@+id/delete_accountItem"
-            android:icon="@drawable/delete_red"
-            tools:textcolor="@color/red"
+            android:icon="@drawable/warning"
             android:title="@string/delete_account" />
     </group>
 
 
-
-
-
-
-    </menu>
+</menu>

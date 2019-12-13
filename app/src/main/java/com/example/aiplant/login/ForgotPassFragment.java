@@ -38,7 +38,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);
         mContext = getActivity();
-        mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
+        mongoDbSetup = MongoDbSetup.getInstance(mContext);
         findWidgets(v);
 
         return v;
@@ -55,7 +55,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
 
     /**
      * @param forgot_email_text is the String value take from the Forgot Password Email Field
-     *                          <p>
+     * <p>
      *This method Handles UserPasswordAuthProviderClient data provided by the Stitch Authentication.
      *In case the Task is successful the User is sent an email with the a link where he can make a new password.
      *Followed by the user being redirected to Login so that he could proceed with the login.

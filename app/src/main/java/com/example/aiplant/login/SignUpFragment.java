@@ -53,7 +53,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
         mContext = getActivity();
 
-        mongoDbSetup = ((LoginActivity) getActivity()).getMongoDbForLaterUse();
+        mongoDbSetup = MongoDbSetup.getInstance(mContext);
 
         loadingBar = new ProgressDialog(this.getContext());
         findWidgets(v);
@@ -161,9 +161,9 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
      * @param email    is the String value take from the Email Field
      * @param password is the String value take from the Password Field
      *                 <p>
-     *This method Handles UserPasswordAuthProviderClient data provided by the Stitch Authentication.
-     *In case the Task is successful the User is sent an email with the a link where he can make a new password.
-     *Followed by the user being redirected to Login so that he could proceed with the login.
+     *                 This method Handles UserPasswordAuthProviderClient data provided by the Stitch Authentication.
+     *                 In case the Task is successful the User is sent an email with the a link where he can make a new password.
+     *                 Followed by the user being redirected to Login so that he could proceed with the login.
      */
     private void registerToMongoDbWithEmail(String email, String password) {
 

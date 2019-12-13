@@ -29,8 +29,7 @@ public class NotificationService extends Service {
         return null;
     }
 
-    public static void createNotification(Context context, String titleNotification,
-                                          String textNotification,AtomicInteger requestCode) {
+    public static void createNotification(Context context, String titleNotification, String textNotification, AtomicInteger requestCode) {
         Intent intent = new Intent(context, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode.get(), intent, 0);
 

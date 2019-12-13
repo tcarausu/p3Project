@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -36,8 +35,10 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
+import com.example.aiplant.cameraandgallery.PictureConversion;
+import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.login.LoginActivity;
-import com.example.aiplant.model.Plant;
+import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.model.User;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.GridImageAdapter;
@@ -61,7 +62,6 @@ import org.bson.BsonBinary;
 import org.bson.Document;
 import org.bson.types.Binary;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
 
-public class User_Profile extends AppCompatActivity implements View.OnClickListener, AccountSettingsFragment.OnFragmentInteractionListener {
+public class User_Profile extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "User_Profile";
     private static final int ACTIVITY_NUM = 2, NUM_GRID_COLUMNS = 3, REQUEST_CODE = 11, REQUEST_CAMERA = 22, REQUEST_GALLERY = 33;
@@ -89,7 +89,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     //context and view
     private FragmentManager fragmentManager;
     private Context mContext;
-    OnGridImageSelectedListener onGridImageSelectedListener;
     private InputMethodManager mInputManager;
 
     //database
@@ -101,12 +100,14 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private ArrayList<Document> docs;
-    private Document fetchedDoc;
+    private Document fetchedDoc, document;
     private Uri uri;
     private Bitmap bitmap;
     private User user;
     private SharedPreferences prefs;
     private boolean has_changed_profile_image;
+    private PictureConversion pictureConverter;
+    private Thread t2;
 
     //Methods
 
@@ -116,14 +117,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     private void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
-    }
-
-    private Uri getUri() {
-        return uri;
-    }
-
-    private void setUri(Uri uri) {
-        this.uri = uri;
     }
 
     private Document getFetchedDoc() {
@@ -144,13 +137,24 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         mInputManager = (InputMethodManager) getSystemService((INPUT_METHOD_SERVICE));
         prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         has_changed_profile_image = prefs.getBoolean("prefs", false);
+        pictureConverter = new PictureConversion();
 
         initLayout();
-        checkPermissions();
         setupBottomNavigationView();
-        setupGridView();
-        buttonListeners();
         connectDb();
+
+        t2 = new Thread() {
+            @Override
+            public void run() {
+                fetchUPlants();
+            }
+        };
+        t2.run();
+
+//        checkPermissions();
+//        setupGridView();
+
+        buttonListeners();
         navigationViewClickListener();
 
     }
@@ -200,11 +204,12 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     private void deleteAccount() {
         String id = mStitchUser.getId();
-        mStitchAuth.removeUser().addOnCompleteListener(task -> {
+        mStitchAuth.removeUserWithId(id).addOnCompleteListener(task -> {
             if (task.isSuccessful())
-                mStitchAuth.removeUserWithId(id);
-            mStitchAuth.logoutUserWithId(id);
-            mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
+//                mStitchAuth.removeUserWithId(id);
+//            mStitchAuth.logoutUserWithId(id);
+
+                mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
         }).addOnFailureListener(e -> {
             Log.d(TAG, "deleteAccount: error: " + e.getCause());
         });
@@ -251,27 +256,17 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
     private void connectDb() {
         mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
-        Stitch.initialize(mContext);
-        mongoDbSetup.runAppClientInit();
-        mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
+        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+//        Stitch.initialize(mContext);
+//        mongoDbSetup.runAppClientInit();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
 
         fetchUserData();
     }
 
-    private byte[] mBitmapToArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        return stream.toByteArray();
-    }
 
-    private Bitmap arrayToBitmap(byte[] array) {
-        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(array, 0, array.length);
-        return compressedBitmap;
-    }
-
-    public void initLayout() {
+    private void initLayout() {
         //topLayout widgets
         mDrawerLayout = findViewById(R.id.drawer_layout);
         usernameEditText = findViewById(R.id.username_editText);
@@ -315,24 +310,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         saveProfile_piceButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.saveUserNameButton:
-                saveUsername();
-                break;
-
-            case R.id.profilePicture:
-                optionDialog();
-                break;
-
-            case R.id.saveProfilePictureButton:
-                editUserPicture();
-                break;
-        }
-    }
-
     private void changedProfileImage() {
         if (!has_changed_profile_image) {//this is used to make Glide read from the entry edited_pic not picture to avoid errors. we set the boolean to true
             SharedPreferences.Editor editor = prefs.edit();
@@ -350,7 +327,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void editUserPicture() {
         String logged_user_id = mStitchUser.getId();
         RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
-        byte[] pwr = mBitmapToArray(getBitmap());
+        byte[] pwr = pictureConverter.bitmapToByteArray(getBitmap());
         BsonBinary bsonBinary = new BsonBinary(pwr);
         Log.d(TAG, "editUserPicture: bson: " + pwr.length);
         Log.d(TAG, "editUserPicture: bson: " + bsonBinary.getData().length);
@@ -408,6 +385,23 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void fetchUPlants() {
+        try {
+            String logged_user_id = mStitchAuth.getUser().getId();
+            RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));
+            user_coll.findOne(new Document("user_id", logged_user_id)).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    document = (Document) task.getResult();
+                    setupGridView(document);
+                }
+            }).addOnFailureListener(e ->
+                    Log.d(TAG, "fetchPlantData error: " + e.getCause()));
+
+        } catch (Exception e) {
+            Log.d(TAG, "fetchPlantData error: " + e.getCause());
+        }
+    }
+
     /**
      * @param userDoc document fetched from database
      * @throws NullPointerException if any of the elements is null.
@@ -426,7 +420,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
             //conversion
             byte[] data = edited_pic.getData(); // get data
-            Bitmap b = arrayToBitmap(data); // convert to bitmap
+            Bitmap b = pictureConverter.byteArrayToBitmap(data); // convert to bitmap
             user = new User(id, name, email, photoURL, num_of_plants, birthday, data);// create a user
 
             userNameTextView.setText(name);
@@ -443,20 +437,26 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveUsername() {
-
+        String username = userNameTextView.getText().toString();
+        usernameEditText.setText(username);
         hideEditText();
-        String username = usernameEditText.getText().toString();
-        if (TextUtils.isEmpty(username)) {
-            usernameEditText.setError("Nothing here!");
-        } else {
-            Log.d(TAG, "Typed username: " + username);
-            usernameEditText.setVisibility(View.INVISIBLE);
-            saveUsernameButton.setVisibility(View.INVISIBLE);
-            userNameTextView.setVisibility(View.VISIBLE);
-            userNameTextView.setText(username);
-            hideKeyboard();
-            editUserNameData();
-        }
+
+        saveUsernameButton.setOnClickListener(view -> {
+            if (TextUtils.isEmpty(username)) {
+                usernameEditText.setError("Nothing here!");
+            } else {
+                String newUserName = usernameEditText.getText().toString();
+                userNameTextView.setText(newUserName);
+                Log.d(TAG, "Typed username: " + username);
+                usernameEditText.setVisibility(View.INVISIBLE);
+                saveUsernameButton.setVisibility(View.INVISIBLE);
+                userNameTextView.setVisibility(View.VISIBLE);
+                userNameTextView.setText(username);
+                hideKeyboard();
+                editUserNameData();
+            }
+        });
+
     }
 
     @Override
@@ -542,84 +542,111 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setupGridView() {
-        Log.d(TAG, "setupGridView: Setting up GridView");
-
-        final ArrayList<Plant> posts = new ArrayList<>();
-
-        int gridWidth = getResources().getDisplayMetrics().widthPixels;
-        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-
-        gridView.setColumnWidth(imageWidth);
-
-        ArrayList<String> imgURLs = new ArrayList<>();
-
-        String testURL1 = "https://images.homedepot-static.com/productImages/a0592d4a-af16-41a7-969d-d96ee38bc57a/svn/dark-brown-sunnydaze-decor-plant-pots-dg-844-64_1000.jpg";
-        String testURL2 = "https://homebnc.com/homeimg/2017/02/02-front-door-flower-pots-ideas-homebnc.jpg";
-        String testURL3 = "https://i.pinimg.com/236x/5e/af/81/5eaf818de906fb0375e1049d0c7e69a5--pink-geranium-geranium-pots.jpg";
-        String testURL4 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj_aHmQHzRu9pUQcNDO5X3T8h9X_fyyf8NcEmScFi12UcDrf6OvA&s";
-        String testURL5 = "https://images-na.ssl-images-amazon.com/images/I/41La2UGe7vL.jpg";
-        String testURL6 = "https://steemitimages.com/640x0/https://img.esteem.ws/cw9ugt462u.jpg";
-        String testURL7 = "https://d2gr5kl7dt2z3t.cloudfront.net/blog/wp-content/uploads/2015/01/bonsai-514906_640-446x600.jpg";
-        String testURL8 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0jkWxGA7fdAUzOkOutZPNoicW71m8BRGWuG-0pV0Uqt_ZdU6&s";
-        imgURLs.add(testURL1);
-        imgURLs.add(testURL2);
-        imgURLs.add(testURL3);
-        imgURLs.add(testURL4);
-        imgURLs.add(testURL5);
-        imgURLs.add(testURL6);
-        imgURLs.add(testURL7);
-        imgURLs.add(testURL8);
-        GridImageAdapter adapter = new GridImageAdapter(this, R.layout.layout_grid_imageview,
-                "", imgURLs);
-
-        gridView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        gridView.setOnItemClickListener((parent, view, position, id) ->
-                onGridImageSelectedListener.onGridImageSelected(posts.get(position), ACTIVITY_NUM));
-
-    }
-
     /**
-     * Bottom Navigation View setup
-     */
-    private void setupBottomNavigationView() {
-        bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
-        BottomNavigationViewHelper.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
+     * @param document<>< fetched doc from the database   />
+     *                    After fetcheing the document, we use it to create an object of a Plant
+     *                    Then we populate the ArrayList() with the bitmap.
+     **/
+    private void setupGridView(Document document) {
+        Log.d(TAG, "setupGridView: Setting up GridView");
+        if (mongoDbSetup.checkInternetConnection(mContext)) {
 
-    }
+            try {
+                int gridWidth = getResources().getDisplayMetrics().widthPixels;
+                int imageWidth = gridWidth / NUM_GRID_COLUMNS;
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+                String user_id = document.getString("user_id");
+                String plant_id = document.getString("profile_id");
+                String plant_name = document.getString("name");
+                String birthday = document.getString("birthday");
 
-    }
+                ArrayList<Integer> humidity = document.get("humidity", ArrayList.class);
+                ArrayList<Integer> temperature = document.get("temperature", ArrayList.class);
+                ArrayList<Integer> sunlight = document.get("sunlight", ArrayList.class);
 
-    private void hideKeyboard() {
-        if (Build.VERSION.SDK_INT <= 23) {
-            mInputManager.hideSoftInputFromWindow((this.getCurrentFocus()).getWindowToken(), 0);
-        }
-    }
+                int hum_min = humidity.get(0);
+                int hum_max = humidity.get(1);
+                int tem_min = temperature.get(0);
+                int tem_max = temperature.get(1);
+                int light_min = sunlight.get(0);
+                int light_max = sunlight.get(1);
+                int measured_humidity = document.get("measured_humidity", Integer.class);
+                int measured_temperature = document.get("measured_temperature", Integer.class);
+                int measured_sunlight = document.get("measured_sunlight", Integer.class);
 
-    public interface OnGridImageSelectedListener {
-        void onGridImageSelected(Plant plant, int activityNr);
-    }
+                Binary pic = document.get("edited_pic", Binary.class);
+                byte[] data = pic.getData(); // get data
+                Bitmap b = pictureConverter.byteArrayToBitmap(data);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+                PlantProfile p_Profile = new PlantProfile(user_id, plant_id, plant_name, birthday, hum_min, hum_max, tem_min, tem_max,
+                        light_min, light_max, data, measured_humidity, measured_temperature, measured_sunlight);
+
+                gridView.setColumnWidth(imageWidth);
+                final ArrayList<PlantProfile> plantProfiles = new ArrayList<>();
+                ArrayList<Bitmap> bitmaps = new ArrayList<>();
+
+                plantProfiles.add(p_Profile);
+                bitmaps.add(b);
+                GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, bitmaps);
+                gridView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+                gridView.setOnItemClickListener((parent, view, position, id) -> {
+                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                });
+
+            } catch (Exception e) {
+                Log.d(TAG, "setupGridView: error; " + e.getMessage());
+            }
+        } else {
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.saveUserNameButton:
+                saveUsername();
+                break;
+
+            case R.id.profilePicture:
+                optionDialog();
+                break;
+
+            case R.id.saveProfilePictureButton:
+                editUserPicture();
+                break;
+        }
+    }
+
+
+    /**
+     * Bottom Navigation View setup
+     */
+    public void setupBottomNavigationView() {
+        BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
+        BottomNavigationView bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        bnh.enableNavigation(mContext, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setChecked(true);
+
+    }
+
+    private void hideKeyboard() {
+        View v = getCurrentFocus();//.keyboardNavigationClusterSearch(getCurrentFocus(), Path.Direction.CW.);
+        if (Build.VERSION.SDK_INT <= 23) {
+            mInputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 

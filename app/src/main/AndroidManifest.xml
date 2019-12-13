@@ -27,27 +27,27 @@
         <activity
             android:name=".home.HomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize|adjustPan">
 
         </activity>
-
-        <activity android:name=".device_connection.DeviceConnectionActivity">
-
-        </activity>
+        <activity
+            android:name=".device_connection.DeviceConnectionActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan" />
 
         <activity
 
             android:name=".search.SearchActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:screenOrientation="portrait">
 
         </activity>
 
         <activity
             android:name=".user_profile.User_Profile"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize|adjustPan"
+            android:screenOrientation="portrait" >
 
         </activity>
 
@@ -66,13 +66,17 @@
         <activity
             android:name=".login.LoginActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
-
+            android:windowSoftInputMode="adjustResize|adjustPan">
 
         </activity>
 
         <service
             android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".services.ScheduledFetch"
             android:enabled="true"
             android:exported="true" />
 

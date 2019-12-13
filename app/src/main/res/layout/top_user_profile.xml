@@ -7,13 +7,13 @@
 
 
     <LinearLayout
-        tools:context=".user_profile.User_Profile"
         android:id="@+id/user_profile_pic_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".user_profile.User_Profile">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,9 +26,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="50dp"
                 android:background="@drawable/avatar_final"
                 android:elevation="4dp"
-                android:layout_marginEnd="50dp"
                 android:padding="5dp"
                 app:civ_border="true"
                 app:civ_border_color="@color/green_dark" />
@@ -37,11 +37,11 @@
                 android:id="@+id/prgressBar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:elevation="4dp"
-                android:progressTint="@color/green_dark"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:visibility="invisible" />
+                android:background="@color/white"
+                android:progressTint="@color/red"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/userNameTextView"
@@ -49,8 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profilePicture"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="5dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:padding="5dp"
                 android:text="@string/no_username"
                 android:textAlignment="center"
@@ -64,12 +63,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profilePicture"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/com_facebook_button_background_color_focused"
                 android:elevation="5dp"
                 android:hint="@string/choose_a_user_name"
-                android:padding="10dp"
+                android:padding="3dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:visibility="invisible" />
@@ -81,10 +79,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/username_editText"
-                android:layout_toEndOf="@id/username_editText"
-                android:onClick="onClick"
-                android:padding="5dp"
+                android:layout_alignParentEnd="true"
                 android:drawableEnd="@drawable/check"
+                android:onClick="onClick"
                 android:text="@string/save"
                 android:textAlignment="center"
                 android:textAllCaps="false"
@@ -97,12 +94,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/saveUserNameButton"
-                android:layout_toEndOf="@id/username_editText"
+                android:layout_alignParentEnd="true"
                 android:layout_marginBottom="15dp"
-                android:onClick="onClick"
-                android:padding="5dp"
-                android:elevation="5dp"
                 android:drawableEnd="@drawable/check"
+                android:elevation="5dp"
+                android:onClick="onClick"
                 android:text="@string/save"
                 android:textAlignment="center"
                 android:textAllCaps="false"

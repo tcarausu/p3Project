@@ -12,58 +12,58 @@
     android:orientation="vertical"
     tools:context=".user_profile.User_Profile">
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/useThisFragmentID"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-        <LinearLayout
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/useThisFragmentID"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+
+        <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_weight=".7">
 
 
-            <RelativeLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolBar"
+                style="@style/Theme.AppCompat.Light.NoActionBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/eyeplant_toprec"
+                app:titleTextColor="@color/green_dark">
 
+            </androidx.appcompat.widget.Toolbar>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".7">
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <include layout="@layout/top_user_profile" />
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolBar"
-                    style="@style/Theme.AppCompat.Light.NoActionBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@drawable/eyeplant_toprec"
-                    app:titleTextColor="@color/green_dark">
+            </LinearLayout>
 
-                </androidx.appcompat.widget.Toolbar>
+        </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".3">
 
-                    <include layout="@layout/top_user_profile" />
+            <include layout="@layout/layout_bottom_user_profile" />
 
-                </LinearLayout>
+            <include layout="@layout/layout_bottom_navigation" />
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".3">
-
-                <include layout="@layout/layout_bottom_user_profile" />
-
-                <include layout="@layout/layout_bottom_navigation" />
-
-            </RelativeLayout>
-        </LinearLayout>
-<!--    </FrameLayout>-->
+        </RelativeLayout>
+    </LinearLayout>
+    <!--    </FrameLayout>-->
 
     <com.google.android.material.navigation.NavigationView
 

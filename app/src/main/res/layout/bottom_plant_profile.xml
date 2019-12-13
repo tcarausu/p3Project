@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="3dp"
         android:background="@drawable/border_not_sharp"
         android:elevation="4dp"
         android:gravity="center">
@@ -107,8 +107,8 @@
                             android:id="@+id/humidity_current_value"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
-                            android:inputType="number"
                             android:layout_weight="2"
+                            android:inputType="number"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -121,8 +121,8 @@
                             android:layout_height="20dp"
                             android:layout_weight="2"
                             android:background="@null"
-                            android:textAlignment="center"
                             android:inputType="number"
+                            android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
@@ -135,38 +135,38 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="6"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    android:weightSum="6">
 
-                <TextView
-                    android:id="@+id/hum_min_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textColor="@color/black"
-                    android:textAlignment="center"
-                    android:layout_weight="2"
-                    android:text="@string/minimum_humidity" />
+                    <TextView
+                        android:id="@+id/hum_min_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/minimum_humidity"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/hum_current_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/measured" />
+                        android:text="@string/measured"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/hum_max_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/maximum_humidity" />
+                        android:text="@string/maximum_humidity"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
@@ -175,7 +175,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="3dp"
                 android:orientation="vertical"
                 android:weightSum="10">
 
@@ -236,8 +236,8 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="2"
-                            android:inputType="number"
                             android:background="@null"
+                            android:inputType="number"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -259,8 +259,8 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="2"
-                            android:inputType="number"
                             android:background="@null"
+                            android:inputType="number"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -273,38 +273,38 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="6"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    android:weightSum="6">
 
                     <TextView
                         android:id="@+id/temp_min_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/minimum_temperature" />
+                        android:text="@string/minimum_temperature"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/temp_current_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/measured" />
+                        android:text="@string/measured"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/temp_max_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/maximum_temperature" />
+                        android:text="@string/maximum_temperature"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -312,7 +312,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="3dp"
                 android:orientation="vertical"
                 android:weightSum="10">
 
@@ -366,8 +366,8 @@
                         android:layout_width="0dp"
                         android:layout_height="20dp"
                         android:layout_weight="2"
-                        android:inputType="number"
                         android:background="@null"
+                        android:inputType="number"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
@@ -390,8 +390,8 @@
                         android:layout_height="20dp"
                         android:layout_gravity="end"
                         android:layout_weight="2"
-                        android:inputType="number"
                         android:background="@null"
+                        android:inputType="number"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
@@ -403,38 +403,38 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="6"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    android:weightSum="6">
 
                     <TextView
                         android:id="@+id/light_min_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/minimum_humidity" />
+                        android:text="@string/minimum_humidity"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/light_current_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/measured" />
+                        android:text="@string/measured"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/light_max_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:textAlignment="center"
                         android:layout_weight="2"
-                        android:text="@string/maximum_humidity" />
+                        android:text="@string/maximum_humidity"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
@@ -457,15 +457,15 @@
 
             <ImageView
                 android:id="@+id/mood_pic"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
                 android:contentDescription="@string/mood" />
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </merge>
