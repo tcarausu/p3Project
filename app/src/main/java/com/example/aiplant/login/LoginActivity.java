@@ -4,10 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +29,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
@@ -51,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "LoginActivity";
     private static final String Google_Tag = "GoogleActivity";
 
-    //Google signIn
+    //Google googleSignIn
     private static final int RC_SIGN_IN = 9001;
 
     //database
@@ -61,10 +58,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private CallbackManager mCallbackManager;
     private StitchAuth mStitchAuth;
     private StitchUser mStitchUser;
-    private Document updateDoc, fetchedDOc;
+    private Document updateDoc;
 
     // widgets
-    private MaterialButton loginButton;
     private TextView click_here_text, sign_up_text, orView, forgotPass_logIn;
     private RelativeLayout loginLayout;
     private EditText mEmailField, mPasswordField;
@@ -100,8 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mGoogleSignInClient = MongoDbSetup.getGoogleSignInClient();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
-        Log.d(TAG, "auth: user " + mStitchAuth.getUser());
-        Log.d(TAG, "auth: isLoggedIn: " + mStitchAuth.isLoggedIn());
+
         setMongoDbForLaterUse(mongoDbSetup);
     }
 
@@ -128,7 +123,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void buttonListeners() {
-
         findViewById(R.id.button_id_log_in).setOnClickListener(this);
         findViewById(R.id.googleSignInButton).setOnClickListener(this);
         findViewById(R.id.forgotPass_logIn).setOnClickListener(this);
@@ -143,12 +137,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
+                // Google Sign In was successful, get Firebase GoogleSignIn
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
 
                 handleGoogleSignInResult(task);
-
 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -157,6 +150,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     * Add Listener to Stitch Auth to check for user to be Logged In
+     */
     private void addListener() {
         listener = new StitchAuthListener() {
             @Override
@@ -169,6 +165,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         };
     }
 
+    /**
+     * This methods utilises the Google API for appropriate input.
+     * <p>
+     * In case of appropriate input, we proceed with checking WiFi state followed by retrieval of Google Credentials.
+     * <p>
+     * After retrieving the MongoDb collection we check the credentials for correct ones in database, if the Task is successful,
+     * we retrieve Stitch Users data (from Stitch Authentication), checking null input then checking if the user exists in database,
+     * either way it continues with the User being redirected to database.
+     * <p>
+     * If the Task is unsuccessful it will throw you the exception.
+     */
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         GoogleSignInAccount account = null;
         try {
@@ -184,6 +191,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Signing in");
         progressDialog.setMessage("Signing in, please wait...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setIcon(R.drawable.ai_plant);
+        progressDialog.show();
+
         mStitchAuth.loginWithCredential(googleCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
@@ -203,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     birthday = "01/01/1919";
                 }
                 if (photoURL == null) {
-                    photoURL = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+                    photoURL = randomAvatarURL;
                 }
                 Log.d(TAG, "google sign in result: " + "\n" + "user_id:" + id + "\n" + "displayName: " + displayName + "\n" + "email: " + email
                         + "\n" + "PictureURL: " + photoURL);
@@ -233,6 +244,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    /**
+     * This methods retrieves data from both email and password fields and checks each field for appropriate input.
+     * <p>
+     * In case of appropriate input, we proceed with checking WiFi state followed by retrieval of User Credentials.
+     * <p>
+     * After retrieving the MongoDb collection we check the credentials for correct ones in database, if the Task is successful,
+     * we retrieve Stitch Users data (from Stitch Authentication), checking null input then checking if the user exists in database,
+     * either way it continues with the User being redirected to database.
+     * <p>
+     * If the Task is unsuccessful it will throw you the exception.
+     */
     private void loginEmailMongoDb() {
 
         String emailToUse = mEmailField.getText().toString();
@@ -260,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(), "Please choose password", Toast.LENGTH_SHORT).show();
 
         } else if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
         } else {
             progressDialog.show();
@@ -293,7 +315,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         birthday = "01/01/1919";
                     }
                     if (photo == null) {
-                        photo = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
+                        photo = randomAvatarURL;
                     }
 
                     updateDoc = new Document("logged_user_id", client_id).append("name", firstName + lastName).append("email", mail)
@@ -328,22 +350,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private boolean fieldChecker(String email, String pass) {
-
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
-            Toast.makeText(getApplicationContext(), "Please type in email and password", Toast.LENGTH_SHORT).show();
-            return false;
-        } else
-            return true;
-    }
-
-    private void signIn() {
+    /**
+     * Checks internet connection and in successful attempt it proceeds to do the Google Activity Result
+     */
+    private void googleSignIn() {
         if (mongoDbSetup.checkInternetConnection(mContext)) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         } else
-            Toast.makeText(getApplicationContext(), "Check Internet Connection", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -354,12 +369,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.button_id_log_in:
                 loginEmailMongoDb();
-//                new LoginWithCredentials().execute((Void[]) null);
-
                 break;
 
             case R.id.googleSignInButton:
-                signIn();
+                googleSignIn();
                 break;
 
             case R.id.forgotPass_logIn:
@@ -370,7 +383,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.add(R.id.useThisFragmentID, fragmentForgotPass).commit();
-
                 }
 
                 break;
@@ -381,13 +393,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     fragmentRegister = new SignUpFragment();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.addToBackStack(null);
-
                     fragmentTransaction.add(R.id.useThisFragmentID, fragmentRegister).commit();
                 }
 
                 break;
-
-
         }
 
     }
@@ -395,40 +404,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        if (mStitchAuth.isLoggedIn()) {
+        if (mStitchAuth.isLoggedIn() && mongoDbSetup.checkInternetConnection(mContext)) {
             mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-        }
+        } else
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-    }
-
-    private class LoginWithCredentials extends AsyncTask<Void, Void, Void> {
-
-        protected Void doInBackground(Void... param) {
-            Looper.prepare();
-            loginEmailMongoDb();
-            return null;
-        }
-
-        protected void onPostExecute(Void param) {
-
-            Toast.makeText(mContext, "Jobs Done", Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

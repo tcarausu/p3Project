@@ -524,7 +524,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "signOut: providerType: " + providerType);
         if (providerType.contains("google")) {
             hideKeyboard();
-//            mStitchAuth.removeAuthListener(mStitchAuthListener);
 
             mGoogleSignInClient.signOut();
             mStitchAuth.logout();
@@ -535,10 +534,9 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
         } else {
             hideKeyboard();
-//            mStitchAuth.removeAuthListener(mStitchAuthListener);
             String id = mStitchUser.getId();
             mStitchAuth.logoutUserWithId(id);
-//            mStitchAuth.logout();
+
             new Handler().postDelayed(() ->
                     mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class), 500);
         }
@@ -610,4 +608,30 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         void onGridImageSelected(Plant plant, int activityNr);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+
+        }
+    }
 }
