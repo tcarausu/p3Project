@@ -34,11 +34,9 @@ import com.example.aiplant.utility_classes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
-import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.BsonBinary;
 import org.bson.Document;
@@ -46,16 +44,13 @@ import org.bson.types.Binary;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.aiplant.R.drawable.mood_cold;
-import static com.example.aiplant.R.drawable.mood_hot;
 import static com.example.aiplant.R.drawable.mood_medium;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
@@ -157,9 +152,18 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                         textLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    topLayout.setVisibility(View.GONE);
-                    bottomLayout.setVisibility(View.GONE);
-                    textLayout.setVisibility(View.VISIBLE);
+                    if (!mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
+                        Toast.makeText(getActivity(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+                        topLayout.setVisibility(View.GONE);
+                        bottomLayout.setVisibility(View.GONE);
+                        textLayout.setVisibility(View.VISIBLE);
+
+                        textBtn.setText(getString(R.string.check_internet_connection));
+                    } else {
+                        topLayout.setVisibility(View.GONE);
+                        bottomLayout.setVisibility(View.GONE);
+                        textLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
 
@@ -186,10 +190,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         ArrayList humidityArray = profile.get("humidity", ArrayList.class);
         ArrayList temperatureArray = profile.get("temperature", ArrayList.class);
         ArrayList sunlightArray = profile.get("sunlight", ArrayList.class);
-
-        //Min ; max ( measured)
-
-        //water and light smaller  (we dont know)
 
         int min_hum = (int) humidityArray.get(0);
         int max_hum = (int) humidityArray.get(1);
@@ -235,9 +235,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             }
         }
 
-        if(isMoodT()&&isMoodS()&&isMoodH()){
+        if (isMoodT() && isMoodS() && isMoodH()) {
             mood_pic.setImageResource(R.drawable.mood_happy);
-        }else mood_pic.setImageResource(mood_medium);
+        } else mood_pic.setImageResource(mood_medium);
 
     }
 
@@ -268,7 +268,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         saveNameAndDateButton = v.findViewById(R.id.save_name_and_date);
         adjustConditionsButton = v.findViewById(R.id.adjust_conditions);
         saveChangesButton = v.findViewById(R.id.save_changes);
-//        showWeeklyFeed = v.findViewById(R.id.show_weekly_feed);
 
         //Sliders
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
@@ -326,8 +325,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                     // mood_pic.setImageResource(mood_medium);
                     setMoodH(false);
-                }
-                else setMoodH(true);
+                } else setMoodH(true);
             }
 
             @Override
@@ -356,8 +354,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                     //    mood_pic.setImageResource(mood_hot);
                     setMoodT(false);
-                }
-                else setMoodT(true);
+                } else setMoodT(true);
             }
 
             @Override
@@ -386,8 +383,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
                     //mood_pic.setImageResource(mood_medium);
                     setMoodS(false);
-                }
-                else setMoodS(true);
+                } else setMoodS(true);
             }
 
             @Override
@@ -402,8 +398,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         });
 
         adjustConditionsButton.setOnClickListener(this);
-
-//        showWeeklyFeed.setOnClickListener(this);
 
         saveChangesButton.setOnClickListener(this);
 

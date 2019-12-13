@@ -260,5 +260,6 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="check_internet_connection">Check Internet Connection</string>
     <string name="check_internet_connection_search_list">Can not load searched List, please Check Internet Connection</string>
     <string name="check_internet_connection_create_profile">Can not create a Plant Profile, please Check Internet Connection</string>
+    <string name="check_internet_connection_display_profile">Can not load your Plant Profile, please Check Internet Connection</string>
 
 </resources>
