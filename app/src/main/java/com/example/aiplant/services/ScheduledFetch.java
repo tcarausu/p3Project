@@ -29,7 +29,7 @@ import static com.mongodb.client.model.Updates.set;
 public class ScheduledFetch extends Service {
 
     private static final String TAG = "ScheduledFetch";
-    public static final int notify = 60000;  //interval between two services(Here Service run every 5 Minute=300000)
+    public static final int notify = 5000;  //interval between two services(Here Service run every 5 Minute=300000)
     private Timer mTimer = null;    //timer handling
     private Handler mHandler = new Handler();//
     private Context mContext;
@@ -92,7 +92,6 @@ public class ScheduledFetch extends Service {
     //class ClientService for handling task
     class ClientService extends TimerTask {
         private static final String TAG = "ClientService";
-
 
         private Document mDocument;
 
