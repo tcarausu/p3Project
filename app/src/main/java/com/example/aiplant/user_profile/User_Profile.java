@@ -151,9 +151,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         };
         t2.run();
 
-//        checkPermissions();
-//        setupGridView();
-
         buttonListeners();
         navigationViewClickListener();
 
@@ -206,9 +203,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         String id = mStitchUser.getId();
         mStitchAuth.removeUserWithId(id).addOnCompleteListener(task -> {
             if (task.isSuccessful())
-//                mStitchAuth.removeUserWithId(id);
-//            mStitchAuth.logoutUserWithId(id);
-
                 mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
         }).addOnFailureListener(e -> {
             Log.d(TAG, "deleteAccount: error: " + e.getCause());
@@ -257,8 +251,6 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void connectDb() {
         mongoDbSetup = MongoDbSetup.getInstance(getApplicationContext());
         mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
-//        Stitch.initialize(mContext);
-//        mongoDbSetup.runAppClientInit();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
 

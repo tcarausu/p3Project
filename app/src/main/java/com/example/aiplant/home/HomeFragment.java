@@ -601,6 +601,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                         && !TextUtils.isEmpty(flowerTimeEditText.getText().toString()) && validator.isValid(flowerTimeEditText.getText().toString())) {
                     plantProfileColl.updateOne(null, set("name", plantName), new RemoteUpdateOptions());
                     plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
+                    refreshDrawableState();
 
                 }
             }
@@ -657,6 +658,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                                 } else adjustConditions();
                             } else adjustConditions();
 
+
+                            //refresh if data is filled
                         } else
                             Log.e(TAG, "error");
                         return null;
