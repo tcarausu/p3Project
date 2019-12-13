@@ -150,6 +150,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     * Add Listener to Stitch Auth to check for user to be Logged In
+     */
     private void addListener() {
         listener = new StitchAuthListener() {
             @Override
@@ -162,6 +165,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         };
     }
 
+    /**
+     * This methods utilises the Google API for appropriate input.
+     * <p>
+     * In case of appropriate input, we proceed with checking WiFi state followed by retrieval of Google Credentials.
+     * <p>
+     * After retrieving the MongoDb collection we check the credentials for correct ones in database, if the Task is successful,
+     * we retrieve Stitch Users data (from Stitch Authentication), checking null input then checking if the user exists in database,
+     * either way it continues with the User being redirected to database.
+     * <p>
+     * If the Task is unsuccessful it will throw you the exception.
+     */
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         GoogleSignInAccount account = null;
         try {
@@ -390,26 +404,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        if (mStitchAuth.isLoggedIn()) {
+        if (mStitchAuth.isLoggedIn() && mongoDbSetup.checkInternetConnection(mContext)) {
             mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-        }
+        } else
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
+        if (!mongoDbSetup.checkInternetConnection(mContext)) {
+            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
 }

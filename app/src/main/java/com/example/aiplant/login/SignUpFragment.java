@@ -15,9 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.example.aiplant.R;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.material.button.MaterialButton;
@@ -123,8 +125,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             signUp_email.setError("Required");
             Toast.makeText(getContext(), "Please type in a valid email", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (TextUtils.isEmpty(user_name)) {
+        } else if (TextUtils.isEmpty(user_name)) {
             name_last_name.setError("Required");
             Toast.makeText(getContext(), "Please fill in with Name and Last Name", Toast.LENGTH_SHORT).show();
 
@@ -132,8 +133,7 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             pass_field.setError("Required");
             Toast.makeText(getContext(), "Please choose a password", Toast.LENGTH_SHORT).show();
 
-        }
-        else if (TextUtils.isEmpty(confPass)) {
+        } else if (TextUtils.isEmpty(confPass)) {
             confirm_pass.setError("Required");
             Toast.makeText(getContext(), "Please confirm password", Toast.LENGTH_SHORT).show();
 
@@ -152,20 +152,26 @@ public class SignUpFragment extends androidx.fragment.app.Fragment implements Vi
             loadingBar.setIcon(R.drawable.ai_plant);
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(false);
-            registerToMongoDbWithEmail(signUp_email, pass_field);
+            registerToMongoDbWithEmail(signUp_email.getText().toString(), pass_field.getText().toString());
         }
 
     }
 
-    private void registerToMongoDbWithEmail( EditText email,  EditText password) {
-        String emailToUse = String.valueOf(email.getText());
-        String passToUse = String.valueOf(password.getText());
+    /**
+     * @param email    is the String value take from the Email Field
+     * @param password is the String value take from the Password Field
+     *                 <p>
+     *This method Handles UserPasswordAuthProviderClient data provided by the Stitch Authentication.
+     *In case the Task is successful the User is sent an email with the a link where he can make a new password.
+     *Followed by the user being redirected to Login so that he could proceed with the login.
+     */
+    private void registerToMongoDbWithEmail(String email, String password) {
 
         UserPasswordAuthProviderClient emailPassClient = Stitch.
                 getDefaultAppClient()
                 .getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
 
-        emailPassClient.registerWithEmail(emailToUse, passToUse)
+        emailPassClient.registerWithEmail(email, password)
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Log.d("stitch", "Successfully sent account confirmation email");

@@ -53,14 +53,19 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
         send_forgot_instructions.setOnClickListener(this);
     }
 
-    private void handlePasswordReset(EditText forgot_email) {
-        String forgot_mail = forgot_email.getText().toString();
-
+    /**
+     * @param forgot_email_text is the String value take from the Forgot Password Email Field
+     *                          <p>
+     *This method Handles UserPasswordAuthProviderClient data provided by the Stitch Authentication.
+     *In case the Task is successful the User is sent an email with the a link where he can make a new password.
+     *Followed by the user being redirected to Login so that he could proceed with the login.
+     */
+    private void handlePasswordReset(String forgot_email_text) {
         UserPasswordAuthProviderClient emailPassClient = Stitch.getDefaultAppClient().getAuth().getProviderClient(
                 UserPasswordAuthProviderClient.factory
         );
 
-        emailPassClient.sendResetPasswordEmail(forgot_mail)
+        emailPassClient.sendResetPasswordEmail(forgot_email_text)
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Log.d("stitch", getResources().getString(R.string.sent_reset_email));
@@ -81,7 +86,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.send_forgot_instructions) {
-            handlePasswordReset(forgot_email);
+            handlePasswordReset(forgot_email.getText().toString());
         }
     }
 }
