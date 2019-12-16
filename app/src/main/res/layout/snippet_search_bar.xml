@@ -1,52 +1,67 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/mainGreen">
 
-        <Toolbar
-            android:id="@+id/profileToolBar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/rounded_corners">
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-            <RelativeLayout
+            <Toolbar
+                android:id="@+id/profileToolBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/rounded_corners"
+                android:layout_weight="90">
 
-                <ImageButton
-                    android:id="@+id/search_button_id"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="0dp"
-                    android:background="@drawable/input_fields_with_shadow"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="onClick"
-                    android:src="@drawable/button_search_green" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/search_bar_id"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="15dp"
-                    android:layout_toEndOf="@+id/search_button_id"
-                    android:background="@null"
-                    android:focusable="true"
-                    android:hint="@string/search_Hint"
-                    android:textSize="20sp" />
+                    <EditText
+                        android:id="@+id/search_bar_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:focusable="true"
+                        android:hint="@string/search_Hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:textSize="20sp" />
 
-            </RelativeLayout>
 
-        </Toolbar>
+                </LinearLayout>
+
+            </Toolbar>
+
+
+            <ImageButton
+                android:id="@+id/search_button_id"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:background="@drawable/input_fields_with_shadow"
+                android:clickable="true"
+                android:elevation="1dp"
+                android:focusable="true"
+                android:onClick="onClick"
+                android:src="@drawable/button_search_green"
+                android:layout_weight="10"/>
+        </LinearLayout>
+
 
     </com.google.android.material.appbar.AppBarLayout>
+
 
 </merge>

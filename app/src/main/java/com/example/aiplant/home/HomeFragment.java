@@ -298,17 +298,17 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light_current = v.findViewById(R.id.light_current_value);
         light_max = v.findViewById(R.id.light_max_value);
 
-        humidity_min_value_text = v.findViewById(R.id.hum_min_text);
-        humidity_current_value_text = v.findViewById(R.id.hum_current_text);
-        humidity_max_value_text = v.findViewById(R.id.hum_max_text);
+        humidity_min_value_text = v.findViewById(R.id.humidity_min_value_text);
+        humidity_current_value_text = v.findViewById(R.id.humidity_current_value_text);
+        humidity_max_value_text = v.findViewById(R.id.humidity_max_value_text);
 
-        temperature_min_value_text = v.findViewById(R.id.temp_min_text);
-        temperature_current_value_text = v.findViewById(R.id.temp_current_text);
-        temperature_max_value_text = v.findViewById(R.id.temp_max_text);
+        temperature_min_value_text = v.findViewById(R.id.temperature_min_value_text);
+        temperature_current_value_text = v.findViewById(R.id.temperature_current_value_text);
+        temperature_max_value_text = v.findViewById(R.id.temperature_max_value_text);
 
-        light_min_value_text = v.findViewById(R.id.light_min_text);
-        light_current_value_text = v.findViewById(R.id.light_current_text);
-        light_max_value_text = v.findViewById(R.id.light_max_text);
+        light_min_value_text = v.findViewById(R.id.light_min_value_text);
+        light_current_value_text = v.findViewById(R.id.light_current_value_text);
+        light_max_value_text = v.findViewById(R.id.light_max_value_text);
 
         humiditySeekBar = v.findViewById(R.id.humidity_slider);
         temperatureSeekBar = v.findViewById(R.id.temperature_slider);

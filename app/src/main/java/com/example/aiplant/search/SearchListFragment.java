@@ -1,14 +1,17 @@
 package com.example.aiplant.search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,11 +28,9 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class SearchListFragment extends Fragment implements View.OnClickListener {
-
     private String TAG = "SearchListFragment";
 
     //recycler view
@@ -41,6 +42,7 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
     private EditText search_bar;
 
     private MongoDbSetup mongoDbSetup;
+    private Context mContext ;
 
     private ArrayList<RecyclerViewPlantItem> listOfPlants = new ArrayList<>();
 
@@ -55,11 +57,9 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_plant_from_database, container, false);
-
-        mongoDbSetup =  MongoDbSetup.getInstance(getActivity());
-
+        mContext = getActivity();
+        mongoDbSetup = MongoDbSetup.getInstance(mContext);
         findPlantsList();
-
         findWidgets(v);
 
         return v;
@@ -73,104 +73,114 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
         search_bar = v.findViewById(R.id.search_bar_id);
 
         searchButton.setOnClickListener(this);
+
+        search_bar.setOnEditorActionListener((v1, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchList();
+                return true;
+            }
+            return false;
+        });
     }
 
-    private void findPlantsList() {
-        if (!mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
-            Toast.makeText(getActivity(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
-        } else {
-            try {
 
-                RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plants));
+
+    /**
+     * Method that populates a list with documents from plant collection and sets up RecyclerView
+     * */
+    private void findPlantsList() {
+        try {
+
+            RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plants));
+            RemoteMongoIterable<Document> plantIterator = plants.find();
+
+            final ArrayList<Document> docsToUser = new ArrayList<>();
+
+            plantIterator
+                    .forEach(document -> {
+                        docsToUser.add(document);
+                        setPlantList(docsToUser);
+                    })
+                    .addOnFailureListener(e -> Log.e(TAG, "Error" + e.getCause()))
+
+                    .addOnCompleteListener(task -> {
+
+                        if (getPlantList().size() == docsToUser.size() && getPlantList().size() != 0) {
+                            setUpRecyclerView();
+                        }
+                    });
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Implementation for searching according to plant names
+     * */
+    private void searchList() {
+        String keyword = search_bar.getText().toString();
+        try {
+            if (!TextUtils.isEmpty(keyword)) {
+                RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName("plants");
                 RemoteMongoIterable<Document> plantIterator = plants.find();
 
-                final ArrayList<Document> docsToUser = new ArrayList<>();
+                docsToUse.clear();
+                listOfPlants.clear();
+                mRecyclerView.removeAllViews();
+
+                final ArrayList<Document> docs = new ArrayList<>();
 
                 plantIterator
                         .forEach(document -> {
-                            docsToUser.add(document);
-                            setPlantList(docsToUser);
+                            plant_name = document.getString("plant_name");
+                            picture_url = document.getString("picture_url");
+                            description = document.getString("description");
+
+                            if (plant_name.toLowerCase().contains(keyword.toLowerCase())) {
+
+                                docs.add(document);
+                                setPlantList(docs);
+                                listOfPlants.add(new RecyclerViewPlantItem(picture_url, plant_name, description));
+
+                            }
                         })
-                        .addOnFailureListener(e -> Log.e(TAG, "Error" + e.getCause()))
 
                         .addOnCompleteListener(task -> {
+                            if (listOfPlants.size() == 0) {
+                                search_bar.requestFocus();
+                                search_bar.setError("No match found");
 
-                            if (getPlantList().size() == docsToUser.size() && getPlantList().size() != 0) {
-                                setUpRecyclerView();
+                                listOfPlants.clear();
                             }
-                        });
-            } catch (Throwable e) {
-                Log.e(TAG, "NullPointerException: " + e.getMessage());
+                            mRecyclerView.setHasFixedSize(true);
+                            mLayoutManager = new LinearLayoutManager(getActivity());
+                            mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
+                            mAdapter.notifyDataSetChanged();
+
+                            mRecyclerView.setLayoutManager(mLayoutManager);
+                            mRecyclerView.setAdapter(mAdapter);
+                        })
+                        .addOnFailureListener(e -> Log.e(TAG, "error " + e.getMessage()));
+
+            } else if (searchButton.isPressed() && TextUtils.isEmpty(keyword)) {
+                search_bar.setError("Please type a keyword");
+                listOfPlants.clear();
+                findPlantsList();
             }
+        } catch (Throwable e) {
+            Log.e(TAG, "NullPointerException: " + e.getMessage());
         }
     }
 
-    private void searchList() {
-        String keyword = search_bar.getText().toString();
-        if (!mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
-            Toast.makeText(getActivity(), getString(R.string.check_internet_connection_search_list), Toast.LENGTH_LONG).show();
-        } else {
 
-            try {
-                if (!TextUtils.isEmpty(keyword)) {
-                    RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName("plants");
-                    RemoteMongoIterable<Document> plantIterator = plants.find();
-
-                    docsToUse.clear();
-                    listOfPlants.clear();
-                    mRecyclerView.removeAllViews();
-
-                    final ArrayList<Document> docs = new ArrayList<>();
-
-                    plantIterator
-                            .forEach(document -> {
-                                plant_name = document.getString("plant_name");
-                                picture_url = document.getString("picture_url");
-                                description = document.getString("description");
-
-                                if (plant_name.toLowerCase().contains(keyword.toLowerCase())) {
-
-                                    docs.add(document);
-                                    setPlantList(docs);
-                                    listOfPlants.add(new RecyclerViewPlantItem(picture_url, plant_name, description));
-
-                                }
-                            })
-
-                            .addOnCompleteListener(task -> {
-                                if (listOfPlants.size() == 0) {
-                                    search_bar.requestFocus();
-                                    search_bar.setError("No match found");
-
-                                    listOfPlants.clear();
-                                }
-                                mRecyclerView.setHasFixedSize(true);
-                                mLayoutManager = new LinearLayoutManager(getActivity());
-                                mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
-                                mAdapter.notifyDataSetChanged();
-
-                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                mRecyclerView.setAdapter(mAdapter);
-                            })
-                            .addOnFailureListener(e -> Log.e(TAG, "error " + e.getMessage()));
-
-                } else if (searchButton.isPressed() && TextUtils.isEmpty(keyword)) {
-                    search_bar.setError("Please type a keyword");
-                    listOfPlants.clear();
-                    findPlantsList();
-                }
-            } catch (Throwable e) {
-                Log.e(TAG, "NullPointerException: " + e.getMessage());
-            }
-        }
-
-    }
-
+    /**
+     * Method for setting up the recycler view using an adapter
+     * and in case the list has not been received from database it populates it*/
     private void setUpRecyclerView() {
 
-        if (listOfPlants.size() == 0) {
-            populatePlantList();
-        }
+            if (listOfPlants.size() == 0) {
+                populatePlantList();
+            }
 
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -180,25 +190,6 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void populatePlantList() {
-        for (Document doc : getPlantList()) {
-            String picture = doc.getString("picture_url");
-            String name = doc.getString("plant_name");
-            String description = doc.getString("description");
-            ArrayList sunlightArray = doc.get("sunlight", ArrayList.class);
-            String min_sun = sunlightArray.get(0).toString();
-            String max_sun = sunlightArray.get(1).toString();
-            ArrayList temperatureArray = doc.get("temperature", ArrayList.class);
-            String min_temp = temperatureArray.get(0).toString();
-            String max_temp = temperatureArray.get(1).toString();
-            ArrayList humidityArray = doc.get("humidity", ArrayList.class);
-            String min_humidity = humidityArray.get(0).toString();
-            String max_humidity = humidityArray.get(1).toString();
-
-            listOfPlants.add(new RecyclerViewPlantItem(picture, name, description, min_sun, max_sun, min_temp, max_temp, min_humidity, max_humidity));
-
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -227,6 +218,30 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
 
     public void setDocsToUse(List<Document> docsToUse) {
         this.docsToUse = docsToUse;
+    }
+
+    /**
+     * Method for population the list of plant with actual item objects
+     * with information received from documents*/
+
+    private void populatePlantList(){
+
+        for (Document doc : getPlantList()) {
+            String picture = doc.getString("picture_url");
+            String name = doc.getString("plant_name");
+            String description = doc.getString("description");
+            ArrayList sunlightArray = doc.get("sunlight", ArrayList.class);
+            String min_sun = sunlightArray.get(0).toString();
+            String max_sun = sunlightArray.get(1).toString();
+            ArrayList temperatureArray = doc.get("temperature", ArrayList.class);
+            String min_temp = temperatureArray.get(0).toString();
+            String max_temp = temperatureArray.get(1).toString();
+            ArrayList humidityArray = doc.get("humidity", ArrayList.class);
+            String min_humidity = humidityArray.get(0).toString();
+            String max_humidity = humidityArray.get(1).toString();
+
+            listOfPlants.add(new RecyclerViewPlantItem(picture, name, description, min_sun, max_sun, min_temp, max_temp, min_humidity, max_humidity));
+        }
     }
 
 }

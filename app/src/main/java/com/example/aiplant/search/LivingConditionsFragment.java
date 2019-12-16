@@ -76,6 +76,10 @@ public class LivingConditionsFragment extends Fragment {
 
     }
 
+    /**
+     * Method that inflates the widgets and sets up click listeners
+     * */
+
     private void findWidgets(View v) {
         mPlantProfilePic = v.findViewById(R.id.plant_profile_image);
         mPlantName = v.findViewById(R.id.plant_name);
@@ -114,7 +118,7 @@ public class LivingConditionsFragment extends Fragment {
             Fragment plantProfilePragment = fragmentManager1.findFragmentById(R.id.plant_list_fragment);
 
             plantProfilePragment = new PlantProfileFragment();
-            bundleFunctionality(plantProfilePragment);
+            getBundleFunctionality(plantProfilePragment);
 //                     if (livingCondFragment == null) {
             FragmentTransaction fragmentTransaction1 = fragmentManager1.beginTransaction();
             fragmentTransaction1.addToBackStack(null);
@@ -123,7 +127,11 @@ public class LivingConditionsFragment extends Fragment {
 
     }
 
-    private void bundleFunctionality(Fragment plantProfilePragment) {
+    /**
+     * Method for passing measurements to another fragment
+     * */
+
+    private void getBundleFunctionality(Fragment plantProfilePragment) {
         Bundle bundle = new Bundle();
 
         bundle.putString("minSun",mMinSun.getText().toString());

@@ -134,6 +134,13 @@
                     </TextView>
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/percent">
+
+                    </TextView>
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -157,6 +164,13 @@
 
                     </TextView>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/percent">
+
+                    </TextView>
+
 
                 </LinearLayout>
 
@@ -172,7 +186,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:layout_weight="45"
+                        android:layout_weight="46"
                         android:drawableStart="@drawable/temperature"
                         android:text="@string/temperature"
                         android:textColor="@color/black"
@@ -185,7 +199,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="10"
                         android:text="@string/minimum_value"
-                        android:textSize="12sp">
+                        android:textSize="12sp"
+                        >
 
                     </TextView>
 
@@ -199,6 +214,13 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/celsius">
 
                     </TextView>
 
@@ -222,6 +244,13 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/celsius">
 
                     </TextView>
 
@@ -269,6 +298,13 @@
                     </TextView>
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/percent">
+
+                    </TextView>
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -288,6 +324,13 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/percent">
 
                     </TextView>
 

@@ -61,7 +61,6 @@ public class MongoDbSetup {
     }
 
     public synchronized static MongoDbSetup getInstance(Context context) {
-
             if (context == null) {
                 MongoDbSetup mongoDbSetup = new MongoDbSetup(context);
                 runAppClientInit();

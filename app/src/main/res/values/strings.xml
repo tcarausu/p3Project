@@ -166,12 +166,14 @@ All provisions of the Terms which by their nature should survive termination sha
     <!--    Library-->
     <string name="library_info_text">Start adding your plants living conditions, by doing this you will see if the plant actual living conditions needs some changes.</string>
     <string name="add_plant_from_database_header">Have no idea?</string>
-    <string name="click_for_adding_from_database">Click button to find your plant living conditions</string>
-    <string name="click_to_add_plant_yourself">Click button to start adding your plant</string>
+    <string name="add_plant_from_scratch_header">Are you experienced?</string>
+    <string name="click_for_adding_from_database">Click button to find your plant from existing</string>
+    <string name="click_to_add_plant_yourself">Click button to start creating a new plant profile</string>
     <string name="add_button">Add</string>
     <string name="click_for_living_conditions"><u>Click for more information</u>.</string>
     <string name="minimum_value">Min.</string>
     <string name="maximum_value">Max.</string>
+
 
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
@@ -263,5 +265,6 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="check_internet_connection_display_profile">Can not load your Plant Profile, please Check Internet Connection</string>
     <string name="your_garden">Your Garden</string>
     <string name="settings">Settings</string>
+
 
 </resources>

@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -23,8 +23,8 @@ import com.example.aiplant.create_profile.PlantProfileFragment;
 import com.example.aiplant.utility_classes.BottomNavigationViewHelper;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
@@ -56,6 +56,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private Context mContext;
     private StitchAppClient appClient;
 
+    private LinearLayout mAddPlantFromDBCard;
+    private LinearLayout mAddPlantFromScratch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +79,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-//        mongoDbSetup.runAppClientInit();
         mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
 
         mStitchAuth = mongoDbSetup.getStitchAuth();
@@ -84,6 +86,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         appClient = mongoDbSetup.getAppClient();
 
     }
+
+
+
+
+    public MongoDbSetup getMongoDbForLaterUse() {
+        return mongoDbSetup;
+    }
+
+    /**
+     * Method for inflating widgets and adding on click listeners
+     * */
 
     public void initLayout() {
         mSearchParam = findViewById(R.id.search_bar_id);
@@ -93,11 +106,36 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         recyclerView = findViewById(R.id.recyclerView);
         mPlantListFragment = findViewById(R.id.plant_list_fragment);
 
+        mAddPlantFromDBCard = findViewById(R.id.add_plant_from_database_layout);
+        mAddPlantFromScratch = findViewById(R.id.add_plant_from_scratch_card);
+
+        mPlantListButton.setOnClickListener(view -> {
+            Fragment searchListFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
+            if (searchListFragment == null) {
+                searchListFragment = new SearchListFragment();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.plant_list_fragment, searchListFragment).commit();
+            }
+        });
+
+        mCreatePlantProfile.setOnClickListener(view -> {
+
+            Fragment createPlantProfileFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
+            if (createPlantProfileFragment == null) {
+                createPlantProfileFragment = new PlantProfileFragment();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.plant_list_fragment, createPlantProfileFragment).commit();
+            }
+
+        });
+
     }
 
     public void buttonListeners() {
-        mPlantListButton.setOnClickListener(this);
-        mCreatePlantProfile.setOnClickListener(this);
+        mAddPlantFromDBCard.setOnClickListener(this);
+        mAddPlantFromScratch.setOnClickListener(this);
 
     }
 
@@ -106,7 +144,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.create_new_plant_button:
+            case R.id.add_plant_from_scratch_card:
                 Fragment createPlantProfileFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
                 if (createPlantProfileFragment == null) {
                     createPlantProfileFragment = new PlantProfileFragment();
@@ -115,9 +153,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     fragmentTransaction.replace(R.id.plant_list_fragment, createPlantProfileFragment).commit();
                 }
 
-                Log.d(TAG, "onClick: do something");
                 break;
-            case R.id.library_button:
+            case R.id.add_plant_from_database_layout:
                 Fragment searchListFragment = fragmentManager.findFragmentById(R.id.plant_list_fragment);
                 if (searchListFragment == null) {
                     searchListFragment = new SearchListFragment();
@@ -127,6 +164,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 }
 
                 break;
+
         }
     }
 
@@ -134,32 +172,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
      * Bottom Navigation View setup
      */
     public void setupBottomNavigationView() {
-        BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
-        BottomNavigationView bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
+
+        BottomNavigationViewHelper bnvh = new BottomNavigationViewHelper();
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        bnh.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
+        bnvh.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!mongoDbSetup.checkInternetConnection(mContext)) {
-            Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();
-
-        }
-    }
 
 }

@@ -62,6 +62,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new CardViewHolder(view);
     }
 
+
+    /**
+     * Method that inflates a single item view by inflating all the widgets
+     * from a given item*/
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
 
@@ -190,6 +194,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         }
 
+
+        /**
+         * Method for passing information about a plant to a fragment
+         * */
         private void bundleFunctionality(Fragment livingConditions) {
             Bundle bundle = new Bundle();
             String plant_name = mPlantName.getText().toString();
