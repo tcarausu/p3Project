@@ -40,6 +40,8 @@ public class MongoDbSetup {
     private static StitchAuth stitchAuth;
     private static StitchUser stitchUser;
 
+
+
     // Configure Google Sign In
     private GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("556950483367-9ekr8qotdiv7md2r1tckudh09damgof0.apps.googleusercontent.com") //token taken from firebase authentication data
@@ -48,26 +50,24 @@ public class MongoDbSetup {
             .build();
 
     private static InitAppClient initAppClient = new InitAppClient();
-
     private static GoogleSignInClient mGoogleSignInClient;
-    private List<Document> plantsList;
-    private List<Document> plant_profiles;
 
     private MongoDbSetup(Context context) {
         synchronized (this) {
             mContext = context;
-            mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
             Stitch.initialize(mContext);
+            mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
         }
-
     }
 
-    public static MongoDbSetup getInstance(Context context) {
-        if (context == null) {
-            MongoDbSetup mongoDbSetup = new MongoDbSetup(context);
-            runAppClientInit();
-            return mongoDbSetup;
-        } else runAppClientInit();
+    public synchronized static MongoDbSetup getInstance(Context context) {
+
+            if (context == null) {
+                MongoDbSetup mongoDbSetup = new MongoDbSetup(context);
+                runAppClientInit();
+                return mongoDbSetup;
+            } else runAppClientInit();
+
         return new MongoDbSetup(context);
     }
 
@@ -76,7 +76,7 @@ public class MongoDbSetup {
                 appClient = Stitch.initializeDefaultAppClient("eye-plant-tilrj"));
     }
 
-    public GoogleSignInClient getGoogleSignInClient() {
+    public synchronized GoogleSignInClient getGoogleSignInClient() {
         return mGoogleSignInClient;
     }
 
@@ -93,7 +93,7 @@ public class MongoDbSetup {
         return appClient;
     }
 
-    private String getAppClientId() {
+    private synchronized String getAppClientId() {
         return Objects.requireNonNull(getStitchUser()).getId();
     }
 

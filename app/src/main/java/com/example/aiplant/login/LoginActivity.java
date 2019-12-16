@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,6 +29,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.mongodb.stitch.android.core.StitchAppClient;
@@ -71,7 +74,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private StitchAppClient appClient;
     private String client_id, lastName, firstName, mail, birthday, photo;
     private String randomAvatarURL = "https://drive.google.com/file/d/1x2e9wUyRtzV9nEL2u9QeVDWvAWfVnh5d/view?usp=sharing";
-    private ProgressDialog progressDialog;
     private User emailPassUser;
     private User googleUser;
     private Document googleUserUpdateDoc;
@@ -132,8 +134,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, get Firebase GoogleSignIn
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
-
-                handleGoogleSignInResult(task);
+                synchronized (account) {
+                    handleGoogleSignInResult(task);
+                }
 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -170,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         GoogleSignInAccount account = null;
         try {
-            account = completedTask.getResult(ApiException.class);
+            account = completedTask.getResult(Exception.class);
 
             if (account != null) {
                 GoogleCredential googleCredential = new GoogleCredential(account.getServerAuthCode());
@@ -227,11 +230,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     progressDialog.dismiss();
                     Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                     mStitchAuth.logout();
-                    Log.d(TAG, "signInResult:failed code=" + e.getCause());
+                    Log.d(TAG, "signInResult:failed code=" + e.getLocalizedMessage());
                 });
             }
-        } catch (ApiException e) {
-            Log.d(TAG, "signInResult:failed code=" + e.getCause());
+        } catch (Exception e) {
+            Log.d(TAG, "signInResult:failed code=" + e.getLocalizedMessage());
         }
 
     }
@@ -262,26 +265,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (TextUtils.isEmpty(emailToUse) && TextUtils.isEmpty(passToUse)) {
             mEmailField.setError("Required.");
             mPasswordField.setError("Required.");
-
             Toast.makeText(getApplicationContext(), "Please type in email and password", LENGTH_SHORT).show();
-
-        } else if (TextUtils.isEmpty(emailToUse)) {
+        }
+        else if (TextUtils.isEmpty(emailToUse)) {
             mEmailField.setError("Required.");
             Toast.makeText(getApplicationContext(), "Please type in email or phone", LENGTH_SHORT).show();
 
-        } else if (TextUtils.isEmpty(passToUse)) {
+        }
+        else if (TextUtils.isEmpty(passToUse)) {
             mPasswordField.setError("Required.");
             Toast.makeText(getApplicationContext(), "Please choose password", LENGTH_SHORT).show();
-
-        } else if (!mongoDbSetup.checkInternetConnection(mContext)) {
+        }
+        else if (!mongoDbSetup.checkInternetConnection(mContext)) {
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), LENGTH_SHORT).show();
 
         } else {
             progressDialog.show();
-
             SecureRandom random = new SecureRandom();
             int randomInt = random.nextInt((int) Math.pow(10.0, 1000.0));
-
             UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
             final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
 
@@ -296,7 +297,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     photo = mStitchUser.getProfile().getPictureUrl();
                     byte[] data = new byte[]{};
                     BsonBinary edited_pic = new BsonBinary(data);
-
                     if (firstName == null) {
                         firstName = "user";
                     }
@@ -309,18 +309,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (photo == null) {
                         photo = randomAvatarURL;
                     }
-
                     updateDoc = new Document("logged_user_id", client_id).append("name", firstName + lastName).append("email", mail)
                             .append("picture", photo).append("number_of_plants", 0).append("birthday", birthday)
                             .append("edited_pic", edited_pic);
 
                     Toast.makeText(mContext, "Logged in successfully", LENGTH_SHORT).show();
-
                     emailPassUser = new User(updateDoc.getString("logged_user_id"), updateDoc.getString("name"),
                             updateDoc.getString("email"), updateDoc.getString("picture"),
                             updateDoc.getInteger("number_of_plants"), updateDoc.getString("birthday"),
                             updateDoc.get("edited_pic", BsonBinary.class));
-
                     addListener();
                     mongoDbSetup.checkIfExists(user_coll, updateDoc);
 
@@ -338,6 +335,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(mContext, "Log in Error: " + e.getMessage(), LENGTH_SHORT).show();
                 mStitchAuth.logout();
             });
+
 
         }
     }

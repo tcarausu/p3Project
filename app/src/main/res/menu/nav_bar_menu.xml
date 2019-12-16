@@ -1,44 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <menu
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     tools:showDividers="middle"
     tools:theme="@style/Theme.Design.NoActionBar">
-
-
     <group android:checkableBehavior="single">
-
         <item
             android:id="@+id/chengeUserNameItem"
             android:icon="@drawable/pen"
             android:title="@string/change_username" />
-
         <item
             android:id="@+id/changeProfPictureItem"
             android:icon="@drawable/face"
             android:title="@string/change_profile_image" />
-
         <item
             android:id="@+id/resetPassItem"
             android:icon="@drawable/reset"
             android:title="@string/reset_password" />
-
         <item
             android:id="@+id/signOutItem"
             android:icon="@drawable/log_out"
             android:title="@string/sign_out" />
-
         <item android:title="" />
-
-
         <item
             android:id="@+id/delete_accountItem"
             android:icon="@drawable/warning"
             android:title="@string/delete_account" />
     </group>
-
-
 </menu>

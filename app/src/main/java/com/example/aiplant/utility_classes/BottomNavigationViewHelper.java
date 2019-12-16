@@ -17,6 +17,10 @@ public class BottomNavigationViewHelper {
     //default state HomeActivity
     private static int bottomNavigationState;
 
+    public  void setBottomNavigationState(int bottomNavigationState) {
+        BottomNavigationViewHelper.bottomNavigationState = bottomNavigationState;
+    }
+
     public BottomNavigationViewHelper() {
     }
 

@@ -22,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
@@ -84,7 +85,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current,
             humidity_min_value_text, humidity_current_value_text, humidity_max_value_text,
             temperature_min_value_text, temperature_current_value_text, temperature_max_value_text,
-            light_min_value_text, light_current_value_text, light_max_value_text;
+            light_min_value_text, light_current_value_text, light_max_value_text, textBtn;
     private SeekBar humiditySeekBar, temperatureSeekBar, lightSeekBar;
     private ImageView mood_pic;
     private RelativeLayout home_Layout;
@@ -95,16 +96,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private boolean has_changed_profile_image;
     private SharedPreferences prefer;
     private Document plantProfileDoc;
-
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private Bitmap bitmap;
     private BsonBinary bsonBinary;
-
     private String user_id;
-
     private RelativeLayout topLayout, bottomLayout, textLayout;
-    private TextView textBtn;
-
     //validators
     private DateValidator validator = new DateValidatorUsingDateFormat("dd/MM/yyyy");
     private boolean moodH, moodS, moodT;
@@ -112,116 +108,77 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     //Fetch
     private NotificationService mNotificationService;
     private PictureConversion pictureConverter;
-
     private ExecutorService executors = Executors.newFixedThreadPool(2);
-    private Thread t1, t2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        mContext = getActivity();
+        setup();
+        initLayout(v);
+        checkPermissions();
+        disableEditText();
+        getActivity().startService(new Intent(mContext, ScheduledFetch.class));
+        fetchedDoc();
+        refreshDrawableState();
+        buttonListeners();
+        return v;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    private void setup() {
+        mContext = getActivity();
         mongoDbSetup = ((HomeActivity) getActivity()).getMongoDbForLaterUse();
         mStitchUser = mongoDbSetup.getStitchUser();
         user_id = mStitchUser.getId();
         prefer = getActivity().getSharedPreferences("prefer", MODE_PRIVATE);
         has_changed_profile_image = prefer.getBoolean("prefer", false);
         mNotificationService = new NotificationService();
-
-        initLayout(v);
-        checkPermissions();
-        disableEditText();
-
-        t1 = new Thread() {
-            @Override
-            public void run() {
-                getActivity().startService(new Intent(mContext, ScheduledFetch.class));
-            }
-        };
-
-        t2 = new Thread() {
-            @Override
-            public void run() {
-                fetchedDoc();
-                refreshDrawableState();
-            }
-        };
-
-
-        ClientServer();
-        fetchingData();
-        buttonListeners();
-
-        return v;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ClientServer();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    private void ClientServer() {
-        executors.execute(t1);
-    }
-
-    private void fetchingData() {
-        executors.execute(t2);
     }
 
     private void fetchedDoc() {
         try {
-            String value = mStitchUser.getId(),
-                    key = "user_id",
-                    collectionName = "plant_profiles";
-            RemoteMongoCollection<Document> collection = mongoDbSetup.getCollectionByName(collectionName);
-            collection.findOne(eq(key, value)).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Document doc1 = task.getResult();
-                    setPlantProfileDoc(doc1);
-                    topLayout.setVisibility(View.VISIBLE);
-                    bottomLayout.setVisibility(View.VISIBLE);
-                    textLayout.setVisibility(View.GONE);
-                    if (doc1 != null) {
-                        setupPlantProfile(getPlantProfileDoc());
+            String value = mStitchUser.getId(), key = "user_id", collectionName = "plant_profiles";
+            if (mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
+                RemoteMongoCollection<Document> collection = mongoDbSetup.getCollectionByName(collectionName);
+                collection.findOne(eq(key, value)).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()&& task.getResult() != null) {
                         topLayout.setVisibility(View.VISIBLE);
                         bottomLayout.setVisibility(View.VISIBLE);
                         textLayout.setVisibility(View.GONE);
+                        new Handler().postDelayed(()->
+                                setupPlantProfile(task.getResult()),1000);
                     } else {
                         topLayout.setVisibility(View.GONE);
-                        bottomLayout.setVisibility(View.GONE);
-                        textLayout.setVisibility(View.VISIBLE);
+                            bottomLayout.setVisibility(View.GONE);
+                            textLayout.setVisibility(View.VISIBLE);
                     }
-                } else {
-                    if (!mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
-                        Toast.makeText(getActivity(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-                        topLayout.setVisibility(View.GONE);
-                        bottomLayout.setVisibility(View.GONE);
-                        textLayout.setVisibility(View.VISIBLE);
-
-                        textBtn.setText(getString(R.string.check_internet_connection));
-                    } else {
-                        topLayout.setVisibility(View.GONE);
-                        bottomLayout.setVisibility(View.GONE);
-                        textLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-            }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
-
+                }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+                topLayout.setVisibility(View.GONE);
+                bottomLayout.setVisibility(View.GONE);
+                textLayout.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             Log.d(TAG, "fetchedDoc: error: " + e.getCause());
         }
@@ -369,6 +326,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         profileImage.setOnClickListener(this);
         change_picture.setOnClickListener(this);
         textBtn.setOnClickListener(this);
+        textLayout.setOnClickListener(this);
     }
 
     private void SeekBarRefresher(PlantProfile profileForUser) {
@@ -462,7 +420,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     }
 
-
     private void checkPermissions() {
         new Handler().post(() -> {
             if (Build.VERSION.SDK_INT >= 23) {
@@ -493,7 +450,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         lightSeekBar.refreshDrawableState();
 
     }
-
 
     private void disableEditText() {
         //name and date
@@ -562,15 +518,19 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             Log.d(TAG, "Error on camera/Gallery");
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+
+    }
+
     private void saveNameAndTime() {
         RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plant_profiles));
-
         plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
             String plantName = flowerNameEditText.getText().toString();
             String plantDate = flowerTimeEditText.getText().toString();
-
             if (task.isSuccessful()) {
-
                 if (getBitmap() != null) {
                     bitmap = getBitmap();
                     byte[] pwr = pictureConverter.bitmapToByteArray(bitmap);
@@ -749,14 +709,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         saveChangesButton.setVisibility(View.VISIBLE);
     }
 
-    private Document getPlantProfileDoc() {
-        return plantProfileDoc;
-    }
-
-    private void setPlantProfileDoc(Document plantProfileDoc) {
-        this.plantProfileDoc = plantProfileDoc;
-    }
-
     private boolean isMoodH() {
         return moodH;
     }
@@ -805,8 +757,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             case R.id.change_picture:
                 alertDialog();
                 break;
-            case R.id.create_textbtn:
+            case R.id.text_layout:
+                ((HomeActivity) getActivity()).bnh.setBottomNavigationState(1);
                 startActivity(new Intent(getContext(), SearchActivity.class));
+                break;
         }
     }
 
