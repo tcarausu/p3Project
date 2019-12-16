@@ -113,19 +113,7 @@ public class ImagePicker {
             }
             Log.d(TAG, "selectedImage: " + selectedImage);
 
-            bm = getImageResized(context, selectedImage);
-            if (Build.VERSION.SDK_INT>=23) {
-                int rotation = getRotation(context, selectedImage, isCamera);
-                if (bm.getHeight() >= bm.getWidth()) {
-                    if (isCamera) {
-                        bm = rotate(bm, rotation);
-                    } else bm = rotate(bm, rotation);
-                } else {
-
-                    bm = rotate(bm, rotation);
-                }
-            }
-            else bm = getImageResized(context, selectedImage);
+             bm = getImageResized(context, selectedImage);
 
         }
         return bm;

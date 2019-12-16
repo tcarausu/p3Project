@@ -108,9 +108,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgotPass_logIn = findViewById(R.id.forgotPass_logIn);
 
         loginLayout = findViewById(R.id.login_activity);
-        click_here_text = findViewById(R.id.click_here_text);
-        sign_up_text = findViewById(R.id.sign_up_text);
-        sign_up_text.setPaintFlags(sign_up_text.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        click_here_text = findViewById(R.id.click_here_sign_up);
+        click_here_text.setPaintFlags(click_here_text.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         orView = findViewById(R.id.orView);
         fragmentManager = getSupportFragmentManager();
 
@@ -377,7 +376,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
 
-            case R.id.sign_up_text:
+            case R.id.click_here_sign_up:
                 Fragment fragmentRegister = fragmentManager.findFragmentById(R.id.useThisFragmentID);
                 if (fragmentRegister == null) {
                     fragmentRegister = new SignUpFragment();

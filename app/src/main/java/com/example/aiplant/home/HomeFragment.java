@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
@@ -161,16 +162,16 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             if (mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
                 RemoteMongoCollection<Document> collection = mongoDbSetup.getCollectionByName(collectionName);
                 collection.findOne(eq(key, value)).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()&& task.getResult() != null) {
+                    if (task.isSuccessful() && task.getResult() != null) {
                         topLayout.setVisibility(View.VISIBLE);
                         bottomLayout.setVisibility(View.VISIBLE);
                         textLayout.setVisibility(View.GONE);
-                        new Handler().postDelayed(()->
-                                setupPlantProfile(task.getResult()),1000);
+                        new Handler().postDelayed(() ->
+                                setupPlantProfile(task.getResult()), 1000);
                     } else {
                         topLayout.setVisibility(View.GONE);
-                            bottomLayout.setVisibility(View.GONE);
-                            textLayout.setVisibility(View.VISIBLE);
+                        bottomLayout.setVisibility(View.GONE);
+                        textLayout.setVisibility(View.VISIBLE);
                     }
                 }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
             } else {
@@ -233,7 +234,10 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         light_min.setText(String.valueOf(profileForUser.getMinSun()));
         light_max.setText(String.valueOf(profileForUser.getMaxSun()));
-        SeekBarRefresher(profileForUser);
+
+        HumiditySeekBarData(profileForUser);
+        TemperatureSeekBarData(profileForUser);
+        SunlightSeekBarData(profileForUser);
 
         if (has_changed_profile_image) {
             Glide.with(getActivity()).load(bitmap).centerCrop().into(profileImage);
@@ -329,95 +333,53 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         textLayout.setOnClickListener(this);
     }
 
-    private void SeekBarRefresher(PlantProfile profileForUser) {
+    private void HumiditySeekBarData(PlantProfile profileForUser) {
+        int progress = humiditySeekBar.getProgress();
+        if (progress <= profileForUser.getMinHumid()) {
+            humiditySeekBar.setProgress(profileForUser.getMinHumid());
+            setMoodH(false);
 
-        humiditySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                hum_current.setText(String.valueOf(profileForUser.getMeasured_humidity()));
-                if (progress < profileForUser.getMinHumid()) {
-                    seekBar.setProgress(profileForUser.getMinHumid());
-                    setMoodH(false);
+            mNotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+        }
+        if (progress >= profileForUser.getMaxHumid()) {
+            humiditySeekBar.setProgress(profileForUser.getMaxHumid());
+            setMoodH(false);
 
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
-                }
-                if (progress > profileForUser.getMaxHumid()) {
-                    seekBar.setProgress(profileForUser.getMaxHumid());
-                    setMoodH(false);
+            mNotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
+        } else setMoodH(true);
+    }
 
-                    NotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
-                } else setMoodH(true);
-            }
+    private void TemperatureSeekBarData(PlantProfile profileForUser) {
+        int progress = temperatureSeekBar.getProgress();
+        if (progress <= profileForUser.getMinTemp()) {
+            temperatureSeekBar.setProgress(profileForUser.getMinHumid());
+            setMoodT(false);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            mNotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+        } else if (progress >= profileForUser.getMaxTemp()) {
+            humiditySeekBar.setProgress(profileForUser.getMaxHumid());
 
-            }
+            setMoodT(false);
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            mNotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
 
-            }
-        });
+        } else setMoodT(true);
+    }
 
-        temperatureSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                temp_current.setText(String.valueOf(profileForUser.getMeasured_temperature()));
+    private void SunlightSeekBarData(PlantProfile profileForUser) {
+        int progress = lightSeekBar.getProgress();
+        if (progress <= profileForUser.getMinSun()) {
+            lightSeekBar.setProgress(profileForUser.getMinSun());
+            setMoodS(false);
 
-                if (progress < profileForUser.getMinTemp()) {
-                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+            mNotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
 
-                    //  mood_pic.setImageResource(mood_cold);
-                    setMoodT(false);
-                } else if (progress > profileForUser.getMaxTemp()) {
-                    NotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
+        } else if (progress >= profileForUser.getMaxSun()) {
+            lightSeekBar.setProgress(profileForUser.getMaxSun());
+            setMoodS(false);
 
-                    //    mood_pic.setImageResource(mood_hot);
-                    setMoodT(false);
-                } else setMoodT(true);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                light_current.setText(String.valueOf(profileForUser.getMeasured_sunlight()));
-
-                if (progress < profileForUser.getMinSun()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
-
-                    //mood_pic.setImageResource(mood_medium);
-                    setMoodS(false);
-                } else if (progress > profileForUser.getMaxSun()) {
-                    NotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
-
-                    //mood_pic.setImageResource(mood_medium);
-                    setMoodS(false);
-                } else setMoodS(true);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
+            mNotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
+        } else setMoodS(true);
     }
 
     private void checkPermissions() {
@@ -490,6 +452,14 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             editor.apply();
             fetchedDoc();
         }
+    }
+
+    private void refreshPage() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (Build.VERSION.SDK_INT >= 26) {
+            ft.setReorderingAllowed(false);
+        }
+        ft.detach(this).attach(this).commit();
     }
 
     @Override

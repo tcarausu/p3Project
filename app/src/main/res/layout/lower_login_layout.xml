@@ -11,7 +11,6 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
-            android:layout_below="@id/sign_up"
             android:layout_alignStart="@+id/orView" />
 
         <TextView
@@ -30,7 +29,6 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
-            android:layout_below="@id/sign_up"
             android:layout_alignEnd="@id/orView" />
 
         <com.google.android.gms.common.SignInButton
@@ -42,59 +40,6 @@
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
             android:visibility="visible" />
-
-        <!--        <com.facebook.login.widget.LoginButton-->
-        <!--            android:id="@+id/facebookLoginButton"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_below="@+id/googleSignInButton"-->
-        <!--            android:layout_centerInParent="true"-->
-        <!--            android:layout_marginTop="25dp"-->
-        <!--            android:layout_marginBottom="25dp" />-->
-
-
-        <LinearLayout
-            android:id="@+id/sign_up"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/googleSignInButton"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="50dp"
-            android:orientation="horizontal"
-            android:weightSum="10">
-
-            <TextView
-                android:id="@+id/click_here_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="5.5"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="onClick"
-                android:text="@string/hint_click_here"
-                android:textAlignment="textEnd"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="normal"
-                app:autoSizeMaxTextSize="0dp" />
-
-            <TextView
-                android:id="@+id/sign_up_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4.5"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="onClick"
-                android:text="@string/hint_sign_up"
-                android:textAlignment="textStart"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="normal"
-                app:autoSizeMaxTextSize="0dp" />
-
-        </LinearLayout>
 
     </RelativeLayout>
 

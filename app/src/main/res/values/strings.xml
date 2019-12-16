@@ -102,15 +102,28 @@
     <string name="registration_success">Registration successful, please check your email inbox for confirmation</string>
     <!--DESCRIPTION-->
 
-    <!--    Login/SignUp-->
+    <!--    Login-->
     <string name="back">Back</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="required">Required</string>
     <string name="signUp">Sign Up</string>
     <string name="signIn">Sign In</string>
     <string name="send">Send</string>
+    <string name="please_em_pass">Please type in email and password</string>
+    <string name="please_em">Please type in email or phone</string>
+    <string name="please_pass">Please type in your password</string>
 
-    <!--    SignUp-->
+    <!--Sign Up-->
+    <string name="please_fill">Please fill in the information and Agree to Terms and Conditions</string>
+    <string name="please_valid_email">Please type in a valid email</string>
+    <string name="please_valid_name">Please fill in with Name and Last Name</string>
+    <string name="please_choose_pass">Please choose a password</string>
+    <string name="please_conf_pass">Please confirm password</string>
+    <string name="pass_no_match">Password does not match</string>
+    <string name="pass_must_match">Error: Password must match confirm password. Try again</string>
+    <string name="agree_to_terms_first">Agree to Terms and Conditions first</string>
+    <string name="agree_terms_toast">Error: Agree to Terms and Conditions first</string>
     <string name="register_for_free">Register for Free</string>
     <string name="i_agree_to">I agree to </string>
     <string name="terms_and_conditions">Terms and Conditions.</string>
@@ -265,6 +278,10 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="check_internet_connection_display_profile">Can not load your Plant Profile, please Check Internet Connection</string>
     <string name="your_garden">Your Garden</string>
     <string name="settings">Settings</string>
+
+
+    <string name="reg_complete">Registration complete please verify your email</string>
+    <string name="click_here_sign_up">Click here to Sign up</string>
 
 
 </resources>

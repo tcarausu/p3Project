@@ -39,7 +39,11 @@ public class PictureConversion {
 
         return byteArray;
     }
-
+    public byte[] mBitmapToArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
     /**
      * Method that tansforrm a byte array into a bitmap.
      *
