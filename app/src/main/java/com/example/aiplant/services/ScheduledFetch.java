@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
@@ -88,14 +89,13 @@ public class ScheduledFetch extends Service {
             try {
                 String user_id = mMongoDbSetup.getStitchUser().getId();
                 RemoteMongoCollection plantProfile_coll = mMongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));//<-Fetching data from database->
-                plantProfile_coll.findOne(new Document("user_id", user_id))
-                        .continueWithTask(task -> {
+                plantProfile_coll.findOne(new Document("user_id", user_id)).continueWithTask(task -> {
                             if (task.isSuccessful() && task.getResult() != null) {  //if there is any corresponding document, we fetched it
                                 Document document = (Document) task.getResult();
                                 setDocument(document);
-                                return document; // we return to stop the task.
+                                return task.getResult(); // we return to stop the task.
                             } else
-                                return null; // if no match we just return the collection back with the task.
+                                return task.getException(); // if no match we just return the collection back with the task.
                         }).addOnFailureListener(e ->
                                 Log.d(TAG, "fetchPlantData error: " + e.getMessage()));//<-catching the  database error to prevent app crush->
                 if (getDocument().size() > 0) {
@@ -121,13 +121,19 @@ public class ScheduledFetch extends Service {
                     DatagramPacket recieved_packet = new DatagramPacket(receivedData, receivedData.length);//receiving
                     socket.send(send_packet);// <--send--->
                     socket.receive(recieved_packet);// <---receive-->
-                    byte[] bytes = recieved_packet.getData();
-                    int mea_hum = bytes[0], mea_light = bytes[1], mea_tem = bytes[2];
-                    plantProfile_coll.updateOne(null, set("measured_humidity", mea_hum), new RemoteUpdateOptions());// <--update database with the received data--->
-                    plantProfile_coll.updateOne(null, set("measured_temperature", mea_tem), new RemoteUpdateOptions());//<--update database with the received data--->
-                    plantProfile_coll.updateOne(null, set("measured_sunlight", mea_light), new RemoteUpdateOptions());//<--update database with the received data--->
-                    mTimer.purge();//purge it to start over again
+
+                    if (recieved_packet.getLength() > 0) {
+                        byte[] bytes = recieved_packet.getData();
+                        int mea_hum = bytes[0], mea_light = bytes[1], mea_tem = bytes[2];
+
+                        plantProfile_coll.updateOne(null, set("measured_humidity", mea_hum), new RemoteUpdateOptions());// <--update database with the received data--->
+                        plantProfile_coll.updateOne(null, set("measured_temperature", mea_tem), new RemoteUpdateOptions());//<--update database with the received data--->
+                        plantProfile_coll.updateOne(null, set("measured_sunlight", mea_light), new RemoteUpdateOptions());//<--update database with the received data--->
+                        mTimer.purge();//purge it to start over again
+                    }
+                    else Log.d(TAG, "run: NoTHING RECEIVED????");
                 }
+
             } catch (Exception e) {
                 Log.d(TAG, "fetchPlantData error: " + e.getMessage());//<--Catch exception to prevent app crush--->
             }

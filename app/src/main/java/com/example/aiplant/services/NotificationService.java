@@ -29,12 +29,10 @@ public class NotificationService extends Service {
         return null;
     }
 
-    public static void createNotification(Context context, String titleNotification, String textNotification, AtomicInteger requestCode) {
+    public  void createNotification(Context context, String titleNotification, String textNotification, AtomicInteger requestCode) {
         Intent intent = new Intent(context, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode.get(), intent, 0);
-
         NotificationCompat.Builder b = new NotificationCompat.Builder(context, "channel");
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (android.os.Build.VERSION.SDK_INT >= 23) {
@@ -88,5 +86,6 @@ public class NotificationService extends Service {
         }
 
     }
+
 }
 

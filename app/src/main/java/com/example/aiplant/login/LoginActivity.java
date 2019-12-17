@@ -87,11 +87,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mContext = getApplicationContext();
         connectMongoDb();
         mCallbackManager = CallbackManager.Factory.create();
-
         initLayout();
         buttonListeners();
-
-
     }
 
     private void connectMongoDb() {
@@ -99,14 +96,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
-
     }
 
     public void initLayout() {
         mEmailField = findViewById(R.id.email_id_logIn);
         mPasswordField = findViewById(R.id.password_id_logIn);
         forgotPass_logIn = findViewById(R.id.forgotPass_logIn);
-
         loginLayout = findViewById(R.id.login_activity);
         click_here_text = findViewById(R.id.click_here_sign_up);
         click_here_text.setPaintFlags(click_here_text.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -119,7 +114,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.button_id_log_in).setOnClickListener(this);
         findViewById(R.id.googleSignInButton).setOnClickListener(this);
         findViewById(R.id.forgotPass_logIn).setOnClickListener(this);
-
     }
 
     @Override

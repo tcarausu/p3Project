@@ -66,7 +66,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
 
         Bundle bundle = this.getArguments();
 
-        mongoDbSetup = MongoDbSetup.getInstance(getActivity());
+        mongoDbSetup =  MongoDbSetup.getInstance(getActivity());
         converter = new PictureConversion();
 
         profilePicture = view.findViewById(R.id.profilePicPlant_imgView);
@@ -148,14 +148,13 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 Bitmap bitmap = null;
                 try {
                     bitmap = ImagePicker.getImageFromResult(getContext(), resultCode, data);
-
-                    setPicture(bitmap);
-                    Glide.with(Objects.requireNonNull(getContext())).load(getPicture()).into(profilePicture);
-                    profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
+                setPicture(bitmap);
+                Glide.with(Objects.requireNonNull(getContext())).load(getPicture()).into(profilePicture);
+                profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
