@@ -70,7 +70,7 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 new Handler().postDelayed(() ->
-                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), LENGTH_LONG);
+                                        mongoDbSetup.intentWithFlag(getActivity(), getActivity(), LoginActivity.class), LENGTH_LONG);
 
                                 Toast.makeText(getActivity(), getResources().getString(R.string.sent_reset_email), LENGTH_LONG).show();
 

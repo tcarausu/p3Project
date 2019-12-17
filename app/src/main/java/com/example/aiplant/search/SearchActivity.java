@@ -79,8 +79,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
-
+        mGoogleSignInClient = mongoDbSetup.googleClient();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mongoDbSetup.getStitchUser();
         appClient = mongoDbSetup.getAppClient();

@@ -22,7 +22,6 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +29,6 @@ import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
@@ -45,6 +43,8 @@ import com.example.aiplant.utility_classes.GridImageAdapter;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -208,7 +208,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
      **/
     private void connectDb() {
         try {
-            mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+            mGoogleSignInClient = mongoDbSetup.googleClient();
             mStitchAuth = mongoDbSetup.getStitchAuth();
             mStitchUser = mStitchAuth.getUser();
             logged_user_id = mongoDbSetup.getStitchUser().getId();
@@ -223,7 +223,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void deleteAccountData() {
         try {
             String logged_user_id = mStitchUser.getId();
-            RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+            RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
             if (mongoDbSetup.checkInternetConnection(mContext)) {
                 user_coll.findOne(new Document("logged_user_id", logged_user_id)).continueWith(task -> {
                     if (task.isSuccessful()) {
@@ -231,14 +231,14 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                         progressDialog.dismiss();
                         mStitchAuth.removeUserWithId(logged_user_id);
                         mStitchAuth.logoutUserWithId(logged_user_id);
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
+                        mongoDbSetup.intentWithFlag(mContext, mContext, LoginActivity.class);
                         return user_coll.deleteOne((Document) task.getResult());
                     } else
                         backToNormal();
                     progressDialog.dismiss();
                     mStitchAuth.removeUserWithId(logged_user_id);
                     mStitchAuth.logoutUserWithId(logged_user_id);
-                    mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
+                    mongoDbSetup.intentWithFlag(mContext, mContext, LoginActivity.class);
                     return user_coll;
                 }).addOnFailureListener(e -> {
                     Log.d(TAG, "then: Error: " + e.getLocalizedMessage());
@@ -262,7 +262,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 progressDialog.show();
 
                 String user_id = mStitchUser.getId();
-                RemoteMongoCollection user_Plants_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));
+                RemoteMongoCollection user_Plants_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
                 user_Plants_coll.findOne(eq("user_id", user_id)).continueWith(task -> {
                     if (task.isSuccessful()) { //if we find a document
                         deleteAccountData();
@@ -348,7 +348,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void editUserPicture() {
         if (mongoDbSetup.checkInternetConnection(mContext)) {
             String logged_user_id = mStitchUser.getId();
-            RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+            RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
             byte[] pwr = pictureConverter.bitmapToByteArray(getBitmap());
             BsonBinary bsonBinary = new BsonBinary(pwr);
             Log.d(TAG, "editUserPicture: bson: " + pwr.length);
@@ -378,7 +378,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         if (mongoDbSetup.checkInternetConnection(mContext)) {
         String logged_user_id = mStitchUser.getId();
         String new_user_name = usernameEditText.getText().toString();
-        RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+        RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
         user_coll.findOne(eq("logged_user_id", logged_user_id))
                 .continueWithTask((Continuation<RemoteUpdateResult, Task<Document>>) task -> { //<-looping through database to find the requested data->
                     if (task.isSuccessful()) {
@@ -400,7 +400,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             if (mongoDbSetup.checkInternetConnection(mContext)) {
                 this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 String logged_user_id = mStitchAuth.getUser().getId();
-                RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+                RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
                 mProgressBar.setVisibility(View.VISIBLE);
                 user_coll.findOne(new Document("logged_user_id", logged_user_id)).continueWith(task -> {
                     if (task.isSuccessful())
@@ -431,7 +431,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         try {
             if (mongoDbSetup.checkInternetConnection(mContext)) {
             String logged_user_id = mStitchAuth.getUser().getId();
-            RemoteMongoCollection user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));
+            RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
             user_coll.findOne(new Document("user_id", logged_user_id)).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     document = (Document) task.getResult();
@@ -597,7 +597,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     logOutGoogle();
                     progressDialog.dismiss();
                     new Handler().postDelayed(() ->
-                            mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class), 500);
+                            mongoDbSetup.intentWithFlag(mContext, mContext, LoginActivity.class), 500);
 
                 } else {
                     hideKeyboard();
@@ -605,7 +605,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     logoutEMailUser();
                     new Handler().postDelayed(() -> {
                         progressDialog.dismiss();
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, LoginActivity.class);
+                        mongoDbSetup.intentWithFlag(mContext, mContext, LoginActivity.class);
                     }, 1000);
                 }
             } else
@@ -619,10 +619,14 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         try {
             if (mongoDbSetup.checkInternetConnection(mContext)) {
                 String id = mStitchUser.getId();
-                mStitchAuth.logoutUserWithId(id).continueWithTask(((Continuation) task -> {
-                    if (task.isSuccessful()) {
-                        return mStitchAuth.logoutUserWithId(id);
-                    } else return mStitchAuth.logout();
+                mGoogleSignInClient.signOut().addOnCompleteListener(((OnCompleteListener) task -> {
+                    if (task.isSuccessful() && task.getException() == null) {
+                        mGoogleSignInClient.signOut();
+                        mGoogleSignInClient.revokeAccess();
+                        mStitchAuth.logout();
+                    }
+                    else
+                        mStitchAuth.logout();
                 })).addOnFailureListener(e -> {
                     Log.d(TAG, "setupGridView: error; " + e.getMessage());//<-catch exception to prevent app crush -->
                 });
@@ -688,7 +692,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     gridView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     gridView.setOnItemClickListener((parent, view, position, id) -> {//<-clicklistener on position in gridView-->
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                        mongoDbSetup.intentWithFlag(mContext, mContext, HomeActivity.class);
                     });
                 } catch (Exception e) {
                     Log.d(TAG, "setupGridView: error; " + e.getMessage());//<-catch exception to prevent app crush -->

@@ -187,7 +187,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Log.d("stitch", "Successfully sent account confirmation email");
-                                new Handler().postDelayed(() -> mongoDbSetup.goToWhereverWithFlags(getActivity(),
+                                new Handler().postDelayed(() -> mongoDbSetup.intentWithFlag(getActivity(),
                                         getActivity(), LoginActivity.class), LENGTH_LONG);
                                 Toast.makeText(getContext(), getString(R.string.reg_complete), LENGTH_LONG).show();
                                 getActivity().finish();

@@ -26,7 +26,7 @@ import com.example.aiplant.cameraandgallery.PictureConversion;
 import com.example.aiplant.device_connection.DeviceConnectionActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
-import com.example.aiplant.utility_classes.DateValidator;
+import com.example.aiplant.interfcaes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 
@@ -231,7 +231,7 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                         Toast.makeText(getActivity(), getString(R.string.check_internet_connection_create_profile), Toast.LENGTH_LONG).show();
                     } else {
                         createProfile();
-                        mongoDbSetup.goToWhereverWithFlags(Objects.requireNonNull(getActivity()), getActivity(), DeviceConnectionActivity.class);
+                        mongoDbSetup.intentWithFlag(Objects.requireNonNull(getActivity()), getActivity(), DeviceConnectionActivity.class);
                     }
                 }
                 break;

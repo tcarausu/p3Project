@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+        mGoogleSignInClient = mongoDbSetup.googleClient();
         mStitchAuth = mongoDbSetup.getStitchAuth();
         mStitchUser = mStitchAuth.getUser();
     }
@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (account != null) {
                 GoogleCredential googleCredential = new GoogleCredential(account.getServerAuthCode());
-                final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+                final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
 
                 ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Signing in");
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         new Handler().postDelayed(() -> {
                             progressDialog.dismiss();
-                            mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                            mongoDbSetup.intentWithFlag(mContext, mContext, HomeActivity.class);
                         }, 0);
                     }
                 }).addOnFailureListener(e -> {
@@ -277,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             SecureRandom random = new SecureRandom();
             int randomInt = random.nextInt((int) Math.pow(10.0, 1000.0));
             UserPasswordCredential credential = new UserPasswordCredential(emailToUse, passToUse);
-            final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_users));
+            final RemoteMongoCollection<Document> user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
 
             mStitchAuth.loginWithCredential(credential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -316,7 +316,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     new Handler().postDelayed(() -> {
                         progressDialog.dismiss();
-                        mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                        mongoDbSetup.intentWithFlag(mContext, mContext, HomeActivity.class);
                     }, 0);
 
                     progressDialog.dismiss();
@@ -389,12 +389,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
         if (mongoDbSetup.checkInternetConnection(mContext)) {
             if (mStitchAuth.isLoggedIn()) {
-                mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
+                mongoDbSetup.intentWithFlag(mContext, mContext, HomeActivity.class);
             }
         } else {
-            if (mStitchAuth.isLoggedIn()) {
-                mongoDbSetup.goToWhereverWithFlags(mContext, mContext, HomeActivity.class);
-            }
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), LENGTH_SHORT).show();
 
         }

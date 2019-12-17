@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+        mGoogleSignInClient = mongoDbSetup.googleClient();
 
         appClient = mongoDbSetup.getAppClient();
 

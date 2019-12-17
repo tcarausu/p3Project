@@ -1,4 +1,4 @@
-package com.example.aiplant.utility_classes;
+package com.example.aiplant.interfcaes;
 
 public interface DateValidator {
     boolean isValid(String dateStr);

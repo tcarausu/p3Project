@@ -88,7 +88,7 @@ public class ScheduledFetch extends Service {
             Log.d(TAG, "run: is running");
             try {
                 String user_id = mMongoDbSetup.getStitchUser().getId();
-                RemoteMongoCollection plantProfile_coll = mMongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));//<-Fetching data from database->
+                RemoteMongoCollection plantProfile_coll = mMongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));//<-Fetching data from database->
                 plantProfile_coll.findOne(new Document("user_id", user_id)).continueWithTask(task -> {
                             if (task.isSuccessful() && task.getResult() != null) {  //if there is any corresponding document, we fetched it
                                 Document document = (Document) task.getResult();

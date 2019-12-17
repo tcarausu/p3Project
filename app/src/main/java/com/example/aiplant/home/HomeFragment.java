@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -41,7 +40,7 @@ import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.services.ScheduledFetch;
-import com.example.aiplant.utility_classes.DateValidator;
+import com.example.aiplant.interfcaes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
@@ -78,7 +77,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private static final String LAST_TEXT_NAME = "", LAST_TEXT_DATE = "";
 
     private Bundle savedInstanceState;
-
     //data
     private MongoDbSetup mongoDbSetup;
     private static StitchUser mStitchUser;
@@ -175,7 +173,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         try {
             String value = mStitchUser.getId(), key = "user_id", collectionName = "plant_profiles";
             if (mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
-                RemoteMongoCollection<Document> collection = mongoDbSetup.getCollectionByName(collectionName);
+                RemoteMongoCollection<Document> collection = mongoDbSetup.getCollection(collectionName);
                 collection.findOne(eq(key, value)).addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         topLayout.setVisibility(View.VISIBLE);
@@ -509,7 +507,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void saveNameAndTime() {
-        RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plant_profiles));
+        RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollection(getString(R.string.eye_plant_plant_profiles));
         plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
             String plantName = flowerNameEditText.getText().toString();
             String plantDate = flowerTimeEditText.getText().toString();
@@ -565,7 +563,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                 (dialog, id) ->
                 {
                     /// TODO: 11/29/2019  code for updating conditions in the database
-                    RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollectionByName("plant_profiles");
+                    RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollection("plant_profiles");
                     plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
                         if (task.isSuccessful()) {
                             ArrayList<Integer> humidityValues = new ArrayList<>();
@@ -752,7 +750,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         progressDialog.show();
 
         String user_id = mStitchUser.getId();
-        RemoteMongoCollection user_Plants_coll = mongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));
+        RemoteMongoCollection user_Plants_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
         user_Plants_coll.findOne(eq("user_id", user_id)).continueWith(task -> {
             if (task.isSuccessful()) { //if we find a document
                 refreshPage();
@@ -780,7 +778,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         adapterView.clearDisappearingChildren();
         switch (i) {
             case 0:
-                adapterView.setSelection(0);
+                adapterView.getSelectedView().setBackgroundColor(getResources().getColor(R.color.red));
+                adapterView.setSelection(0);// i want an empty place so we can
                 spinnerAdapter.notifyDataSetChanged();
                 break;
 

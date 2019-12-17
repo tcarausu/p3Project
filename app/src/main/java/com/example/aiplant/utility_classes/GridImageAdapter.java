@@ -67,47 +67,4 @@ public class GridImageAdapter extends ArrayAdapter<Bitmap> {
     }
 
 
-
-//        MyModifications
-//        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-//        ImageLoader imageLoader = ImageLoader.getInstance();
-//        imageLoader.init(configuration);
-//        Uri uri = getImageUri(mContext,bitmap);
-//        imageLoader.loadImage(String.valueOf(uri), new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//                if (holder.mProgressBar != null) {
-////                    //TODO make drawable !!!
-//                    holder.mProgressBar.setBackgroundResource(R.mipmap.eye_logo);
-//                    holder.mProgressBar.setVisibility(View.VISIBLE);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                if (holder.mProgressBar != null) {
-//                    Toast.makeText(getContext(), "Error loading: " + failReason.getCause().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//                if (holder.mProgressBar != null) {
-//                    holder.mProgressBar.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-
-//    }
-
-
 }

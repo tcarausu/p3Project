@@ -91,7 +91,7 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
     private void findPlantsList() {
         try {
 
-            RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName(getString(R.string.eye_plant_plants));
+            RemoteMongoCollection<Document> plants = mongoDbSetup.getCollection(getString(R.string.eye_plant_plants));
             RemoteMongoIterable<Document> plantIterator = plants.find();
 
             final ArrayList<Document> docsToUser = new ArrayList<>();
@@ -121,7 +121,7 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
         String keyword = search_bar.getText().toString();
         try {
             if (!TextUtils.isEmpty(keyword)) {
-                RemoteMongoCollection<Document> plants = mongoDbSetup.getCollectionByName("plants");
+                RemoteMongoCollection<Document> plants = mongoDbSetup.getCollection("plants");
                 RemoteMongoIterable<Document> plantIterator = plants.find();
 
                 docsToUse.clear();
@@ -185,7 +185,6 @@ public class SearchListFragment extends Fragment implements View.OnClickListener
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
         mAdapter = new RecyclerViewAdapter(listOfPlants, getActivity());
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
