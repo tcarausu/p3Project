@@ -25,9 +25,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:background="@drawable/rounded_corners"
+                android:background="@drawable/button_white_round_edge"
                 android:orientation="vertical"
                 android:padding="8dp"
+                android:elevation="4dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -73,8 +74,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/add_plant_from_database_layout"
                 android:layout_margin="8dp"
-                android:background="@drawable/rounded_corners"
                 android:orientation="vertical"
+                android:elevation="4dp"
+                android:background="@drawable/button_white_round_edge"
                 android:padding="8dp"
                 android:clickable="true"
                 android:focusable="true">

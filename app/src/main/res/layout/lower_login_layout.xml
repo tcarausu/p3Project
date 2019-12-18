@@ -15,11 +15,12 @@
 
         <TextView
             android:id="@+id/orView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:drawablePadding="20dp"
             android:text="@string/or"
+            android:textStyle="bold"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20sp" />
@@ -36,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orView"
+            android:background="@drawable/button_white_sharp_edge"
             android:layout_centerInParent="true"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"

@@ -37,7 +37,7 @@
                 android:layout_centerInParent="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:text="@string/go_create"
                 android:textAlignment="center"
                 android:textColor="@color/black" />

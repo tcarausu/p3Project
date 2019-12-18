@@ -66,18 +66,20 @@
                 android:background="@drawable/button_white_sharp_edge"
                 android:hint="@string/flower_name"
                 android:padding="5dp"
+                android:inputType="text"
+                android:imeOptions="actionNext"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/mood_pic"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_below="@id/change_picture"
                 android:layout_alignEnd="@id/flower_name"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="-36dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="-113dp"
                 android:contentDescription="@string/mood" />
 
             <EditText
@@ -91,7 +93,9 @@
                 android:hint="@string/time_period"
                 android:padding="5dp"
                 android:textAlignment="center"
+                android:inputType="date"
                 android:textColor="@color/black"
+                android:imeOptions="actionNext"
                 android:textSize="16sp" />
 
             <Button

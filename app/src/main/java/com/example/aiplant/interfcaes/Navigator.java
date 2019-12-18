@@ -14,7 +14,6 @@ import org.bson.Document;
 
 /**
  * Created by Mo.Msaad
- *
  * @implements RemoteMongoDatabase
  * @use we inherit the MongoDB database methods and others without recreating the wheel
  **/

@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@color/grey"
         android:orientation="vertical"
         tools:context=".user_profile.User_Profile">
 
         <RelativeLayout
-            android:background="@color/white"
+            android:background="@color/grey"
             android:layout_width="match_parent"
             android:layout_height="190dp">
 
@@ -40,7 +40,6 @@
                 android:layout_height="80dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:background="@color/white"
                 android:progressTint="@color/red"
                 android:visibility="visible" />
 

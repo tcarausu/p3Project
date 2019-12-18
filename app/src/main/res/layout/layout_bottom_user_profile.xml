@@ -7,16 +7,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@color/white"
+        android:background="@color/grey"
         android:gravity="center"
         android:weightSum="10"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@color/white"
             android:layout_weight="1"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:background="@color/grey"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
@@ -62,7 +62,7 @@
                 android:padding="5dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="5dp"
-                android:background="@drawable/button_white_green_edge"
+                android:background="@drawable/button_white_round_edge"
                 tools:animateLayoutChanges="true"
                 tools:soundEffectsEnabled="true">
 

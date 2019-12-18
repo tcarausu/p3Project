@@ -34,7 +34,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private MongoDbSetup mongoDbSetup;
 
     private TextView register_for_free, terms_and_conditions;
-    private EditText name_last_name, signUp_email, pass_field, confirm_pass;
+    private EditText  signUp_email, pass_field, confirm_pass;
 
     private ImageView aiPlant_icon;
     private MaterialButton send_registration_instructions;
@@ -63,17 +63,12 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void findWidgets(View v) {
         aiPlant_icon = v.findViewById(R.id.aiplant_icon);
         checkbox = v.findViewById(R.id.checkbox);
-
         register_for_free = v.findViewById(R.id.register_for_free);
-
         signUp_email = v.findViewById(R.id.signUpFragment_email_field);
-        name_last_name = v.findViewById(R.id.name_last_name);
         pass_field = v.findViewById(R.id.pass_field);
         confirm_pass = v.findViewById(R.id.confirm_pass);
-
         send_registration_instructions = v.findViewById(R.id.send_registration_instructions);
         terms_and_conditions = v.findViewById(R.id.terms_and_conditions);
-
         send_registration_instructions.setOnClickListener(this);
         terms_and_conditions.setPaintFlags(terms_and_conditions.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         terms_and_conditions.setOnClickListener(this);
@@ -89,7 +84,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             String confirm_password = bundle_with_arguments.getString("confirm_password");
 
             signUp_email.setText(email);
-            name_last_name.setText(name_lastName);
             pass_field.setText(password);
             confirm_pass.setText(confirm_password);
 
@@ -108,21 +102,18 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void createUserWithEmail() {
         // getting input from device
         final String email = signUp_email.getText().toString();
-        final String user_name = name_last_name.getText().toString();
 
         String password = pass_field.getText().toString();
         String confPass = confirm_pass.getText().toString();
 
         //checking if any is empty or pass doesn't match, the rest mAuth takes care of
         if (TextUtils.isEmpty(email)
-                && TextUtils.isEmpty(user_name)
                 && TextUtils.isEmpty(password)
                 && TextUtils.isEmpty(confPass)
                 && !checkbox.isChecked()
                 && !password.equals(confPass)
         ) {
             signUp_email.setError(getString(R.string.required));
-            name_last_name.setError(getString(R.string.required));
             pass_field.setError(getString(R.string.required));
             confirm_pass.setError(getString(R.string.required));
             checkbox.setError(getString(R.string.agree_to_terms_first));
@@ -132,10 +123,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         } else if (TextUtils.isEmpty(email)) {
             signUp_email.setError(getString(R.string.required));
             Toast.makeText(getContext(), getString(R.string.please_valid_email), LENGTH_LONG).show();
-
-        } else if (TextUtils.isEmpty(user_name)) {
-            name_last_name.setError(getString(R.string.required));
-            Toast.makeText(getContext(), getString(R.string.please_valid_name), LENGTH_LONG).show();
 
         } else if (TextUtils.isEmpty(password)) {
             pass_field.setError(getString(R.string.required));
@@ -227,15 +214,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void bundleFunctionality(Fragment terms) {
         Bundle bundle = new Bundle();
         String email = signUp_email.getText().toString();
-        String name_lastName = name_last_name.getText().toString();
         String password = pass_field.getText().toString();
         String confirm_password = confirm_pass.getText().toString();
-
         bundle.putString("email", email);
-        bundle.putString("name_lastName", name_lastName);
         bundle.putString("password", password);
         bundle.putString("confirm_password", confirm_password);
-
         terms.setArguments(bundle);
 
     }

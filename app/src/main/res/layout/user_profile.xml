@@ -10,12 +10,14 @@
     tools:context=".user_profile.User_Profile">
 
     <LinearLayout
+        android:background="@color/grey"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1">
 
         <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".7">

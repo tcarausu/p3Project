@@ -36,14 +36,16 @@ import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
 import com.example.aiplant.cameraandgallery.PictureConversion;
+import com.example.aiplant.interfcaes.DateValidator;
+import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.PlantProfile;
 import com.example.aiplant.search.SearchActivity;
 import com.example.aiplant.services.NotificationService;
 import com.example.aiplant.services.ScheduledFetch;
-import com.example.aiplant.interfcaes.DateValidator;
 import com.example.aiplant.utility_classes.DateValidatorUsingDateFormat;
 import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.tasks.Continuation;
+import com.mongodb.stitch.android.core.auth.StitchAuth;
 import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
@@ -60,7 +62,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.aiplant.R.drawable.mood_medium;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
@@ -83,7 +84,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private PlantProfile profileForUser;
 
     // widgets
-    private Button adjustNameAndDateButton, saveNameAndDateButton, adjustConditionsButton, saveChangesButton, showWeeklyFeed;
+    private Button saveNameAndDateButton, saveChangesButton;
     private TextView change_picture, temperature_text, humidity_text, sunlight_text, hum_current, temp_current, light_current,
             humidity_min_value_text, humidity_current_value_text, humidity_max_value_text,
             temperature_min_value_text, temperature_current_value_text, temperature_max_value_text,
@@ -112,6 +113,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     private PictureConversion pictureConverter;
     private ImagePicker imagePicker;
     private ArrayAdapter<CharSequence> spinnerAdapter;
+    private StitchAuth mStitchAuth;
+    private ProgressDialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,6 +122,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         setup();
         initLayout(v);
+        dialog = new ProgressDialog(mContext);
+        dialog.setIcon(R.mipmap.eye_logo);
+        dialog.setTitle("Loading your plants...");
+        dialog.show();
+
         checkPermissions();
         disableEditText();
         getActivity().startService(new Intent(mContext, ScheduledFetch.class));
@@ -154,14 +162,21 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void setup() {
-        mContext = getActivity();
-        mongoDbSetup = ((HomeActivity) getActivity()).getMongoDbForLaterUse();
-        mStitchUser = mongoDbSetup.getStitchUser();
-        user_id = mStitchUser.getId();
-        prefer = getActivity().getSharedPreferences("prefer", MODE_PRIVATE);
-        has_changed_profile_image = prefer.getBoolean("prefer", false);
-        mNotificationService = new NotificationService();
-        imagePicker = new ImagePicker();
+        try {
+            mContext = getActivity();
+            mongoDbSetup = ((HomeActivity) getActivity()).getMongoDbForLaterUse();
+            mStitchAuth = mongoDbSetup.getAppClient().getAuth();
+            mStitchUser = mStitchAuth.getUser();
+            user_id = mStitchUser.getId();
+            prefer = getActivity().getSharedPreferences("prefer", MODE_PRIVATE);
+            has_changed_profile_image = prefer.getBoolean("prefer", false);
+            mNotificationService = new NotificationService();
+            imagePicker = new ImagePicker();
+        } catch (Exception e) {
+            Log.d(TAG, "setup: error: " + e.getLocalizedMessage());
+            mStitchAuth.logout();
+            mongoDbSetup.intentWithFlag(mContext, mContext, LoginActivity.class);
+        }
     }
 
     @Override
@@ -169,29 +184,40 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         super.onStart();
     }
 
+    private void displayLayout() {
+        topLayout.setVisibility(View.VISIBLE);
+        bottomLayout.setVisibility(View.VISIBLE);
+        textLayout.setVisibility(View.GONE);
+    }
+
+    private void displayNothing() {
+        topLayout.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        textLayout.setVisibility(View.VISIBLE);
+    }
+
     private void fetchedDoc() {
         try {
             String value = mStitchUser.getId(), key = "user_id", collectionName = "plant_profiles";
             if (mongoDbSetup.checkInternetConnection(Objects.requireNonNull(getActivity()))) {
                 RemoteMongoCollection<Document> collection = mongoDbSetup.getCollection(collectionName);
-                collection.findOne(eq(key, value)).addOnCompleteListener(task -> {
+                collection.findOne(eq(key, value)).continueWithTask(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                        topLayout.setVisibility(View.VISIBLE);
-                        bottomLayout.setVisibility(View.VISIBLE);
-                        textLayout.setVisibility(View.GONE);
-                        new Handler().postDelayed(() ->
-                                setupPlantProfile(task.getResult()), 1000);
-                    } else {
-                        topLayout.setVisibility(View.GONE);
-                        bottomLayout.setVisibility(View.GONE);
-                        textLayout.setVisibility(View.VISIBLE);
-                    }
+                        Document document = task.getResult();
+                        dialog.dismiss();
+                        displayLayout();
+
+                        setupPlantProfile(document);
+                        return task;
+                    } else
+                        dialog.dismiss();
+                        displayNothing();
+                    return null;
+
                 }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
             } else {
                 Toast.makeText(getActivity(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-                topLayout.setVisibility(View.GONE);
-                bottomLayout.setVisibility(View.GONE);
-                textLayout.setVisibility(View.VISIBLE);
+                displayNothing();
             }
         } catch (Exception e) {
             Log.d(TAG, "fetchedDoc: error: " + e.getCause());
@@ -266,8 +292,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         }
 
         if (isMoodT() && isMoodS() && isMoodH()) {
-            mood_pic.setImageResource(R.drawable.mood_happy);
-        } else mood_pic.setImageResource(mood_medium);
+            mood_pic.setImageResource(R.drawable.happy_leafo);
+        } else mood_pic.setImageResource(R.drawable.unhappy_leafo);
 
     }
 
@@ -331,7 +357,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         lightSeekBar = v.findViewById(R.id.sunlight_slider);
 
         mood_pic = v.findViewById(R.id.mood_pic);
-        mood_pic.setImageResource(R.drawable.mood_happy);
+        mood_pic.setImageResource(R.drawable.happy_leafo);
     }
 
     private void buttonListeners() {
@@ -345,13 +371,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void HumiditySeekBarData(PlantProfile profileForUser) {
         int progress = profileForUser.getMeasured_humidity();
-            humiditySeekBar.setProgress(progress);
+        humiditySeekBar.setProgress(progress);
 
         if (progress <= profileForUser.getMinHumid()) {
             mNotificationService.createNotification(mContext, getString(R.string.humidity_min_max_error), getString(R.string.humidity_min_max_error), requestCode);
             setMoodH(false);
-        }
-      else  if (progress >= profileForUser.getMaxHumid()) {
+        } else if (progress >= profileForUser.getMaxHumid()) {
 
             setMoodH(false);
 
@@ -361,13 +386,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void TemperatureSeekBarData(PlantProfile profileForUser) {
         int progress = profileForUser.getMeasured_temperature();
-            temperatureSeekBar.setProgress(progress);
+        temperatureSeekBar.setProgress(progress);
         if (progress <= profileForUser.getMinTemp()) {
             setMoodT(false);
 
             mNotificationService.createNotification(mContext, getString(R.string.temperature_min_max_error), getString(R.string.temperature_min_max_error), requestCode);
-        }
-     else   if (progress >= profileForUser.getMaxTemp()) {
+        } else if (progress >= profileForUser.getMaxTemp()) {
 
             setMoodT(false);
 
@@ -379,14 +403,13 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     private void SunlightSeekBarData(PlantProfile profileForUser) {
         int progress = profileForUser.getMeasured_sunlight();
-            lightSeekBar.setProgress(progress);
+        lightSeekBar.setProgress(progress);
         if (progress <= profileForUser.getMinSun()) {
             setMoodS(false);
 
             mNotificationService.createNotification(mContext, getString(R.string.plant_needs_more_light), getString(R.string.plant_needs_more_light), requestCode);
 
-        }
-       else if (progress >= profileForUser.getMaxSun()) {
+        } else if (progress >= profileForUser.getMaxSun()) {
             setMoodS(false);
             mNotificationService.createNotification(mContext, getString(R.string.plant_needs_less_light), getString(R.string.plant_needs_less_light), requestCode);
         } else setMoodS(true);
@@ -553,7 +576,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private void saveChanges() {
-
         AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
         builder1.setMessage("Are you sure you want to change conditions?");
         builder1.setCancelable(true);
@@ -627,12 +649,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     private boolean checkEmptyInput(String minH, String maxH, String minT, String maxT, String minS, String maxS) {
+        Log.d(TAG, "checkEmptyInput: ");
         boolean minH_empty = TextUtils.isEmpty(minH);
         boolean maxH_empty = TextUtils.isEmpty(maxH);
-
         boolean minT_empty = TextUtils.isEmpty(minT);
         boolean maxT_empty = TextUtils.isEmpty(maxT);
-
         boolean minS_empty = TextUtils.isEmpty(minS);
         boolean maxS_empty = TextUtils.isEmpty(maxS);
 
@@ -688,6 +709,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         light_min.setEnabled(true);
         light_max.setEnabled(true);
         saveChangesButton.setVisibility(View.VISIBLE);
+        saveChangesButton.setEnabled(true);
     }
 
     private boolean isMoodH() {
@@ -752,13 +774,14 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         String user_id = mStitchUser.getId();
         RemoteMongoCollection user_Plants_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
         user_Plants_coll.findOne(eq("user_id", user_id)).continueWith(task -> {
-            if (task.isSuccessful()) { //if we find a document
-                refreshPage();
+            if (task.isSuccessful() && task.getException() == null) { //if we find a document
+                displayNothing();
                 progressDialog.dismiss();
                 return user_Plants_coll.deleteOne((Document) task.getResult());
             } else //if no such document we just return the collection itself.
                 progressDialog.dismiss();
-            refreshPage();
+
+
             return user_Plants_coll;
 
         }).addOnFailureListener(e -> {
@@ -766,7 +789,6 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         });
 
-        refreshPage();
 
     }
 
@@ -776,9 +798,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String item = adapterView.getItemAtPosition(i).toString();
         adapterView.clearDisappearingChildren();
+
         switch (i) {
             case 0:
-                adapterView.getSelectedView().setBackgroundColor(getResources().getColor(R.color.red));
                 adapterView.setSelection(0);// i want an empty place so we can
                 spinnerAdapter.notifyDataSetChanged();
                 break;

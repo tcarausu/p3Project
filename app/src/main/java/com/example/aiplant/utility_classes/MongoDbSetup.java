@@ -20,7 +20,6 @@ import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoDatabase;
-import com.mongodb.stitch.core.auth.providers.google.GoogleAuthProvider;
 
 import org.bson.Document;
 
@@ -53,7 +52,7 @@ public class MongoDbSetup implements Navigator {
 
     private MongoDbSetup(Context context) {
         mContext = context;
-        synchronized (this) {
+        synchronized (MongoDbSetup.class) {
             Stitch.initialize(mContext);
             mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
         }
@@ -72,19 +71,20 @@ public class MongoDbSetup implements Navigator {
     private static void runAppClientInit() {
         initAppClient.run(() ->
                 appClient = Stitch.initializeDefaultAppClient("eye-plant-tilrj"));
+                stitchAuth = appClient.getAuth();
     }
 
 
-    public StitchAuth getStitchAuth() {
+    public synchronized StitchAuth getStitchAuth() {
         return stitchAuth = getAppClient().getAuth();
 
     }
 
-    public StitchUser getStitchUser() {
+    public synchronized StitchUser getStitchUser() {
         return stitchUser = stitchAuth.getUser();
     }
 
-    public StitchAppClient getAppClient() {
+    public synchronized StitchAppClient getAppClient() {
         return appClient;
     }
 
@@ -99,18 +99,18 @@ public class MongoDbSetup implements Navigator {
                 if (task.getResult(documentToCheck.getClass()) == null) {
                     int number_of_plants = documentToCheck.getInteger("number_of_plants");
 
-                    coll.insertOne(documentToCheck);
-
                     new User(documentToCheck.getString("logged_user_id"),
                             documentToCheck.getString("name"),
                             documentToCheck.getString("email"), documentToCheck.getString("picture"),
                             number_of_plants, documentToCheck.getString("birthday"));
+                    return coll.insertOne(documentToCheck);
                 }
+                else return coll;
             } catch (Throwable throwable) {
-                Log.d(TAG, "checkIfExists:Error throwable: " + throwable);
+                Log.d(TAG, "checkIfExists:Error throwable: " + throwable.getLocalizedMessage());
             }
 
-            return null;
+            return coll;
         });
     }
 
@@ -118,8 +118,6 @@ public class MongoDbSetup implements Navigator {
     public GoogleSignInClient googleClient() {
         return mGoogleSignInClient;
     }
-
-
 
     @Override
     public boolean checkInternetConnection(@NonNull Context context) {

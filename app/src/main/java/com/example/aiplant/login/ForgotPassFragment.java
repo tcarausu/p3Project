@@ -34,7 +34,6 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     public ForgotPassFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_forgot_pass, container, false);

@@ -15,7 +15,7 @@ public class BottomNavigationViewHelper {
     private static final String TAG = "BottomNavigationViewHel";
 
     //default state HomeActivity
-    private static int bottomNavigationState;
+    public static int bottomNavigationState;
 
     public  void setBottomNavigationState(int bottomNavigationState) {
         BottomNavigationViewHelper.bottomNavigationState = bottomNavigationState;

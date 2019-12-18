@@ -22,6 +22,7 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
 import com.example.aiplant.cameraandgallery.ImagePicker;
@@ -44,7 +46,6 @@ import com.example.aiplant.utility_classes.MongoDbSetup;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -105,6 +106,7 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private String logged_user_id;
     private ProgressDialog progressDialog;
     private ImagePicker imagePicker;
+    private BottomNavigationViewHelper bnh;
 
     //Methods
     private Bitmap getBitmap() {
@@ -155,8 +157,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     fetchUPlants();
                 }
             };
-        }catch (Exception e){
-            Log.d(TAG, "setup: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "setup: " + e.getLocalizedMessage());
         }
     }
 
@@ -212,8 +214,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             mStitchAuth = mongoDbSetup.getStitchAuth();
             mStitchUser = mStitchAuth.getUser();
             logged_user_id = mongoDbSetup.getStitchUser().getId();
-        }catch (Exception e){
-            Log.d(TAG, "connectDb: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "connectDb: " + e.getLocalizedMessage());
         }
     }
 
@@ -245,8 +247,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 });
             } else
                 Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            Log.d(TAG, "deleteAccountData: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "deleteAccountData: " + e.getLocalizedMessage());
         }
     }
 
@@ -276,8 +278,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 });
             } else
                 Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            Log.d(TAG, "deleteUserPlants: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "deleteUserPlants: " + e.getLocalizedMessage());
         }
     }
 
@@ -307,7 +309,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 ).addOnFailureListener(e ->
                         Log.d(TAG, "onFailure: Error: " + e.getCause()));
             }
-        }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -330,7 +333,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 editor.putBoolean("prefs", true);
                 editor.apply();
             }
-        }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -367,7 +371,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 saveProfile_piceButton.setVisibility(View.INVISIBLE);
                 Log.d(TAG, "then: Error: " + e.getCause());
             });
-        }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
 
     }
 
@@ -376,19 +381,20 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
      **/
     private void editUserNameData() {
         if (mongoDbSetup.checkInternetConnection(mContext)) {
-        String logged_user_id = mStitchUser.getId();
-        String new_user_name = usernameEditText.getText().toString();
-        RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
-        user_coll.findOne(eq("logged_user_id", logged_user_id))
-                .continueWithTask((Continuation<RemoteUpdateResult, Task<Document>>) task -> { //<-looping through database to find the requested data->
-                    if (task.isSuccessful()) {
-                        user_coll.updateOne(null, set("name", new_user_name), new RemoteUpdateOptions()); // <-Updating the data in case its found->
-                        userNameTextView.setText(new_user_name);
-                    }
-                    return null;
-                }).addOnFailureListener(e ->
-                Log.d(TAG, "onFailure: Error: " + e.getCause()));//<-Catching the exception in case of error->
-        }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+            String logged_user_id = mStitchUser.getId();
+            String new_user_name = usernameEditText.getText().toString();
+            RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_users));
+            user_coll.findOne(eq("logged_user_id", logged_user_id))
+                    .continueWithTask((Continuation<RemoteUpdateResult, Task<Document>>) task -> { //<-looping through database to find the requested data->
+                        if (task.isSuccessful()) {
+                            user_coll.updateOne(null, set("name", new_user_name), new RemoteUpdateOptions()); // <-Updating the data in case its found->
+                            userNameTextView.setText(new_user_name);
+                        }
+                        return null;
+                    }).addOnFailureListener(e ->
+                    Log.d(TAG, "onFailure: Error: " + e.getCause()));//<-Catching the exception in case of error->
+        } else
+            Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -416,7 +422,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
 
 
                 }).addOnFailureListener(e -> Log.d(TAG, "onFailure: error: " + e.getCause()));
-            }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
 
             Log.d(TAG, "fetchUserData: " + e.getCause());
@@ -430,16 +437,17 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void fetchUPlants() {
         try {
             if (mongoDbSetup.checkInternetConnection(mContext)) {
-            String logged_user_id = mStitchAuth.getUser().getId();
-            RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
-            user_coll.findOne(new Document("user_id", logged_user_id)).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    document = (Document) task.getResult();
-                    setupGridView(document);
-                }
-            }).addOnFailureListener(e ->
-                    Log.d(TAG, "fetchPlantData error: " + e.getCause()));
-            }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+                String logged_user_id = mStitchAuth.getUser().getId();
+                RemoteMongoCollection user_coll = mongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));
+                user_coll.findOne(new Document("user_id", logged_user_id)).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        document = (Document) task.getResult();
+                        setupGridView(document);
+                    }
+                }).addOnFailureListener(e ->
+                        Log.d(TAG, "fetchPlantData error: " + e.getCause()));
+            } else
+                Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.d(TAG, "fetchPlantData error: " + e.getCause());
         }
@@ -452,27 +460,28 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
     private void setUpUserInfo(Document userDoc) {
         try {
             if (mongoDbSetup.checkInternetConnection(mContext)) {
-            String id = userDoc.getString("logged_user_id");
-            String name = userDoc.getString("name");
-            String email = userDoc.getString("email");
-            String photoURL = userDoc.getString("picture");
-            int num_of_plants = userDoc.getInteger("number_of_plants");
-            String birthday = userDoc.getString("birthday");
-            Binary edited_pic = userDoc.get("edited_pic", Binary.class);// get binary
+                String id = userDoc.getString("logged_user_id");
+                String name = userDoc.getString("name");
+                String email = userDoc.getString("email");
+                String photoURL = userDoc.getString("picture");
+                int num_of_plants = userDoc.getInteger("number_of_plants");
+                String birthday = userDoc.getString("birthday");
+                Binary edited_pic = userDoc.get("edited_pic", Binary.class);// get binary
 
-            //conversion
-            byte[] data = edited_pic.getData(); // get data
-            Bitmap b = pictureConverter.byteArrayToBitmap(data); // convert to bitmap
-            user = new User(id, name, email, photoURL, num_of_plants, birthday, data);// create a user
+                //conversion
+                byte[] data = edited_pic.getData(); // get data
+                Bitmap b = pictureConverter.byteArrayToBitmap(data); // convert to bitmap
+                user = new User(id, name, email, photoURL, num_of_plants, birthday, data);// create a user
 
-            userNameTextView.setText(name);
-            emailHeader.setText(email);
+                userNameTextView.setText(name);
+                emailHeader.setText(email);
 
-            if (has_changed_profile_image) {
-                Glide.with(mContext).load(b).fitCenter().into(profilePic);
+                if (has_changed_profile_image) {
+                    Glide.with(mContext).load(b).fitCenter().into(profilePic);
+                } else
+                    Glide.with(mContext).load(photoURL).fitCenter().into(profilePic);
             } else
-                Glide.with(mContext).load(photoURL).fitCenter().into(profilePic);
-            }else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.d(TAG, "setUpUserInfo: Error: " + e.getCause());
         }
@@ -483,26 +492,26 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
      **/
     private void saveUsername() {
         if (mongoDbSetup.checkInternetConnection(mContext)) {
-        String username = userNameTextView.getText().toString();
-        usernameEditText.setText(username);
-        hideEditText();
-        saveUsernameButton.setOnClickListener(view -> {
-            if (TextUtils.isEmpty(username)) {
-                usernameEditText.setError("Nothing here!");
-            } else {
-                String newUserName = usernameEditText.getText().toString();
-                userNameTextView.setText(newUserName);
-                Log.d(TAG, "Typed username: " + username);
-                usernameEditText.setVisibility(View.INVISIBLE);
-                saveUsernameButton.setVisibility(View.INVISIBLE);
-                userNameTextView.setVisibility(View.VISIBLE);
-                userNameTextView.setText(username);
-                hideKeyboard();
-                editUserNameData();// update the username
-            }
-        });
-        }
-        else Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
+            String username = userNameTextView.getText().toString();
+            usernameEditText.setText(username);
+            hideEditText();
+            saveUsernameButton.setOnClickListener(view -> {
+                if (TextUtils.isEmpty(username)) {
+                    usernameEditText.setError("Nothing here!");
+                } else {
+                    String newUserName = usernameEditText.getText().toString();
+                    userNameTextView.setText(newUserName);
+                    Log.d(TAG, "Typed username: " + username);
+                    usernameEditText.setVisibility(View.INVISIBLE);
+                    saveUsernameButton.setVisibility(View.INVISIBLE);
+                    userNameTextView.setVisibility(View.VISIBLE);
+                    userNameTextView.setText(username);
+                    hideKeyboard();
+                    editUserNameData();// update the username
+                }
+            });
+        } else
+            Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -568,8 +577,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     mStitchAuth.addAuthListener(this);
                 }
             };
-        }catch (Exception e){
-            Log.d(TAG, "authListenerData: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "authListenerData: " + e.getLocalizedMessage());
         }
 
     }
@@ -610,8 +619,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 }
             } else
                 Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            Log.d(TAG, "signOut: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "signOut: " + e.getLocalizedMessage());
         }
     }
 
@@ -619,21 +628,26 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         try {
             if (mongoDbSetup.checkInternetConnection(mContext)) {
                 String id = mStitchUser.getId();
-                mGoogleSignInClient.signOut().addOnCompleteListener(((OnCompleteListener) task -> {
-                    if (task.isSuccessful() && task.getException() == null) {
-                        mGoogleSignInClient.signOut();
-                        mGoogleSignInClient.revokeAccess();
-                        mStitchAuth.logout();
+                mStitchAuth.logoutUserWithId(id).continueWithTask(((Continuation) task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("STITCH", "Login failed!");
+                        throw task.getException();
                     }
-                    else
-                        mStitchAuth.logout();
+                    return task;
                 })).addOnFailureListener(e -> {
                     Log.d(TAG, "setupGridView: error; " + e.getMessage());//<-catch exception to prevent app crush -->
+                }).addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful())
+                            mStitchAuth.logout();
+                            mongoDbSetup.intentWithFlag(mContext,mContext,LoginActivity.class);
+                    }
                 });
             } else
                 Toast.makeText(mContext, getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            Log.d(TAG, "logOutGoogle: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "logOutGoogle: " + e.getLocalizedMessage());
         }
     }
 
@@ -647,8 +661,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             })).addOnFailureListener(e -> {
                 Log.d(TAG, "setupGridView: error; " + e.getMessage());//<-catch exception to prevent app crush -->
             });
-        }catch (Exception e){
-            Log.d(TAG, "logoutEMailUser: error: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "logoutEMailUser: error: " + e.getLocalizedMessage());
         }
     }
 
@@ -692,6 +706,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                     gridView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     gridView.setOnItemClickListener((parent, view, position, id) -> {//<-clicklistener on position in gridView-->
+
+                        bnh.setBottomNavigationState(0);
                         mongoDbSetup.intentWithFlag(mContext, mContext, HomeActivity.class);
                     });
                 } catch (Exception e) {
@@ -700,8 +716,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection), Toast.LENGTH_SHORT).show();//<-Notify user to check internet-->
             }
-        }catch (Exception e){
-            Log.d(TAG, "setupGridView: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "setupGridView: " + e.getLocalizedMessage());
         }
     }
 
@@ -728,15 +744,15 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
      */
     public void setupBottomNavigationView() {
         try {
-            BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
+             bnh = new BottomNavigationViewHelper();
             BottomNavigationView bottomNavigationViewEx = findViewById(R.id.bottomNavigationBar);
             BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
             bnh.enableNavigation(mContext, bottomNavigationViewEx);
             Menu menu = bottomNavigationViewEx.getMenu();
             MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
             menuItem.setChecked(true);
-        }catch (Exception e){
-            Log.d(TAG, "setupBottomNavigationView: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "setupBottomNavigationView: " + e.getLocalizedMessage());
         }
     }
 
@@ -748,8 +764,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
         try {
             View v = mDrawerLayout.findFocus();//its better
             mInputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }catch (Exception e){
-            Log.d(TAG, "hideKeyboard: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "hideKeyboard: " + e.getLocalizedMessage());
         }
     }
 
@@ -798,8 +814,8 @@ public class User_Profile extends AppCompatActivity implements View.OnClickListe
                 }
                 return false;
             });
-        }catch (Exception e){
-            Log.d(TAG, "navigationViewClickListener: "+e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "navigationViewClickListener: " + e.getLocalizedMessage());
         }
     }
 
