@@ -1,13 +1,14 @@
 package com.example.aiplant.utility_classes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.aiplant.interfcaes.Navigator;
 import com.example.aiplant.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,7 +21,6 @@ import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoDatabase;
 
-import org.bson.BsonBinary;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * File created by tcarau18
  **/
-public class MongoDbSetup {
+public class MongoDbSetup implements Navigator {
 
     private static final String TAG = "MongoDbSetup";
     private Context mContext;
@@ -48,37 +48,32 @@ public class MongoDbSetup {
             .build();
 
     private static InitAppClient initAppClient = new InitAppClient();
-
-    private static GoogleSignInClient mGoogleSignInClient;
-    private List<Document> plantsList;
-    private List<Document> plant_profiles;
+    private GoogleSignInClient mGoogleSignInClient;
 
     private MongoDbSetup(Context context) {
-        synchronized (this) {
-            mContext = context;
-            mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
+        mContext = context;
+        synchronized (MongoDbSetup.class) {
             Stitch.initialize(mContext);
+            mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
         }
-
     }
 
-    public static MongoDbSetup getInstance(Context context) {
+    public synchronized static MongoDbSetup getInstance(Context context) {
         if (context == null) {
             MongoDbSetup mongoDbSetup = new MongoDbSetup(context);
             runAppClientInit();
             return mongoDbSetup;
         } else runAppClientInit();
+
         return new MongoDbSetup(context);
     }
 
     private static void runAppClientInit() {
         initAppClient.run(() ->
                 appClient = Stitch.initializeDefaultAppClient("eye-plant-tilrj"));
+                stitchAuth = appClient.getAuth();
     }
 
-    public GoogleSignInClient getGoogleSignInClient() {
-        return mGoogleSignInClient;
-    }
 
     public synchronized StitchAuth getStitchAuth() {
         return stitchAuth = getAppClient().getAuth();
@@ -97,34 +92,42 @@ public class MongoDbSetup {
         return Objects.requireNonNull(getStitchUser()).getId();
     }
 
-    private synchronized RemoteMongoClient getRemoteMongoDbClient() {
+    @Override
+    public void checkIfExists(RemoteMongoCollection coll, Document documentToCheck) {
+        coll.findOne().continueWith(task -> {
+            try {
+                if (task.getResult(documentToCheck.getClass()) == null) {
+                    int number_of_plants = documentToCheck.getInteger("number_of_plants");
 
-        return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+                    new User(documentToCheck.getString("logged_user_id"),
+                            documentToCheck.getString("name"),
+                            documentToCheck.getString("email"), documentToCheck.getString("picture"),
+                            number_of_plants, documentToCheck.getString("birthday"));
+                    return coll.insertOne(documentToCheck);
+                }
+                else return coll;
+            } catch (Throwable throwable) {
+                Log.d(TAG, "checkIfExists:Error throwable: " + throwable.getLocalizedMessage());
+            }
+
+            return coll;
+        });
     }
 
-    public synchronized RemoteMongoDatabase getDatabase() {
-        return getRemoteMongoDbClient().getDatabase("eye_plant");
+    @Override
+    public GoogleSignInClient googleClient() {
+        return mGoogleSignInClient;
     }
 
-    public RemoteMongoCollection<Document> getCollectionByName(String collectionName) {
-        return
-                getDatabase()
-                        .getCollection(collectionName);
+    @Override
+    public boolean checkInternetConnection(@NonNull Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() != null &&
+                connectivityManager.getActiveNetworkInfo().isAvailable() &&
+                connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    public Document createUserDocument(String id, String displayName,
-                                       String userMail, String photoURL, int nrOfPlant, String birthday, BsonBinary edited_pic
-    ) {
-
-        return new Document("logged_user_id", id)
-                .append("name", displayName)
-                .append("email", userMail)
-                .append("picture", photoURL)
-                .append("number_of_plants", nrOfPlant)
-                .append("birthday", birthday)
-                .append("edited_pic", edited_pic);
-    }
-
+    @Override
     public void createPlantProfileDocument(String collectionName, String profileId, String plantName, String birthday,
                                            int minHumidity, int maxHumidity, int minTemperature,
                                            int maxTemperature, int minSun,
@@ -140,7 +143,6 @@ public class MongoDbSetup {
         sunlight.add(0, minSun);
         sunlight.add(1, maxSun);
 
-
         Document createdPlantProfile = new Document("user_id", getAppClientId())
                 .append("profile_id", profileId)
                 .append("name", plantName)
@@ -154,45 +156,39 @@ public class MongoDbSetup {
                 .append("measured_sunlight", 0)
                 .append("edited_pic", picture);
 
-        getCollectionByName(collectionName).insertOne(createdPlantProfile);
+        getCollection(collectionName).insertOne(createdPlantProfile);
     }
 
-    public synchronized void checkIfExists(RemoteMongoCollection coll, Document documentToCheck) {
-        coll.findOne().continueWith(task -> {
-            try {
-                if (task.getResult(documentToCheck.getClass()) == null) {
-                    int number_of_plants = documentToCheck.getInteger("number_of_plants");
-
-                    coll.insertOne(documentToCheck);
-
-                    new User(documentToCheck.getString("logged_user_id"),
-                            documentToCheck.getString("name"),
-                            documentToCheck.getString("email"), documentToCheck.getString("picture"),
-                            number_of_plants, documentToCheck.getString("birthday"));
-                }
-            } catch (Throwable throwable) {
-                Log.d(TAG, "checkIfExists:Error throwable: " + throwable);
-            }
-
-            return null;
-        });
+    @Override
+    public void intentWithFlag(Context sourceContext, Context current_Activity_Context, Class<? extends Activity> destinationClass) {
+        sourceContext.startActivity(new Intent(current_Activity_Context, destinationClass)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public boolean checkInternetConnection(@NonNull Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isAvailable() && connectivityManager.getActiveNetworkInfo().isConnected();
+    @Override
+    public RemoteMongoClient getRemoteMongoDbClient() {
+        return appClient.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
     }
 
-    public void goToWhereverWithFlags(Context activityContext, Context c, Class<? extends
-            AppCompatActivity> cl) {
-
-        activityContext.startActivity(new Intent(c, cl).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+    @Override
+    public String getName() {
+        return null;
     }
 
-    public void goToWhereverWithOutFlags(Context activityContext, Context c, Class<? extends
-            AppCompatActivity> cl) {
-        activityContext.startActivity(new Intent(c, cl));
+    @Override
+    public RemoteMongoCollection<Document> getCollection(String collectionName) {
+        return getDatabase("eye_plant").getCollection(collectionName);
+    }
+
+    @Override
+    public <DocumentT> RemoteMongoCollection<DocumentT> getCollection(String collectionName, Class<DocumentT> documentClass) {
+        return getDatabase("eye_plant").getCollection(collectionName, documentClass);
+    }
+
+    @Override
+    public RemoteMongoDatabase getDatabase(String databaseName) {
+        return getRemoteMongoDbClient().getDatabase("eye_plant");
     }
 
     public static class InitAppClient {

@@ -1,8 +1,7 @@
-package com.example.aiplant.cameraandgallery;
+package com.example.aiplant.cameraAndGallery;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 
@@ -19,27 +18,14 @@ public class PictureConversion {
     /**
      * Method that transform a bitmap into a byte array.
      *
-     * @param bmp bitmap
+     * @param bitmap bitmap
      * @return byte array transformed from the input bitmap.
      */
-
-
-    public byte[] bitmapToByteArray(Bitmap bmp) {
-
+    public byte[] bitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        } catch (Exception e) {
-            Log.d(TAG, "bitmapToByteArray: ");
-        }
-        byte[] byteArray = stream.toByteArray();
-        long lengthbmp = byteArray.length;
-        Log.d("memory", " " + lengthbmp);
-        bmp.recycle();
-
-        return byteArray;
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
     }
-
     /**
      * Method that tansforrm a byte array into a bitmap.
      *

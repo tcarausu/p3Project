@@ -18,6 +18,8 @@ import com.google.android.material.button.MaterialButton;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 public class ForgotPassFragment extends androidx.fragment.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "ForgotPassFragment";
@@ -25,14 +27,12 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     private MongoDbSetup mongoDbSetup;
     private Context mContext;
 
-    private TextView forgot_password, simply_enter;
     private EditText forgot_email;
     private ImageView aiplant_icon;
     private MaterialButton send_forgot_instructions;
 
     public ForgotPassFragment() {
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,8 +45,8 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
     }
 
     private void findWidgets(View v) {
-        forgot_password = v.findViewById(R.id.forgot_password);
-        simply_enter = v.findViewById(R.id.simply_enter);
+        v.findViewById(R.id.forgot_password);
+        v.findViewById(R.id.simply_enter);
         forgot_email = v.findViewById(R.id.forgot_email);
         aiplant_icon = v.findViewById(R.id.aiplant_icon);
         send_forgot_instructions = v.findViewById(R.id.send_forgot_instructions);
@@ -68,11 +68,10 @@ public class ForgotPassFragment extends androidx.fragment.app.Fragment implement
         emailPassClient.sendResetPasswordEmail(forgot_email_text)
                 .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Log.d("stitch", getResources().getString(R.string.sent_reset_email));
                                 new Handler().postDelayed(() ->
-                                        mongoDbSetup.goToWhereverWithFlags(getActivity(), getActivity(), LoginActivity.class), Toast.LENGTH_SHORT);
+                                        mongoDbSetup.intentWithFlag(getActivity(), getActivity(), LoginActivity.class), LENGTH_LONG);
 
-                                Toast.makeText(getActivity(), getResources().getString(R.string.sent_reset_email), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getResources().getString(R.string.sent_reset_email), LENGTH_LONG).show();
 
                             } else {
                                 Log.e("stitch", "Error sending password reset email:", task.getException());

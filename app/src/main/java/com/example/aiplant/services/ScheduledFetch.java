@@ -1,17 +1,15 @@
 package com.example.aiplant.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.aiplant.R;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.utility_classes.MongoDbSetup;
-import com.mongodb.stitch.android.core.auth.StitchAuth;
-import com.mongodb.stitch.android.core.auth.StitchUser;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
 
@@ -27,23 +25,11 @@ import java.util.TimerTask;
 import static com.mongodb.client.model.Updates.set;
 
 public class ScheduledFetch extends Service {
-
     private static final String TAG = "ScheduledFetch";
-    public static final int notify = 5000;  //interval between two services(Here Service run every 5 Minute=300000)
+    public static final int notify = 10000 ;  //interval between two services 180 minutes =  60000 * 180
     private Timer mTimer = null;    //timer handling
     private Handler mHandler = new Handler();//
-    private Context mContext;
     private MongoDbSetup mMongoDbSetup;
-    private StitchUser mStitchUser;
-    private StitchAuth mStitchAuth;
-
-    public ScheduledFetch(StitchAuth auth, StitchUser user) {
-        this.mStitchAuth = auth;
-        this.mStitchUser = user;
-    }
-
-    public ScheduledFetch() {
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,7 +51,6 @@ public class ScheduledFetch extends Service {
         Log.d(TAG, "onRebind: ");
         super.onRebind(intent);
     }
-
 
     @Override
     public void onDestroy() {
@@ -89,95 +74,69 @@ public class ScheduledFetch extends Service {
         mMongoDbSetup = HomeActivity.getMongoDbSetup();
     }
 
-    //class ClientService for handling task
-    class ClientService extends TimerTask {
+    class ClientService extends TimerTask {  //class ClientService for handling task
         private static final String TAG = "ClientService";
-
         private Document mDocument;
-
-        public Document getDocument() {
+        private Document getDocument() {
             return mDocument;
         }
-
-        public void setDocument(Document document) {
+        private void setDocument(Document document) {
             mDocument = document;
         }
-
-        public ClientService() {
-        }
-
         @Override
         public void run() {
-
             Log.d(TAG, "run: is running");
             try {
-
                 String user_id = mMongoDbSetup.getStitchUser().getId();
-                RemoteMongoCollection plantProfile_coll = mMongoDbSetup.getCollectionByName(getResources().getString(R.string.eye_plant_plant_profiles));
-
-                plantProfile_coll.findOne(new Document("user_id", user_id)).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Document document = (Document) task.getResult();
-                        setDocument(document);
-                        return;
-
-                    }
-                }).addOnFailureListener(e ->
-                        Log.d(TAG, "fetchPlantData error: " + e.getMessage()));
-
-                if (getDocument().size() != 0) {
+                RemoteMongoCollection plantProfile_coll = mMongoDbSetup.getCollection(getResources().getString(R.string.eye_plant_plant_profiles));//<-Fetching data from database->
+                plantProfile_coll.findOne(new Document("user_id", user_id)).continueWithTask(task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {  //if there is any corresponding document, we fetched it
+                                Document document = (Document) task.getResult();
+                                setDocument(document);
+                                return task.getResult(); // we return to stop the task.
+                            } else
+                                return task.getException(); // if no match we just return the collection back with the task.
+                        }).addOnFailureListener(e ->
+                                Log.d(TAG, "fetchPlantData error: " + e.getMessage()));//<-catching the  database error to prevent app crush->
+                if (getDocument().size() > 0) {
                     Document doc = getDocument();
                     Log.d(TAG, "run: doc.size " + doc.size());
                     final int serverPort = 2390;
                     final String ip = "172.20.10.13";
-                    InetAddress serverIp = InetAddress.getByName(ip);
+                    InetAddress serverIp = InetAddress.getByName(ip);//<- Client-Server Communication setup->
                     DatagramSocket socket = new DatagramSocket();
-                    socket.setReuseAddress(true);
+                    socket.setReuseAddress(true); // we set reuse to true to avoid the AddressAlreadyInUse exception and keep the connection steady
                     socket.setBroadcast(true);
-                    socket.connect(serverIp, serverPort);
-
-                    ArrayList<Integer> hum = doc.get("humidity", ArrayList.class);
+                    socket.connect(serverIp, serverPort);//<-connection request to server->
+                    ArrayList<Integer> hum = doc.get("humidity", ArrayList.class);//<-Beginning of extracting data from fetched document from database->
                     ArrayList<Integer> temp = doc.get("temperature", ArrayList.class);
                     ArrayList<Integer> light = doc.get("sunlight", ArrayList.class);
-                    byte[] dataTosend;
-                    byte[] receivedData = new byte[512];
-                    int hum_min = hum.get(0);
-                    int hum_max = hum.get(1);
-
-                    int tem_min = temp.get(0);
-                    int tem_max = temp.get(1);
-                    int light_min = light.get(0);
-                    int light_max = light.get(1);
-
-                    byte hum_mi = (byte) hum_min;
-                    byte hum_ma = (byte) hum_max;
-                    byte tem_mi = (byte) tem_min;
-                    byte tem_ma = (byte) tem_max;
-                    byte light_mi = (byte) light_min;
-                    byte light_ma = (byte) light_max;
-                    dataTosend = new byte[]{hum_mi, hum_ma, tem_mi, tem_ma, light_mi, light_ma};
-
+                    byte[] dataTosend, receivedData = new byte[512]; //
+                    int hum_min = hum.get(0), hum_max = hum.get(1), tem_min = temp.get(0);
+                    int tem_max = temp.get(1), light_min = light.get(0), light_max = light.get(1);
+                    byte hum_mi = (byte) hum_min, hum_ma = (byte) hum_max, tem_mi = (byte) tem_min, tem_ma = (byte) tem_max, light_mi = (byte) light_min, light_ma = (byte) light_max;
+                    ;//<-End of extracting data from fetched document from database->
+                    dataTosend = new byte[]{hum_mi, hum_ma, tem_mi, tem_ma, light_mi, light_ma};// <--prepare packet to send--->
                     DatagramPacket send_packet = new DatagramPacket(dataTosend, dataTosend.length);//sending
                     DatagramPacket recieved_packet = new DatagramPacket(receivedData, receivedData.length);//receiving
-                    socket.send(send_packet);
-                    socket.receive(recieved_packet);
-                    byte[] bytes = recieved_packet.getData();
+                    socket.send(send_packet);// <--send--->
+                    socket.receive(recieved_packet);// <---receive-->
 
-                    int mea_hum = bytes[0];
-                    int mea_light = bytes[1];
-                    int mea_tem = bytes[2];
+                    if (recieved_packet.getLength() > 0) {
+                        byte[] bytes = recieved_packet.getData();
+                        int mea_hum = bytes[0], mea_light = bytes[1], mea_tem = bytes[2];
 
-                    plantProfile_coll.updateOne(null, set("measured_humidity", mea_hum), new RemoteUpdateOptions());
-                    plantProfile_coll.updateOne(null, set("measured_temperature", mea_tem), new RemoteUpdateOptions());
-                    plantProfile_coll.updateOne(null, set("measured_sunlight", mea_light), new RemoteUpdateOptions());
-                    mTimer.purge();//purge it to start over again
+                        plantProfile_coll.updateOne(null, set("measured_humidity", mea_hum), new RemoteUpdateOptions());// <--update database with the received data--->
+                        plantProfile_coll.updateOne(null, set("measured_temperature", mea_tem), new RemoteUpdateOptions());//<--update database with the received data--->
+                        plantProfile_coll.updateOne(null, set("measured_sunlight", mea_light), new RemoteUpdateOptions());//<--update database with the received data--->
+                        mTimer.purge();//purge it to start over again
+                    }
+                    else Log.d(TAG, "run: NoTHING RECEIVED????");
                 }
 
             } catch (Exception e) {
-                Log.d(TAG, "fetchPlantData error: " + e.getMessage());
+                Log.d(TAG, "fetchPlantData error: " + e.getMessage());//<--Catch exception to prevent app crush--->
             }
-
-
         }
     }
 }

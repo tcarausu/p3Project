@@ -8,8 +8,8 @@
     <string name="hint_click_here">Click here for </string>
     <string name="hint_sign_up"> Sign Up</string>
 
-    <string name="flower_name">Flower Name</string>
-    <string name="time_period">Time Period</string>
+    <string name="flower_name">Plant Name____</string>
+    <string name="time_period">Date of Creation</string>
     <string name="temperature">Temperature</string>
     <string name="search_Hint">Search</string>
 
@@ -28,8 +28,8 @@
     <string name="name_plant">Name of the plant</string>
     <string name="hint_name_plant">Name your plant</string>
     <string name="birthday_plant">plant Birthday</string>
-    <string name="minimum">Min</string>
-    <string name="maximum">Max</string>
+    <string name="minimum">Min %</string>
+    <string name="maximum">Max %</string>
     <string name="minimum_humidity">Min %</string>
     <string name="maximum_humidity">Max %</string>
     <string name="minimum_sunlight">Min lux</string>
@@ -102,15 +102,28 @@
     <string name="registration_success">Registration successful, please check your email inbox for confirmation</string>
     <!--DESCRIPTION-->
 
-    <!--    Login/SignUp-->
+    <!--    Login-->
     <string name="back">Back</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="required">Required</string>
     <string name="signUp">Sign Up</string>
     <string name="signIn">Sign In</string>
     <string name="send">Send</string>
+    <string name="please_em_pass">Please type in email and password</string>
+    <string name="please_em">Please type in email or phone</string>
+    <string name="please_pass">Please type in your password</string>
 
-    <!--    SignUp-->
+    <!--Sign Up-->
+    <string name="please_fill">Please fill in the information and Agree to Terms and Conditions</string>
+    <string name="please_valid_email">Please type in a valid email</string>
+    <string name="please_valid_name">Please fill in with Name and Last Name</string>
+    <string name="please_choose_pass">Please choose a password</string>
+    <string name="please_conf_pass">Please confirm password</string>
+    <string name="pass_no_match">Password does not match</string>
+    <string name="pass_must_match">Error: Password must match confirm password. Try again</string>
+    <string name="agree_to_terms_first">Agree to Terms and Conditions first</string>
+    <string name="agree_terms_toast">Error: Agree to Terms and Conditions first</string>
     <string name="register_for_free">Register for Free</string>
     <string name="i_agree_to">I agree to </string>
     <string name="terms_and_conditions">Terms and Conditions.</string>
@@ -166,12 +179,14 @@ All provisions of the Terms which by their nature should survive termination sha
     <!--    Library-->
     <string name="library_info_text">Start adding your plants living conditions, by doing this you will see if the plant actual living conditions needs some changes.</string>
     <string name="add_plant_from_database_header">Have no idea?</string>
-    <string name="click_for_adding_from_database">Click button to find your plant living conditions</string>
-    <string name="click_to_add_plant_yourself">Click button to start adding your plant</string>
+    <string name="add_plant_from_scratch_header">Are you experienced?</string>
+    <string name="click_for_adding_from_database">Click button to find your plant from existing</string>
+    <string name="click_to_add_plant_yourself">Click button to start creating a new plant profile</string>
     <string name="add_button">Add</string>
     <string name="click_for_living_conditions"><u>Click for more information</u>.</string>
     <string name="minimum_value">Min.</string>
     <string name="maximum_value">Max.</string>
+
 
     <!--    Stitch-->
     <string name="my_app_id">eye-plant-tilrj</string>
@@ -261,5 +276,24 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="check_internet_connection_search_list">Can not load searched List, please Check Internet Connection</string>
     <string name="check_internet_connection_create_profile">Can not create a Plant Profile, please Check Internet Connection</string>
     <string name="check_internet_connection_display_profile">Can not load your Plant Profile, please Check Internet Connection</string>
+    <string name="your_garden">Your Garden</string>
+    <string name="settings">Settings</string>
+
+
+    <string name="saving_changes">Saving Plant Profile Changes</string>
+    <string name="reg_complete">Registration complete please verify your email</string>
+    <string name="click_here_sign_up">Click here to Sign up</string>
+    <string name="current">Current</string>
+    <string name="light">Light     </string>
+
+    <!--spinner textArray-->
+<array name="spinner_array">
+    <item></item>
+    <item>Refresh</item>
+    <item>Change info</item>
+    <item>Modify Living Conditions</item>
+    <item>Delete</item>
+    <item>Cancel</item>
+</array>
 
 </resources>

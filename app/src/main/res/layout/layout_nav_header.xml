@@ -8,14 +8,10 @@
     android:orientation="horizontal"
     tools:context=".user_profile.User_Profile"
     android:theme="@style/Theme.Design.Light.NoActionBar">
-
     <RelativeLayout
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-
         <TextView
             android:id="@+id/textView_emailDisplay_header"
             android:layout_width="wrap_content"
@@ -25,15 +21,11 @@
             android:padding="5dp"
             android:text="@string/example_email_com"
             android:textColor="@color/green_dark" />
-
         <ImageView
             android:layout_alignParentBottom="true"
             android:src="@drawable/rectangle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="5dp">
-
         </ImageView>
-
     </RelativeLayout>
-
 </LinearLayout>

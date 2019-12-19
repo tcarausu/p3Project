@@ -2,14 +2,14 @@ package com.example.aiplant.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.InputMismatchException;
 import java.util.UUID;
 
 public class PlantProfile implements Serializable, Parcelable {
-
-
+    private static final String TAG = "PlantProfile";
     public static final Creator<PlantProfile> CREATOR = new Creator<PlantProfile>() {
         @Override
         public PlantProfile createFromParcel(Parcel in) {
@@ -281,6 +281,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withName(String name) {
+            Log.d(TAG, "withName: ");
             if (name.length() == 0) {
                 throw new InputMismatchException("No name");
             }
@@ -289,6 +290,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withAge(String birthday) {
+            Log.d(TAG, "withAge: ");
             if (birthday.length() == 0)
                 throw new InputMismatchException("No birthday");
             sBirthday = birthday;
@@ -296,6 +298,7 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withUrl(String urlToUse) {
+            Log.d(TAG, "withUrl: ");
             if (urlToUse == null)
                 urlToUse = "https://drive.google.com/file/d/1QYW_j4Twu2Vj0dHWDfr9A_LcTZybwUKI/view?usp=sharing";
 
@@ -304,7 +307,8 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withHumid(int minHumid, int maxHumid) {
-            if (minHumid < 0 || minHumid > maxHumid || maxHumid >= 100)
+            Log.d(TAG, "withHumid: ");
+            if (minHumid < 0 || minHumid > maxHumid || maxHumid > 100)
                 throw new InputMismatchException("Wrong humidity parameters");
             sMinHumid = minHumid;
             sMaxHumid = maxHumid;
@@ -312,7 +316,8 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withTemp(int minTemp, int maxTemp) {
-            if (minTemp < 0 || minTemp > maxTemp || maxTemp >= 40)
+            Log.d(TAG, "withTemp: ");
+            if (minTemp < 0 || minTemp > maxTemp || maxTemp > 40)
                 throw new InputMismatchException("Wrong temperature parameters");
             sMinTemp = minTemp;
             sMaxTemp = maxTemp;
@@ -320,14 +325,18 @@ public class PlantProfile implements Serializable, Parcelable {
         }
 
         public Builder withSun(int minSun, int maxSun) {
-            if (minSun <= 0 || minSun > maxSun || maxSun >= 100)
+            Log.d(TAG, "withSun: ");
+            if (minSun <= 0 || minSun > maxSun || maxSun > 100)
+
                 throw new InputMismatchException("Wrong sunlight parameters");
+
             sMinSun = minSun;
             sMaxSun = maxSun;
             return this;
         }
 
         public PlantProfile build() {
+            Log.d(TAG, "build: ");
             PlantProfile profile = new PlantProfile();
             profile.userID = sUserID;
             profile.profileId = sProfileId;

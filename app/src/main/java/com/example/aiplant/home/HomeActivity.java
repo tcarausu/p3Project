@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     private StitchAppClient appClient;
 
     private ScheduledFetch scheduledFetch;
+    public BottomNavigationViewHelper bnh;
 
     public static MongoDbSetup getMongoDbSetup() {
         return mongoDbSetup;
@@ -71,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void connectMongoDb() {
         mongoDbSetup = MongoDbSetup.getInstance(mContext);
-        mGoogleSignInClient = mongoDbSetup.getGoogleSignInClient();
+        mGoogleSignInClient = mongoDbSetup.googleClient();
 
         appClient = mongoDbSetup.getAppClient();
 
@@ -89,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     public void setupBottomNavigationView() {
 
-        BottomNavigationViewHelper bnh = new BottomNavigationViewHelper();
+         bnh = new BottomNavigationViewHelper();
         BottomNavigationView bottomNavigationViewEx = findViewById(id.bottomNavigationBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         bnh.enableNavigation(getApplicationContext(), bottomNavigationViewEx);
@@ -110,7 +111,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onStart();
         if (!mongoDbSetup.checkInternetConnection(mContext)) {
             Toast.makeText(getApplicationContext(), getString(R.string.check_internet_connection_display_profile), Toast.LENGTH_SHORT).show();
-
         }
     }
 
