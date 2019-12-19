@@ -22,8 +22,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
-import com.example.aiplant.cameraandgallery.ImagePicker;
-import com.example.aiplant.cameraandgallery.PictureConversion;
+import com.example.aiplant.cameraAndGallery.ImagePicker;
+import com.example.aiplant.cameraAndGallery.PictureConversion;
 import com.example.aiplant.device_connection.DeviceConnectionActivity;
 import com.example.aiplant.interfcaes.DateValidator;
 import com.example.aiplant.model.PlantProfile;
@@ -156,13 +156,12 @@ public class PlantProfileFragment extends Fragment implements View.OnClickListen
                 Bitmap bitmap = null;
                 try {
                     bitmap = ImagePicker.getImageFromResult(getContext(), resultCode, data);
+                    setPicture(bitmap);
+                    Glide.with(Objects.requireNonNull(getContext())).load(getPicture()).into(profilePicture);
+                    profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                setPicture(bitmap);
-                Glide.with(Objects.requireNonNull(getContext())).load(getPicture()).into(profilePicture);
-                profilePicture.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }

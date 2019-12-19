@@ -1,8 +1,7 @@
-package com.example.aiplant.cameraandgallery;
+package com.example.aiplant.cameraAndGallery;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 

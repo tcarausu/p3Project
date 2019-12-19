@@ -34,8 +34,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
-import com.example.aiplant.cameraandgallery.ImagePicker;
-import com.example.aiplant.cameraandgallery.PictureConversion;
+import com.example.aiplant.cameraAndGallery.ImagePicker;
+import com.example.aiplant.cameraAndGallery.PictureConversion;
 import com.example.aiplant.interfcaes.DateValidator;
 import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.PlantProfile;
@@ -172,6 +172,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             has_changed_profile_image = prefer.getBoolean("prefer", false);
             mNotificationService = new NotificationService();
             imagePicker = new ImagePicker();
+            pictureConverter = new PictureConversion();
         } catch (Exception e) {
             Log.d(TAG, "setup: error: " + e.getLocalizedMessage());
             mStitchAuth.logout();
@@ -211,7 +212,7 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                         return task;
                     } else
                         dialog.dismiss();
-                        displayNothing();
+                    displayNothing();
                     return null;
 
                 }).addOnFailureListener(e -> Log.d(TAG, "onFailure: Error: " + e.getCause()));
@@ -224,6 +225,11 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         }
     }
 
+    /**
+     * @param profile is a Document of type Plant Profile
+     *
+     *                This method takes a Document and sets up the widgets with information from the Plant Profile.
+     */
     private void setupPlantProfile(Document profile) {
         String profile_id = profile.getString("profile_id");
         String user_id = profile.getString("user_id");
@@ -415,6 +421,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         } else setMoodS(true);
     }
 
+    /**
+     * Method asking the user for giving the app permissions to access camera and gallery
+     */
     private void checkPermissions() {
         new Handler().post(() -> {
             if (Build.VERSION.SDK_INT >= 23) {
@@ -423,6 +432,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         });
     }
 
+    /**
+     * Method responsible for refreshing the drawable state of the HomeFragment
+     */
     private void refreshDrawableState() {
         change_picture.refreshDrawableState();
         temperature_text.refreshDrawableState();
@@ -447,6 +459,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     }
 
+    /**
+     * Method responsible for disabling all of the edit texts in HomeFragment
+     */
     private void disableEditText() {
         //name and date
         flowerNameEditText.setEnabled(false);
@@ -488,6 +503,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         }
     }
 
+    /**
+     * Method responsible for refreshing the home page
+     */
     private void refreshPage() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         if (Build.VERSION.SDK_INT >= 26) {
@@ -529,6 +547,13 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     }
 
+    /**
+     * Method responsible for saving name and data of plant, changed by the user.
+     * <p>
+     * It gets data from Plant Profile Collection, if task is successful it continues by checking the bitmap,
+     * in case tht is successful it updates picture and proceed to check for empty or invalid input for name and date.
+     * If both are not empty and the date is valid, it proceeds by updating the data.
+     */
     private void saveNameAndTime() {
         RemoteMongoCollection plantProfileColl = mongoDbSetup.getCollection(getString(R.string.eye_plant_plant_profiles));
         plantProfileColl.findOne(eq("user_id", user_id)).continueWithTask((Continuation) task -> {
@@ -567,6 +592,8 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
                     plantProfileColl.updateOne(null, set("birthday", plantDate), new RemoteUpdateOptions());
                     refreshDrawableState();
 
+                    Toast.makeText(mContext, getString(R.string.saving_changes), Toast.LENGTH_LONG).show();
+                    refreshPage();
                 }
             }
 
@@ -575,6 +602,16 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
     }
 
+    /**
+     * Method responsible for saving minimum and maximum conditions of plant, changed by the user.
+     * <p>
+     * This method takes input for minimum and maximum of all our 3 measurements: Humidity, Temperature and
+     * Sunlight. After the user thinks that the input for the measurements are fine he can proceed to update them.
+     * <p>
+     * He is displayed an dialogue with the "Yes" and "No", where he can select and update the values if the minimum
+     * and maximum are not less or more then the applicable for each field.
+     * If that's appropriate he updates the values, if not he is requested to change them, because he gets appropriate errors.
+     */
     private void saveChanges() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(mContext);
         builder1.setMessage("Are you sure you want to change conditions?");
@@ -648,6 +685,15 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         alert11.show();
     }
 
+    /**
+     * @param minH minimum humidity value for verification
+     * @param maxH maximum humidity value for verification
+     * @param minT minimum temperature value for verification
+     * @param maxT maximum temperature value for verification
+     * @param minS minimum sunlight value for verification
+     * @param maxS maximum sunlight value for verification
+     * @return boolean True if there is no empty field, and false is any case has an empty input.
+     */
     private boolean checkEmptyInput(String minH, String maxH, String minT, String maxT, String minS, String maxS) {
         Log.d(TAG, "checkEmptyInput: ");
         boolean minH_empty = TextUtils.isEmpty(minH);
@@ -659,16 +705,28 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
 
         if (minH_empty || maxH_empty) {
             hum_max.setError(getString(R.string.humidity_min_max_error));
+            hum_max.setFocusable(true);
             return false;
         } else if (minT_empty || maxT_empty) {
             temp_max.setError(getString(R.string.temperature_min_max_error));
+            temp_max.setFocusable(true);
             return false;
         } else if (minS_empty || maxS_empty) {
             light_max.setError(getString(R.string.sunlight_min_max_error));
+            light_max.setFocusable(true);
             return false;
         } else return true;
     }
 
+    /**
+     * @param minH minimum humidity value for verification
+     * @param maxH maximum humidity value for verification
+     * @param minT minimum temperature value for verification
+     * @param maxT maximum temperature value for verification
+     * @param minS minimum sunlight value for verification
+     * @param maxS maximum sunlight value for verification
+     * @return boolean True if there is issues with the measurements, and false is any case are either bigger or smaller.
+     */
     private boolean checkValueInput(String minH, String maxH, String minT, String maxT, String minS, String maxS) {
         boolean m = Integer.valueOf(minH) <= 0 || Integer.valueOf(maxH) >= 100;
         boolean t = Integer.valueOf(minT) <= 0 || Integer.valueOf(maxT) >= 40;
@@ -678,16 +736,20 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
             hum_max.setError(getString(R.string.humidity_min_max_error));
             temp_max.setError(getString(R.string.temperature_min_max_error));
             light_max.setError(getString(R.string.sunlight_min_max_error));
+            hum_max.setFocusable(true);
             return false;
         } else if (m || t || s) {
             if (m) {
                 hum_max.setError(getString(R.string.humidity_min_max_error));
+                hum_max.setFocusable(true);
             }
             if (t) {
                 temp_max.setError(getString(R.string.temperature_min_max_error));
+                temp_max.setFocusable(true);
             }
             if (s) {
                 light_max.setError(getString(R.string.sunlight_min_max_error));
+                light_max.setFocusable(true);
             }
             return false;
         } else return true;

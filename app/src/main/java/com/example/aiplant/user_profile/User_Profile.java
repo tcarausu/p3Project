@@ -33,8 +33,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.aiplant.R;
-import com.example.aiplant.cameraandgallery.ImagePicker;
-import com.example.aiplant.cameraandgallery.PictureConversion;
+import com.example.aiplant.cameraAndGallery.ImagePicker;
+import com.example.aiplant.cameraAndGallery.PictureConversion;
 import com.example.aiplant.home.HomeActivity;
 import com.example.aiplant.login.LoginActivity;
 import com.example.aiplant.model.PlantProfile;

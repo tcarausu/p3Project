@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/button_white_round_edge"
+        android:background="@drawable/rounded_corners"
         android:elevation="5dp">
 
         <RelativeLayout
@@ -32,7 +32,7 @@
             </TextView>
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/plant_profile_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -47,12 +47,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="5dp"
-                android:background="@drawable/button_white_round_edge"
+                android:layout_margin="8dp"
+                android:background="@drawable/rounded_corners"
                 android:clickable="true"
-                android:textAllCaps="false"
                 android:focusable="true"
-                android:elevation="4dp"
                 android:onClick="onClick"
                 android:text="@string/add_button">
 
@@ -79,7 +77,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/plant_description"
-                android:background="@drawable/button_white_round_edge"
                 android:layout_margin="5dp"
                 android:layout_marginTop="5dp"
                 android:clickable="true"

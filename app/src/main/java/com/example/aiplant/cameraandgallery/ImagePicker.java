@@ -1,6 +1,5 @@
-package com.example.aiplant.cameraandgallery;
+package com.example.aiplant.cameraAndGallery;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +16,6 @@ import android.os.Parcelable;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
 
 import com.example.aiplant.R;
 

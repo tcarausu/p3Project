@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -34,25 +33,28 @@ import java.util.List;
 public class SearchListFragment extends Fragment implements View.OnClickListener {
     private String TAG = "SearchListFragment";
 
-    // view
+    //recycler view
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Button searchButton;
+
+    private ImageButton searchButton;
     private EditText search_bar;
 
-    //database
     private MongoDbSetup mongoDbSetup;
     private Context mContext ;
-    //vars
+
     private ArrayList<RecyclerViewPlantItem> listOfPlants = new ArrayList<>();
+
     private List<Document> docsToUse = new ArrayList<>();
+
     private String plant_name;
     private String picture_url;
     private String description;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_plant_from_database, container, false);
         mContext = getActivity();

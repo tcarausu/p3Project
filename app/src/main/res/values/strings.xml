@@ -12,7 +12,6 @@
     <string name="time_period">Date of Creation</string>
     <string name="temperature">Temperature</string>
     <string name="search_Hint">Search</string>
-    <string name="search">Type a keyword</string>
 
     <string name="change_picture">click here to change picture</string>
     <string name="save_changes">Save</string>
@@ -31,9 +30,6 @@
     <string name="birthday_plant">plant Birthday</string>
     <string name="minimum">Min %</string>
     <string name="maximum">Max %</string>
-
-
-
     <string name="minimum_humidity">Min %</string>
     <string name="maximum_humidity">Max %</string>
     <string name="minimum_sunlight">Min lux</string>
@@ -129,7 +125,7 @@
     <string name="agree_to_terms_first">Agree to Terms and Conditions first</string>
     <string name="agree_terms_toast">Error: Agree to Terms and Conditions first</string>
     <string name="register_for_free">Register for Free</string>
-    <string name="i_agree_to">Agree to </string>
+    <string name="i_agree_to">I agree to </string>
     <string name="terms_and_conditions">Terms and Conditions.</string>
     <!--    <string name="terms_and_conditions"><u>Terms and Conditions.</u></string>-->
     <string name="I_agree_to_terms_and_conditions">I agree </string>
@@ -184,7 +180,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="library_info_text">Start adding your plants living conditions, by doing this you will see if the plant actual living conditions needs some changes.</string>
     <string name="add_plant_from_database_header">Have no idea?</string>
     <string name="add_plant_from_scratch_header">Are you experienced?</string>
-    <string name="click_for_adding_from_database">Click button to find your plant from in our library</string>
+    <string name="click_for_adding_from_database">Click button to find your plant from existing</string>
     <string name="click_to_add_plant_yourself">Click button to start creating a new plant profile</string>
     <string name="add_button">Add</string>
     <string name="click_for_living_conditions"><u>Click for more information</u>.</string>
@@ -272,7 +268,7 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="plant_needs_less_light">Your plant needs less light!</string>
 
     <!-- Home Fragment -->
-    <string name="go_create">Click anywhere on this screen to create a Plant profile</string>
+    <string name="go_create">Click here to create a profile</string>
     <string name="choose_a_birthday_properly">Date format is not correct!</string>
 
     <!-- Check Connection-->
@@ -284,10 +280,11 @@ All provisions of the Terms which by their nature should survive termination sha
     <string name="settings">Settings</string>
 
 
+    <string name="saving_changes">Saving Plant Profile Changes</string>
     <string name="reg_complete">Registration complete please verify your email</string>
-    <string name="click_here_sign_up">New user. Register HERE!</string>
+    <string name="click_here_sign_up">Click here to Sign up</string>
     <string name="current">Current</string>
-    <string name="light">Light</string>
+    <string name="light">Light     </string>
 
     <!--spinner textArray-->
 <array name="spinner_array">

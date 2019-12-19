@@ -20,7 +20,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="6dp"
-                android:background="@drawable/button_white_round_edge"
+                android:background="@drawable/rounded_corners"
                 android:layout_weight="90">
 
                 <LinearLayout
@@ -34,10 +34,10 @@
                         android:layout_height="match_parent"
                         android:background="@null"
                         android:focusable="true"
-                        android:hint="@string/search"
+                        android:hint="@string/search_Hint"
                         android:imeOptions="actionSearch"
                         android:inputType="text"
-                        android:textSize="18sp" />
+                        android:textSize="20sp" />
 
 
                 </LinearLayout>
@@ -45,21 +45,18 @@
             </Toolbar>
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/search_button_id"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="0dp"
-                android:layout_margin="5dp"
-                android:background="@drawable/button_white_round_edge"
+                android:background="@drawable/input_fields_with_shadow"
                 android:clickable="true"
                 android:elevation="1dp"
-                android:text="@string/search_Hint"
-                android:textAllCaps="false"
                 android:focusable="true"
                 android:onClick="onClick"
-                android:drawableStart="@drawable/button_search_green"
+                android:src="@drawable/button_search_green"
                 android:layout_weight="10"/>
         </LinearLayout>
 
