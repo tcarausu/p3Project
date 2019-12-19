@@ -197,6 +197,12 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
         textLayout.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * This method find and fetches data from database based on the Stitch user's Id, and Plant Collection.
+     * <p>
+     * It checks for null and successful retrieval of the document from the database. If that is successful then
+     * it sets up the Plant Profile with that information. Otherwise display error.
+     */
     private void fetchedDoc() {
         try {
             String value = mStitchUser.getId(), key = "user_id", collectionName = "plant_profiles";
@@ -226,9 +232,9 @@ public class HomeFragment extends androidx.fragment.app.Fragment implements View
     }
 
     /**
-     * @param profile is a Document of type Plant Profile
-     *
-     *                This method takes a Document and sets up the widgets with information from the Plant Profile.
+     * @param profile Document fetched by the system corresponding to the user profile.
+     *                Takes as a parameter the Fetched Document from the Plant profile, if any.
+     *                then the document feeds all the parameters to a Plant Profile, which is later on used to feed all the Layout's widgets.
      */
     private void setupPlantProfile(Document profile) {
         String profile_id = profile.getString("profile_id");
